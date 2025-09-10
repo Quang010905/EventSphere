@@ -1,0 +1,267 @@
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\owl.carousel.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\icomoon.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery\dist\jquery.slim.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\magnific-popup.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\jquery.countTo.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\favicon.ico
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery\dist\jquery.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\jquery.waypoints.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery\LICENSE.txt
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\animate.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery\dist\jquery.min.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery\dist\jquery.slim.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\google_map.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\owl.carousel.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\bootstrap.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\jquery.easing.1.3.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\style.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\bootstrap.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\flexslider.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\fonts\bootstrap\glyphicons-halflings-regular.svg
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\style.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery-validation\LICENSE.md
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\jquery.stellar.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\main.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\jquery.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery\dist\jquery.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\jquery.magnific-popup.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery-validation\dist\jquery.validate.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\respond.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\js\site.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\fonts\icomoon\icomoon.svg
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery-validation\dist\additional-methods.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\bootstrap.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\magnific-popup-options.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery\dist\jquery.slim.min.map
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\css\owl.theme.default.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\jquery.easypiechart.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\css\site.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+C:\Source C#\EventSphere\EventSphere\wwwroot\Client\js\modernizr-2.6.2.min.js
+C:\Source C#\EventSphere\EventSphere\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\Client\css\animate.css
+wwwroot\Client\css\bootstrap.css
+wwwroot\Client\css\bootstrap.css.map
+wwwroot\Client\css\flexslider.css
+wwwroot\Client\css\icomoon.css
+wwwroot\Client\css\magnific-popup.css
+wwwroot\Client\css\owl.carousel.min.css
+wwwroot\Client\css\owl.theme.default.min.css
+wwwroot\Client\css\style.css
+wwwroot\Client\css\style.css.map
+wwwroot\Client\fonts\bootstrap\glyphicons-halflings-regular.eot
+wwwroot\Client\fonts\bootstrap\glyphicons-halflings-regular.svg
+wwwroot\Client\fonts\bootstrap\glyphicons-halflings-regular.ttf
+wwwroot\Client\fonts\bootstrap\glyphicons-halflings-regular.woff
+wwwroot\Client\fonts\bootstrap\glyphicons-halflings-regular.woff2
+wwwroot\Client\fonts\icomoon\icomoon.eot
+wwwroot\Client\fonts\icomoon\icomoon.svg
+wwwroot\Client\fonts\icomoon\icomoon.ttf
+wwwroot\Client\fonts\icomoon\icomoon.woff
+wwwroot\Client\images\img_1.jpg
+wwwroot\Client\images\img_bg_1.jpg
+wwwroot\Client\images\img_bg_2.jpg
+wwwroot\Client\images\img_bg_3.jpg
+wwwroot\Client\images\loader.gif
+wwwroot\Client\images\person_1.jpg
+wwwroot\Client\images\person_2.jpg
+wwwroot\Client\images\person_3.jpg
+wwwroot\Client\js\bootstrap.min.js
+wwwroot\Client\js\google_map.js
+wwwroot\Client\js\jquery.countTo.js
+wwwroot\Client\js\jquery.easing.1.3.js
+wwwroot\Client\js\jquery.easypiechart.min.js
+wwwroot\Client\js\jquery.magnific-popup.min.js
+wwwroot\Client\js\jquery.min.js
+wwwroot\Client\js\jquery.stellar.min.js
+wwwroot\Client\js\jquery.waypoints.min.js
+wwwroot\Client\js\magnific-popup-options.js
+wwwroot\Client\js\main.js
+wwwroot\Client\js\modernizr-2.6.2.min.js
+wwwroot\Client\js\owl.carousel.min.js
+wwwroot\Client\js\respond.min.js
+wwwroot\Client\sass\_bootstrap-compass.scss
+wwwroot\Client\sass\_bootstrap-mincer.scss
+wwwroot\Client\sass\_bootstrap-sprockets.scss
+wwwroot\Client\sass\bootstrap.scss
+wwwroot\Client\sass\bootstrap\_alerts.scss
+wwwroot\Client\sass\bootstrap\_badges.scss
+wwwroot\Client\sass\bootstrap\_breadcrumbs.scss
+wwwroot\Client\sass\bootstrap\_button-groups.scss
+wwwroot\Client\sass\bootstrap\_buttons.scss
+wwwroot\Client\sass\bootstrap\_carousel.scss
+wwwroot\Client\sass\bootstrap\_close.scss
+wwwroot\Client\sass\bootstrap\_code.scss
+wwwroot\Client\sass\bootstrap\_component-animations.scss
+wwwroot\Client\sass\bootstrap\_dropdowns.scss
+wwwroot\Client\sass\bootstrap\_forms.scss
+wwwroot\Client\sass\bootstrap\_glyphicons.scss
+wwwroot\Client\sass\bootstrap\_grid.scss
+wwwroot\Client\sass\bootstrap\_input-groups.scss
+wwwroot\Client\sass\bootstrap\_jumbotron.scss
+wwwroot\Client\sass\bootstrap\_labels.scss
+wwwroot\Client\sass\bootstrap\_list-group.scss
+wwwroot\Client\sass\bootstrap\_media.scss
+wwwroot\Client\sass\bootstrap\_mixins.scss
+wwwroot\Client\sass\bootstrap\_modals.scss
+wwwroot\Client\sass\bootstrap\_navbar.scss
+wwwroot\Client\sass\bootstrap\_navs.scss
+wwwroot\Client\sass\bootstrap\_normalize.scss
+wwwroot\Client\sass\bootstrap\_pager.scss
+wwwroot\Client\sass\bootstrap\_pagination.scss
+wwwroot\Client\sass\bootstrap\_panels.scss
+wwwroot\Client\sass\bootstrap\_popovers.scss
+wwwroot\Client\sass\bootstrap\_print.scss
+wwwroot\Client\sass\bootstrap\_progress-bars.scss
+wwwroot\Client\sass\bootstrap\_responsive-embed.scss
+wwwroot\Client\sass\bootstrap\_responsive-utilities.scss
+wwwroot\Client\sass\bootstrap\_scaffolding.scss
+wwwroot\Client\sass\bootstrap\_tables.scss
+wwwroot\Client\sass\bootstrap\_theme.scss
+wwwroot\Client\sass\bootstrap\_thumbnails.scss
+wwwroot\Client\sass\bootstrap\_tooltip.scss
+wwwroot\Client\sass\bootstrap\_type.scss
+wwwroot\Client\sass\bootstrap\_utilities.scss
+wwwroot\Client\sass\bootstrap\_variables.scss
+wwwroot\Client\sass\bootstrap\_wells.scss
+wwwroot\Client\sass\bootstrap\mixins\_alerts.scss
+wwwroot\Client\sass\bootstrap\mixins\_background-variant.scss
+wwwroot\Client\sass\bootstrap\mixins\_border-radius.scss
+wwwroot\Client\sass\bootstrap\mixins\_buttons.scss
+wwwroot\Client\sass\bootstrap\mixins\_center-block.scss
+wwwroot\Client\sass\bootstrap\mixins\_clearfix.scss
+wwwroot\Client\sass\bootstrap\mixins\_forms.scss
+wwwroot\Client\sass\bootstrap\mixins\_gradients.scss
+wwwroot\Client\sass\bootstrap\mixins\_grid.scss
+wwwroot\Client\sass\bootstrap\mixins\_grid-framework.scss
+wwwroot\Client\sass\bootstrap\mixins\_hide-text.scss
+wwwroot\Client\sass\bootstrap\mixins\_image.scss
+wwwroot\Client\sass\bootstrap\mixins\_labels.scss
+wwwroot\Client\sass\bootstrap\mixins\_list-group.scss
+wwwroot\Client\sass\bootstrap\mixins\_nav-divider.scss
+wwwroot\Client\sass\bootstrap\mixins\_nav-vertical-align.scss
+wwwroot\Client\sass\bootstrap\mixins\_opacity.scss
+wwwroot\Client\sass\bootstrap\mixins\_pagination.scss
+wwwroot\Client\sass\bootstrap\mixins\_panels.scss
+wwwroot\Client\sass\bootstrap\mixins\_progress-bar.scss
+wwwroot\Client\sass\bootstrap\mixins\_reset-filter.scss
+wwwroot\Client\sass\bootstrap\mixins\_reset-text.scss
+wwwroot\Client\sass\bootstrap\mixins\_resize.scss
+wwwroot\Client\sass\bootstrap\mixins\_responsive-visibility.scss
+wwwroot\Client\sass\bootstrap\mixins\_size.scss
+wwwroot\Client\sass\bootstrap\mixins\_tab-focus.scss
+wwwroot\Client\sass\bootstrap\mixins\_table-row.scss
+wwwroot\Client\sass\bootstrap\mixins\_text-emphasis.scss
+wwwroot\Client\sass\bootstrap\mixins\_text-overflow.scss
+wwwroot\Client\sass\bootstrap\mixins\_vendor-prefixes.scss
+wwwroot\Client\sass\style.scss
+wwwroot\css\site.css
+wwwroot\favicon.ico
+wwwroot\js\site.js
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\dist\jquery.slim.js
+wwwroot\lib\jquery\dist\jquery.slim.min.js
+wwwroot\lib\jquery\dist\jquery.slim.min.map
+wwwroot\lib\jquery\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt

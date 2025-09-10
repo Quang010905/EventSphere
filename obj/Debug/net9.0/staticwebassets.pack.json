@@ -1,0 +1,745 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\EventSphere.bundle.scp.css",
+      "PackagePath": "staticwebassets\\EventSphere.s4kkn27hys.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\animate.css",
+      "PackagePath": "staticwebassets\\Client\\css\\animate.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\Client\\css\\bootstrap.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\Client\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\flexslider.css",
+      "PackagePath": "staticwebassets\\Client\\css\\flexslider.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\icomoon.css",
+      "PackagePath": "staticwebassets\\Client\\css\\icomoon.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\magnific-popup.css",
+      "PackagePath": "staticwebassets\\Client\\css\\magnific-popup.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\owl.carousel.min.css",
+      "PackagePath": "staticwebassets\\Client\\css\\owl.carousel.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\owl.theme.default.min.css",
+      "PackagePath": "staticwebassets\\Client\\css\\owl.theme.default.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\style.css",
+      "PackagePath": "staticwebassets\\Client\\css\\style.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\css\\style.css.map",
+      "PackagePath": "staticwebassets\\Client\\css\\style.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.eot",
+      "PackagePath": "staticwebassets\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.eot"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.svg",
+      "PackagePath": "staticwebassets\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.svg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.ttf",
+      "PackagePath": "staticwebassets\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.ttf"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.woff",
+      "PackagePath": "staticwebassets\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.woff"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.woff2",
+      "PackagePath": "staticwebassets\\Client\\fonts\\bootstrap\\glyphicons-halflings-regular.woff2"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\icomoon\\icomoon.eot",
+      "PackagePath": "staticwebassets\\Client\\fonts\\icomoon\\icomoon.eot"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\icomoon\\icomoon.svg",
+      "PackagePath": "staticwebassets\\Client\\fonts\\icomoon\\icomoon.svg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\icomoon\\icomoon.ttf",
+      "PackagePath": "staticwebassets\\Client\\fonts\\icomoon\\icomoon.ttf"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\fonts\\icomoon\\icomoon.woff",
+      "PackagePath": "staticwebassets\\Client\\fonts\\icomoon\\icomoon.woff"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\images\\img_1.jpg",
+      "PackagePath": "staticwebassets\\Client\\images\\img_1.jpg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\images\\img_bg_1.jpg",
+      "PackagePath": "staticwebassets\\Client\\images\\img_bg_1.jpg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\images\\img_bg_2.jpg",
+      "PackagePath": "staticwebassets\\Client\\images\\img_bg_2.jpg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\images\\img_bg_3.jpg",
+      "PackagePath": "staticwebassets\\Client\\images\\img_bg_3.jpg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\images\\loader.gif",
+      "PackagePath": "staticwebassets\\Client\\images\\loader.gif"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\images\\person_1.jpg",
+      "PackagePath": "staticwebassets\\Client\\images\\person_1.jpg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\images\\person_2.jpg",
+      "PackagePath": "staticwebassets\\Client\\images\\person_2.jpg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\images\\person_3.jpg",
+      "PackagePath": "staticwebassets\\Client\\images\\person_3.jpg"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\google_map.js",
+      "PackagePath": "staticwebassets\\Client\\js\\google_map.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\jquery.countTo.js",
+      "PackagePath": "staticwebassets\\Client\\js\\jquery.countTo.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\jquery.easing.1.3.js",
+      "PackagePath": "staticwebassets\\Client\\js\\jquery.easing.1.3.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\jquery.easypiechart.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\jquery.easypiechart.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\jquery.magnific-popup.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\jquery.magnific-popup.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\jquery.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\jquery.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\jquery.stellar.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\jquery.stellar.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\jquery.waypoints.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\jquery.waypoints.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\magnific-popup-options.js",
+      "PackagePath": "staticwebassets\\Client\\js\\magnific-popup-options.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\main.js",
+      "PackagePath": "staticwebassets\\Client\\js\\main.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\modernizr-2.6.2.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\modernizr-2.6.2.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\owl.carousel.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\owl.carousel.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\js\\respond.min.js",
+      "PackagePath": "staticwebassets\\Client\\js\\respond.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\_bootstrap-compass.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\_bootstrap-compass.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\_bootstrap-mincer.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\_bootstrap-mincer.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\_bootstrap-sprockets.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\_bootstrap-sprockets.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_alerts.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_alerts.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_badges.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_badges.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_breadcrumbs.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_breadcrumbs.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_button-groups.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_button-groups.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_buttons.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_buttons.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_carousel.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_carousel.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_close.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_close.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_code.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_code.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_component-animations.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_component-animations.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_dropdowns.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_dropdowns.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_forms.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_forms.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_glyphicons.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_glyphicons.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_grid.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_grid.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_input-groups.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_input-groups.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_jumbotron.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_jumbotron.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_labels.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_labels.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_list-group.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_list-group.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_media.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_media.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_mixins.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_mixins.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_modals.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_modals.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_navbar.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_navbar.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_navs.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_navs.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_normalize.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_normalize.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_pager.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_pager.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_pagination.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_pagination.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_panels.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_panels.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_popovers.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_popovers.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_print.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_print.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_progress-bars.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_progress-bars.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_responsive-embed.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_responsive-embed.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_responsive-utilities.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_responsive-utilities.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_scaffolding.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_scaffolding.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_tables.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_tables.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_theme.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_theme.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_thumbnails.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_thumbnails.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_tooltip.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_tooltip.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_type.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_type.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_utilities.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_utilities.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_variables.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_variables.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\_wells.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\_wells.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_alerts.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_alerts.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_background-variant.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_background-variant.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_border-radius.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_border-radius.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_buttons.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_buttons.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_center-block.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_center-block.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_clearfix.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_clearfix.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_forms.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_forms.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_gradients.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_gradients.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_grid-framework.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_grid-framework.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_grid.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_grid.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_hide-text.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_hide-text.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_image.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_image.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_labels.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_labels.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_list-group.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_list-group.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_nav-divider.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_nav-divider.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_nav-vertical-align.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_nav-vertical-align.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_opacity.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_opacity.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_pagination.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_pagination.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_panels.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_panels.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_progress-bar.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_progress-bar.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_reset-filter.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_reset-filter.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_reset-text.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_reset-text.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_resize.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_resize.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_responsive-visibility.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_responsive-visibility.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_size.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_size.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_tab-focus.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_tab-focus.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_table-row.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_table-row.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_text-emphasis.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_text-emphasis.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_text-overflow.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_text-overflow.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\bootstrap\\mixins\\_vendor-prefixes.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\bootstrap\\mixins\\_vendor-prefixes.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\Client\\sass\\style.scss",
+      "PackagePath": "staticwebassets\\Client\\sass\\style.scss"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery\\dist\\jquery.slim.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.min.js"
+    },
+    {
+      "Id": "C:\\Source C#\\EventSphere\\EventSphere\\wwwroot\\lib\\jquery\\dist\\jquery.slim.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.slim.min.map"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.EventSphere.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.EventSphere.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.build.EventSphere.props",
+      "PackagePath": "build\\EventSphere.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildMultiTargeting.EventSphere.props",
+      "PackagePath": "buildMultiTargeting\\EventSphere.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildTransitive.EventSphere.props",
+      "PackagePath": "buildTransitive\\EventSphere.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
