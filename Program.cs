@@ -1,5 +1,4 @@
-
-﻿using EventSphere.Models.entities;
+using EventSphere.Models.entities;
 using EventSphere.Models.Repositories;
 using EventSphere.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -47,5 +46,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Attendance}/{action=Index}/{id?}",
     defaults: new { area = "Admin" });
-    .WithStaticAssets();
+
 app.Run();
