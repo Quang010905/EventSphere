@@ -22,12 +22,12 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
+    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Client}/{action=Index}/{id?}",
-    defaults: new { area = "Client" })
+    pattern: "{controller=Admin}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" })
     .WithStaticAssets();
 
 
