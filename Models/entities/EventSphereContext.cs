@@ -47,7 +47,7 @@ public partial class EventSphereContext : DbContext
     {
         modelBuilder.Entity<TblAttendance>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_atte__DED88B1C0B7B084D");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_atte__DED88B1C333E8761");
 
             entity.ToTable("tbl_attendance");
 
@@ -62,16 +62,16 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.TblAttendances)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__tbl_atten___even__46E78A0C");
+                .HasConstraintName("FK__tbl_atten___even__4F7CD00D");
 
             entity.HasOne(d => d.Student).WithMany(p => p.TblAttendances)
                 .HasForeignKey(d => d.StudentId)
-                .HasConstraintName("FK__tbl_atten___stud__47DBAE45");
+                .HasConstraintName("FK__tbl_atten___stud__5070F446");
         });
 
         modelBuilder.Entity<TblCalendarSync>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_cale__DED88B1CCE77BDEA");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_cale__DED88B1CC4905F2E");
 
             entity.ToTable("tbl_calendarSync");
 
@@ -93,16 +93,16 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.TblCalendarSyncs)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__tbl_calen___even__619B8048");
+                .HasConstraintName("FK__tbl_calen___even__6A30C649");
 
             entity.HasOne(d => d.User).WithMany(p => p.TblCalendarSyncs)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__tbl_calen___user__60A75C0F");
+                .HasConstraintName("FK__tbl_calen___user__693CA210");
         });
 
         modelBuilder.Entity<TblCertificate>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_cert__DED88B1C3F3FABBC");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_cert__DED88B1CCA4A8061");
 
             entity.ToTable("tbl_certificate");
 
@@ -118,16 +118,16 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.TblCertificates)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__tbl_certi___even__5070F446");
+                .HasConstraintName("FK__tbl_certi___even__59063A47");
 
             entity.HasOne(d => d.Student).WithMany(p => p.TblCertificates)
                 .HasForeignKey(d => d.StudentId)
-                .HasConstraintName("FK__tbl_certi___stud__5165187F");
+                .HasConstraintName("FK__tbl_certi___stud__59FA5E80");
         });
 
         modelBuilder.Entity<TblEvent>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CF3943B98");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CA9005906");
 
             entity.ToTable("tbl_event");
 
@@ -148,7 +148,7 @@ public partial class EventSphereContext : DbContext
             entity.Property(e => e.OrganizerId).HasColumnName("_organizer_id");
             entity.Property(e => e.Status).HasColumnName("_status");
             entity.Property(e => e.Time)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("(CONVERT([time],getdate()))")
                 .HasColumnName("_time");
             entity.Property(e => e.Title)
                 .HasMaxLength(250)
@@ -159,12 +159,12 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Organizer).WithMany(p => p.TblEvents)
                 .HasForeignKey(d => d.OrganizerId)
-                .HasConstraintName("FK__tbl_event___orga__3D5E1FD2");
+                .HasConstraintName("FK__tbl_event___orga__45F365D3");
         });
 
         modelBuilder.Entity<TblEventSeating>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CF7280286");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CB145A37E");
 
             entity.ToTable("tbl_eventSeating");
 
@@ -179,12 +179,12 @@ public partial class EventSphereContext : DbContext
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.TblEventSeating)
                 .HasForeignKey<TblEventSeating>(d => d.Id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__tbl_eventSe___id__59063A47");
+                .HasConstraintName("FK__tbl_eventSe___id__619B8048");
         });
 
         modelBuilder.Entity<TblEventShareLog>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CB8440688");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1C4CA01310");
 
             entity.ToTable("tbl_eventShareLog");
 
@@ -205,16 +205,16 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.TblEventShareLogs)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__tbl_event___even__66603565");
+                .HasConstraintName("FK__tbl_event___even__6EF57B66");
 
             entity.HasOne(d => d.User).WithMany(p => p.TblEventShareLogs)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__tbl_event___user__656C112C");
+                .HasConstraintName("FK__tbl_event___user__6E01572D");
         });
 
         modelBuilder.Entity<TblEventWaitlist>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CFF851FCA");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CB6F52655");
 
             entity.ToTable("tbl_eventWaitlist");
 
@@ -229,16 +229,16 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.TblEventWaitlists)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__tbl_event___even__5CD6CB2B");
+                .HasConstraintName("FK__tbl_event___even__656C112C");
 
             entity.HasOne(d => d.User).WithMany(p => p.TblEventWaitlists)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__tbl_event___user__5BE2A6F2");
+                .HasConstraintName("FK__tbl_event___user__6477ECF3");
         });
 
         modelBuilder.Entity<TblFeedback>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_feed__DED88B1C747B1511");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_feed__DED88B1C1CF2CFBE");
 
             entity.ToTable("tbl_feedback");
 
@@ -256,16 +256,16 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.TblFeedbacks)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__tbl_feedb___even__4BAC3F29");
+                .HasConstraintName("FK__tbl_feedb___even__5441852A");
 
             entity.HasOne(d => d.Student).WithMany(p => p.TblFeedbacks)
                 .HasForeignKey(d => d.StudentId)
-                .HasConstraintName("FK__tbl_feedb___stud__4CA06362");
+                .HasConstraintName("FK__tbl_feedb___stud__5535A963");
         });
 
         modelBuilder.Entity<TblMediaGallery>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_medi__DED88B1CB057BD5A");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_medi__DED88B1C272F0ED9");
 
             entity.ToTable("tbl_mediaGallery");
 
@@ -286,16 +286,16 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.TblMediaGalleries)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__tbl_media___even__5441852A");
+                .HasConstraintName("FK__tbl_media___even__5CD6CB2B");
 
             entity.HasOne(d => d.UploadedByNavigation).WithMany(p => p.TblMediaGalleries)
                 .HasForeignKey(d => d.UploadedBy)
-                .HasConstraintName("FK__tbl_media___uplo__5535A963");
+                .HasConstraintName("FK__tbl_media___uplo__5DCAEF64");
         });
 
         modelBuilder.Entity<TblRegistration>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_regi__DED88B1C9706B73C");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_regi__DED88B1CC739A4E5");
 
             entity.ToTable("tbl_registration");
 
@@ -310,16 +310,16 @@ public partial class EventSphereContext : DbContext
 
             entity.HasOne(d => d.Event).WithMany(p => p.TblRegistrations)
                 .HasForeignKey(d => d.EventId)
-                .HasConstraintName("FK__tbl_regis___even__4222D4EF");
+                .HasConstraintName("FK__tbl_regis___even__4AB81AF0");
 
             entity.HasOne(d => d.Student).WithMany(p => p.TblRegistrations)
                 .HasForeignKey(d => d.StudentId)
-                .HasConstraintName("FK__tbl_regis___stud__4316F928");
+                .HasConstraintName("FK__tbl_regis___stud__4BAC3F29");
         });
 
         modelBuilder.Entity<TblUser>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_user__DED88B1CD893E234");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_user__DED88B1CC436448E");
 
             entity.ToTable("tbl_user");
 
@@ -342,7 +342,7 @@ public partial class EventSphereContext : DbContext
 
         modelBuilder.Entity<TblUserDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tbl_user__DED88B1CEC0423E2");
+            entity.HasKey(e => e.Id).HasName("PK__tbl_user__DED88B1C0AE7FE37");
 
             entity.ToTable("tbl_userDetail");
 
