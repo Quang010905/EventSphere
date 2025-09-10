@@ -1,0 +1,115 @@
+﻿@model EventSphere.Models.ViewModels.CertificateGenerateViewModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Generate Certificate";
+}
+
+<h2>Generate Certificate</h2>
+
+@Html.AntiForgeryToken()
+
+<div class="mb-3">
+    <label class="form-label">Event</label>
+    <select id="eventSelectGenerate" class="form-select" data-selected="@(Model.EventId?.ToString() ?? "")">
+        <option value="">-- Select event --</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Student</label>
+    <select id="studentSelectGenerate" class="form-select" data-selected="@(Model.StudentId?.ToString() ?? "")">
+        <option value="">-- Select student --</option>
+    </select>
+</div>
+
+<button id="btnGenerate" type="button" class="btn btn-primary">Generate</button>
+
+@section Scripts {
+    <script>
+        async function fillSelect(url, selectEl, selectedValue) {
+            try {
+                const res = await fetch(url, { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Network response was not ok');
+                const data = await res.json();
+                while (selectEl.options.length > 1) selectEl.remove(1);
+
+                data.forEach(item => {
+                    const opt = new Option(item.text, item.id);
+                    if (selectedValue && String(selectedValue) === String(item.id)) {
+                        opt.selected = true;
+                    }
+                    selectEl.add(opt);
+                });
+            } catch (err) {
+                console.error('fillSelect error', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const evGen = document.querySelector('#eventSelectGenerate');
+            const stGen = document.querySelector('#studentSelectGenerate');
+
+            if (evGen) {
+                const selected = evGen.getAttribute('data-selected') || '';
+                fillSelect('@Url.Action("GetEvents", "Certificate", new { area = "Admin" })', evGen, selected);
+            }
+
+            if (stGen) {
+                const selected = stGen.getAttribute('data-selected') || '';
+                (async function () {
+                    if (selected) {
+                        try {
+                            const res = await fetch('@Url.Action("GetStudentById", "Certificate", new { area = "Admin" })?id=' + encodeURIComponent(selected));
+                            if (res.ok) {
+                                const obj = await res.json();
+                                if (obj && obj.id) {
+                                    stGen.add(new Option(obj.text, obj.id, true, true));
+                                }
+                            }
+                        } catch (e) { console.error('prefillStudent error', e); }
+                    }
+                    fillSelect('@Url.Action("GetStudents", "Certificate", new { area = "Admin" })', stGen, selected);
+                })();
+            }
+
+            document.querySelector('#btnGenerate').addEventListener('click', async function () {
+                const eventId = evGen.value;
+                const studentId = stGen.value;
+                if (!eventId || !studentId) {
+                    alert('Please select both Event and Student!');
+                    return;
+                }
+
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                try {
+                    const res = await fetch('@Url.Action("Generate", "Certificate", new { area = "Admin" })', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token
+                        },
+                        body: JSON.stringify({ EventId: eventId, StudentId: studentId })
+                    });
+
+                    if (!res.ok) throw new Error(await res.text());
+
+                    const blob = await res.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "certificate.pdf";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+
+                } catch (err) {
+                    console.error('Generate error', err);
+                    alert('Error generating certificate: ' + err.message);
+                }
+            });
+        });
+    </script>
+}
