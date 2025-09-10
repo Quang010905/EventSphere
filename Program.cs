@@ -1,3 +1,4 @@
+
 ﻿using EventSphere.Models.entities;
 using EventSphere.Models.Repositories;
 using EventSphere.Repositories;
@@ -5,13 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddControllersWithViews();
 
 // Đăng ký DbContext
 builder.Services.AddDbContext<EventSphereContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddControllersWithViews();
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Repository pattern
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -36,8 +35,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Nếu có login thì bật Authentication
-// app.UseAuthentication();
 app.UseAuthorization();
 
 // Area route
@@ -50,5 +47,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Attendance}/{action=Index}/{id?}",
     defaults: new { area = "Admin" });
-
+    .WithStaticAssets();
 app.Run();
