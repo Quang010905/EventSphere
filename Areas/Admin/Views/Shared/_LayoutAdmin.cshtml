@@ -58,18 +58,26 @@
 
 
             <!-- Divider -->
-            
-        @{
-            var currentController = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
-            var currentArea = (ViewContext.RouteData.Values["area"] ?? "").ToString();
-            bool isAttendanceActive = string.Equals(currentController, "Attendance", StringComparison.OrdinalIgnoreCase)
-                                        && string.Equals(currentArea, "Admin", StringComparison.OrdinalIgnoreCase);
-        }
 
-        <li class="nav-item @(isAttendanceActive ? "active" : "")">
+
+        <li class="nav-item">
             <a class="nav-link" href="@Url.Action("Index", "Attendance", new { area = "Admin" })">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Attendance</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("Index", "Feedback", new { area = "Admin" })">
+                <i class="fas fa-fw fa-comments"></i>
+                <span>Feedback</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("Index", "Certificate", new { area = "Admin" })">
+                <i class="fas fa-fw fa-certificate"></i>
+                <span>Certificate</span>
             </a>
         </li>
 

@@ -1,0 +1,29 @@
+﻿@model EventSphere.Models.entities.TblCertificate
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Certificate Details";
+}
+
+<h2>Certificate Details</h2>
+
+<div class="mb-3">
+    <strong>Event:</strong> @Model.Event?.Title
+</div>
+<div class="mb-3">
+    <strong>Student:</strong> @(Model.Student?.TblUserDetails?.FirstOrDefault()?.Fullname ?? "N/A")
+</div>
+<div class="mb-3">
+    <strong>Issued On:</strong> @(Model.IssuedOn?.ToString("dd/MM/yyyy") ?? "-")
+</div>
+
+@if (!string.IsNullOrEmpty(Model.CertificateUrl))
+{
+    <h4>Preview</h4>
+    <iframe src="@Url.Content(Model.CertificateUrl)" width="100%" height="600px" style="border:1px solid #ccc;"></iframe>
+}
+else
+{
+    <p class="text-muted">No certificate uploaded.</p>
+}
+
+<a href="@Url.Action("Index")" class="btn btn-secondary mt-3">Back</a>
