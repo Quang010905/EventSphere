@@ -48,9 +48,6 @@
             </li>
 
          
-
-     
-
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="@Url.Action("Index", "Events")">
@@ -62,6 +59,21 @@
 
             <!-- Divider -->
             
+        @{
+            var currentController = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
+            var currentArea = (ViewContext.RouteData.Values["area"] ?? "").ToString();
+            bool isAttendanceActive = string.Equals(currentController, "Attendance", StringComparison.OrdinalIgnoreCase)
+                                        && string.Equals(currentArea, "Admin", StringComparison.OrdinalIgnoreCase);
+        }
+
+        <li class="nav-item @(isAttendanceActive ? "active" : "")">
+            <a class="nav-link" href="@Url.Action("Index", "Attendance", new { area = "Admin" })">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Attendance</span>
+            </a>
+        </li>
+
+
             <li>
                 <hr class="sidebar-divider d-none d-md-block" />
             </li>
