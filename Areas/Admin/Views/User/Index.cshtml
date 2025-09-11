@@ -1,0 +1,199 @@
+﻿@model IEnumerable<EventSphere.Models.entities.TblUser>
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "User Management";
+    var roles = ViewBag.Roles as List<object>;
+    int page = ViewBag.Page ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    string? search = ViewBag.Search as string;
+    int? role = ViewBag.Role as int?;
+    int? status = ViewBag.Status as int?;
+}
+
+<h1>User Management</h1>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <input id="searchInput" class="form-control" placeholder="Search email / name / phone / enrollment" value="@search" />
+    </div>
+    <div class="col-md-2">
+        <select id="roleFilter" class="form-control">
+            <option value="">All roles</option>
+            <option value="0" @(role == 0 ? "selected" : "")>Student</option>
+            <option value="1" @(role == 1 ? "selected" : "")>Organizer</option>
+            <option value="2" @(role == 2 ? "selected" : "")>Admin</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select id="statusFilter" class="form-control">
+            <option value="">All status</option>
+            <option value="1" @(status == 1 ? "selected" : "")>Active</option>
+            <option value="0" @(status == 0 ? "selected" : "")>Inactive</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select id="pageSizeSelect" class="form-control">
+            <option value="5" @(pageSize == 5 ? "selected" : "")>5</option>
+            <option value="10" @(pageSize == 10 ? "selected" : "")>10</option>
+            <option value="20" @(pageSize == 20 ? "selected" : "")>20</option>
+        </select>
+    </div>
+    <div class="col-md-3 text-end">
+        <button id="btnSearch" class="btn btn-primary">Search</button>
+        <a asp-area="Admin" asp-controller="User" asp-action="Index" class="btn btn-secondary">Reset</a>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<div id="userTableContainer">
+    @Html.Partial("_UserTablePartial", Model)
+</div>
+
+<div id="ajaxAlert" style="position: fixed; top: 20px; right: 20px; z-index: 2000;"></div>
+
+@section Scripts {
+    <script>
+        (function() {
+            const listUrl = '@Url.Action("ListPartial", "User", new { area = "Admin" })';
+            const toggleUrl = '@Url.Action("ToggleStatus", "User", new { area = "Admin" })';
+            const deleteUrl = '@Url.Action("DeleteConfirmed", "User", new { area = "Admin" })';
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+
+            function getToken() {
+                return tokenInput ? tokenInput.value : '';
+            }
+
+            function showAlert(msg, type = 'success') {
+                const div = document.createElement('div');
+                div.className = 'alert alert-' + (type === 'error' ? 'danger' : type) + ' fade show';
+                div.style.minWidth = '200px';
+                div.innerText = msg;
+                document.getElementById('ajaxAlert').appendChild(div);
+                setTimeout(() => { div.remove(); }, 3000);
+            }
+
+            function buildQuery(params) {
+                return Object.keys(params)
+                    .filter(k => params[k] !== null && params[k] !== undefined && params[k] !== '')
+                    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+                    .join('&');
+            }
+
+            async function loadList(page = 1) {
+                const pageSize = document.getElementById('pageSizeSelect').value;
+                const search = document.getElementById('searchInput').value.trim();
+                const role = document.getElementById('roleFilter').value;
+                const status = document.getElementById('statusFilter').value;
+
+                const qs = buildQuery({ page, pageSize, role: role || null, status: status || null, search: search || null });
+                const res = await fetch(listUrl + (qs ? ('?' + qs) : ''), { credentials: 'same-origin' });
+                if (res.ok) {
+                    const html = await res.text();
+                    document.getElementById('userTableContainer').innerHTML = html;
+                    attachButtons();
+                } else {
+                    showAlert('Failed to load users', 'error');
+                }
+            }
+
+            function attachButtons() {
+                document.querySelectorAll('.ajax-page-link').forEach(el => {
+                    el.onclick = function(e) {
+                        e.preventDefault();
+                        const p = this.dataset.page || 1;
+                        loadList(p);
+                    };
+                });
+
+                // toggle status
+                document.querySelectorAll('.toggle-status-btn').forEach(btn => {
+                    btn.onclick = async function() {
+                        const id = this.dataset.id;
+                        if (!confirm('Are you sure to toggle status of this user?')) return;
+
+                        try {
+                            const form = new FormData();
+                            form.append('__RequestVerificationToken', getToken());
+                            form.append('id', id);
+
+                            const res = await fetch(toggleUrl, {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                body: form
+                            });
+
+                            const data = await res.json();
+                            if (data.success) {
+                                const newStatus = parseInt(data.status, 10);
+                                const row = this.closest('tr');
+                                if (row) {
+                                    const badge = row.querySelector('.user-status-badge');
+                                    if (badge) {
+                                        if (newStatus === 1) {
+                                            badge.classList.remove('bg-danger');
+                                            badge.classList.add('bg-success');
+                                            badge.textContent = 'Active';
+                                        } else {
+                                            badge.classList.remove('bg-success');
+                                            badge.classList.add('bg-danger');
+                                            badge.textContent = 'Inactive';
+                                        }
+                                    }
+                                    this.textContent = (newStatus === 1) ? 'Disable' : 'Enable';
+                                }
+                                showAlert('Status updated');
+                            } else {
+                                showAlert(data.message || 'Toggle failed', 'error');
+                            }
+                        } catch (err) {
+                            console.error(err);
+                            showAlert('Error toggling status', 'error');
+                        }
+                    };
+                });
+
+                // delete user
+                document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                    btn.onclick = async function() {
+                        const id = this.dataset.id;
+                        if (!confirm('Delete user and all related data? This cannot be undone.')) return;
+                        try {
+                            const form = new FormData();
+                            form.append('__RequestVerificationToken', getToken());
+                            form.append('id', id);
+
+                            const res = await fetch(deleteUrl, {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                body: form
+                            });
+
+                            const data = await res.json();
+                            if (data.success) {
+                                showAlert('User deleted');
+                                const row = this.closest('tr');
+                                if (row) row.remove();
+                            } else {
+                                showAlert(data.message || 'Delete failed', 'error');
+                            }
+                        } catch (err) {
+                            console.error(err);
+                            showAlert('Error deleting user', 'error');
+                        }
+                    };
+                });
+            }
+
+            document.getElementById('btnSearch').addEventListener('click', () => loadList(1));
+            document.getElementById('searchInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') loadList(1); });
+            document.getElementById('roleFilter').addEventListener('change', () => loadList(1));
+            document.getElementById('statusFilter').addEventListener('change', () => loadList(1));
+            document.getElementById('pageSizeSelect').addEventListener('change', () => loadList(1));
+
+            // initial load (use page from server)
+            loadList(@(page));
+        })();
+    </script>
+}

@@ -1,0 +1,84 @@
+﻿@model IEnumerable<EventSphere.Models.entities.TblUser>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th style="width:220px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>
+                        @{
+                            string roleText = user.Role switch
+                            {
+                                0 => "Student",
+                                1 => "Organizer",
+                                2 => "Admin",
+                                _ => "Unknown"
+                            };
+                        }
+                        @roleText
+                    </td>
+                    <td>
+                        @if (user.Status == 1)
+                        {
+                            <span class="badge bg-success user-status-badge">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger user-status-badge">Inactive</span>
+                        }
+                    </td>
+                    <td>@user.CreatedAt?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning toggle-status-btn" data-id="@user.Id">
+                            @(user.Status == 1 ? "Disable" : "Enable")
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-user-btn" data-id="@user.Id">
+                            Delete
+                        </button>
+                        <a href="@Url.Action("Details", "User", new { area = "Admin", id = user.Id })"
+                           class="btn btn-sm btn-info">
+                            Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="5" class="text-center">No users found</td></tr>
+        }
+    </tbody>
+</table>
+
+@{
+    int page = ViewBag.Page ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int totalCount = ViewBag.TotalCount ?? 0;
+    int totalPages = (int)Math.Ceiling(totalCount > 0 ? (double)totalCount / pageSize : 1);
+}
+
+@if (totalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == page ? "active" : "")">
+                    <a href="#" class="page-link ajax-page-link" data-page="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
