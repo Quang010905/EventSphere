@@ -128,38 +128,23 @@ public partial class EventSphereContext : DbContext
         modelBuilder.Entity<TblEvent>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CA9005906");
-
             entity.ToTable("tbl_event");
 
             entity.Property(e => e.Id).HasColumnName("_id");
-            entity.Property(e => e.Category)
-                .HasMaxLength(250)
-                .HasColumnName("_category");
-            entity.Property(e => e.Date)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnName("_date");
-            entity.Property(e => e.Description)
-                .HasColumnType("text")
-                .HasColumnName("_description");
-            entity.Property(e => e.Image)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("_image");
+            entity.Property(e => e.Category).HasMaxLength(250).HasColumnName("_category");
+            entity.Property(e => e.Date).HasColumnName("_date");
+            entity.Property(e => e.Time).HasColumnName("_time");
+            entity.Property(e => e.Description).HasColumnType("text").HasColumnName("_description");
+            entity.Property(e => e.Image).HasMaxLength(250).IsUnicode(false).HasColumnName("_image");
             entity.Property(e => e.OrganizerId).HasColumnName("_organizer_id");
             entity.Property(e => e.Status).HasColumnName("_status");
-            entity.Property(e => e.Time)
-                .HasDefaultValueSql("(CONVERT([time],getdate()))")
-                .HasColumnName("_time");
-            entity.Property(e => e.Title)
-                .HasMaxLength(250)
-                .HasColumnName("_title");
-            entity.Property(e => e.Venue)
-                .HasMaxLength(250)
-                .HasColumnName("_venue");
+            entity.Property(e => e.Title).HasMaxLength(250).HasColumnName("_title");
+            entity.Property(e => e.Venue).HasMaxLength(250).HasColumnName("_venue");
 
-            entity.HasOne(d => d.Organizer).WithMany(p => p.TblEvents)
-                .HasForeignKey(d => d.OrganizerId)
-                .HasConstraintName("FK__tbl_event___orga__45F365D3");
+            entity.HasOne(d => d.Organizer)
+                  .WithMany(p => p.TblEvents)
+                  .HasForeignKey(d => d.OrganizerId)
+                  .HasConstraintName("FK__tbl_event___orga__45F365D3");
         });
 
         // --- Modified mapping for TblEventSeating: map EventId -> _event_id and use IdNavigation as navigation to TblEvent ---

@@ -1,0 +1,275 @@
+﻿@model EventSphere.Models.ModelViews.HomeViewModel
+@{
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+
+    // === Helpers ===
+    string ResolveUpload(string? path, string fallback)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return Url.Content(fallback);
+        if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            return path;
+        if (path.Contains("/uploads/", StringComparison.OrdinalIgnoreCase))
+            return Url.Content("~" + path.TrimStart('~'));
+        return Url.Content("~/uploads/" + path.TrimStart('/'));
+    }
+
+    int? ToNullableInt(object? value)
+    {
+        if (value == null) return null;
+        if (value is int i) return i;
+        if (value is int ni) return ni;
+        try { return Convert.ToInt32(value); } catch { return null; }
+    }
+
+    int ToIntOrZero(object? value) => ToNullableInt(value) ?? 0;
+
+    bool ToBool(object? value, bool defaultValue = false)
+    {
+        if (value == null) return defaultValue;
+        if (value is bool b) return b;
+        var s = value.ToString();
+        if (bool.TryParse(s, out var bp)) return bp;
+        if (int.TryParse(s, out var ip)) return ip != 0;
+        return defaultValue;
+    }
+
+    var isAuth = (Model?.IsAuthenticated ?? false) || (User?.Identity?.IsAuthenticated ?? false);
+
+    var request = ViewContext?.HttpContext?.Request;
+    var qQuery = request?.Query["q"].ToString() ?? string.Empty;
+    var departmentQuery = request?.Query["department"].ToString() ?? string.Empty;
+    var currentScheme = ViewContext?.HttpContext?.Request?.Scheme ?? "https";
+}
+
+<!-- ===== BANNER ===== -->
+<section class="bg-primary text-white py-2">
+    <div class="container es-page-inner d-flex align-items-center justify-content-between">
+        <div class="d-flex gap-3 align-items-center">
+            <i class="bi bi-bell-fill fs-5"></i>
+            <div class="marquee-notice">
+                @if (Model?.SiteAnnouncements?.Any() ?? false)
+                {
+                    foreach (var a in Model.SiteAnnouncements.Take(5))
+                    {
+                        <span class="me-4">@a.Title — @a.ShortText</span>
+                    }
+                }
+                else
+                {
+                    <span>Chào mừng đến với EventSphere — khám phá sự kiện nổi bật của trường!</span>
+                }
+            </div>
+        </div>
+        <div>
+            <a href="@Url.Action("Sitemap","Home")" class="text-white text-decoration-underline me-3">Sơ đồ trang</a>
+            <a href="@Url.Action("Index","Media")" class="text-white">Xem thư viện</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== HERO ===== -->
+<section class="hero-advanced py-6 text-white">
+    <div class="hero-bg"></div>
+    <div class="container position-relative z-2 es-page-inner">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="display-2 fw-bold mb-3">EventSphere</h1>
+                <p class="lead mb-3">Khám phá – Trải nghiệm – Kết nối các sự kiện nổi bật của trường</p>
+
+                <form method="get" action="@Url.Action("Index","Event")" class="row g-2 align-items-center">
+                    <div class="col-12 col-md-6">
+                        <input type="search" name="q" value="@qQuery" class="form-control form-control-lg"
+                               placeholder="Tìm sự kiện, từ khóa, phòng ban...">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <select name="department" class="form-select form-select-lg">
+                            <option value="">Tất cả khoa</option>
+                            @if (Model?.Departments != null)
+                            {
+                                foreach (var d in Model.Departments)
+                                {
+                                    <option value="@d.Key" @(departmentQuery == d.Key ? "selected" : "")>@d.Value</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-cta btn-lg w-100">Tìm</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="hero-card p-4 rounded-3 shadow-lg">
+                    <h5 class="mb-3">Sự kiện sắp tới</h5>
+                    <ul class="list-unstyled mb-0 small text-muted">
+                        @foreach (var e in (Model?.UpcomingEvents ?? Enumerable.Empty<dynamic>()).Take(4))
+                        {
+                            var imgSmall = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
+                            var dateSmall = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("dd MMM yyyy") ?? "";
+                            int? seatsLeft = ToNullableInt(e.SeatsAvailable);
+
+                            <li class="d-flex align-items-center mb-3">
+                                <img src="@imgSmall" class="rounded me-3" style="width:64px;height:64px;object-fit:cover;" alt="@e.Title" />
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold text-primary">@e.Title</div>
+                                    <div class="text-muted">@dateSmall • @e.Venue</div>
+                                    @if (seatsLeft.HasValue)
+                                    {
+                                        <div class="small text-success">Còn @seatsLeft.Value chỗ</div>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== EVENTS ===== -->
+<section class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Sự kiện sắp diễn ra</h2>
+        <a asp-area="Client" asp-controller="Events" asp-action="Index" class="btn btn-outline-primary">Xem tất cả</a>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var e in Model?.UpcomingEvents ?? Enumerable.Empty<dynamic>())
+        {
+            var img = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
+            var date = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("dd MMM yyyy") ?? "";
+            var time = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("HH:mm") ?? "";
+
+            object seatsObj = null;
+            try { seatsObj = e.SeatsAvailable; } catch { seatsObj = null; }
+
+            if (seatsObj == null)
+            {
+                try
+                {
+                    var max = e.MaxSeats;
+                    if (max != null)
+                    {
+                        var bookedObj = e.SeatsBooked;
+                        int booked = ToIntOrZero(bookedObj);
+                        seatsObj = (int?)(ToIntOrZero(max) - booked);
+                    }
+                }
+                catch { seatsObj = null; }
+            }
+
+            int? seatsLeft = ToNullableInt(seatsObj);
+            var isFull = (seatsLeft ?? 0) <= 0;
+            var waitlist = ToBool(e.IsWaitlistEnabled, false);
+            var approved = ToBool(e.IsApproved, true);
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="card h-100 border-0 shadow-sm rounded-3">
+                    <div class="overflow-hidden rounded-top">
+                        <img src="@img"
+                             class="w-100"
+                             style="height:200px; object-fit:cover;"
+                             alt="@e.Title" />
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h5 class="card-title mb-1 text-truncate" title="@e.Title">@e.Title</h5>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-calendar-event me-1"></i> @date
+                            @if (!string.IsNullOrEmpty(time))
+                            {
+                                <span> • <i class="bi bi-clock"></i> @time</span>
+                            }
+                        </p>
+                        <p class="text-muted mb-3"><i class="bi bi-geo-alt me-1"></i>@e.Venue</p>
+
+                        <p class="card-text text-secondary flex-grow-1">
+                            @(e.Description?.Length > 100 ? e.Description[..100] + "..." : e.Description)
+                        </p>
+
+                        <div class="mt-auto">
+                            @if (!approved)
+                            {
+                                <span class="badge bg-secondary">Chưa duyệt</span>
+                            }
+                            else if (isFull && !waitlist)
+                            {
+                                <span class="badge bg-danger">Hết chỗ</span>
+                            }
+                            else if (isFull && waitlist)
+                            {
+                                <span class="badge bg-warning text-dark">Danh sách chờ</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Còn chỗ</span>
+                            }
+
+                            @if (seatsLeft.HasValue)
+                            {
+                                <div class="small mt-1">
+                                    <span class="text-muted">Còn @seatsLeft.Value chỗ</span>
+                                </div>
+                            }
+
+                            <a asp-area="Client" asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId"
+                               class="btn btn-sm btn-primary mt-3">
+                                Chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index","Event")" class="btn btn-primary px-4">Xem tất cả sự kiện</a>
+    </div>
+</section>
+
+<!-- ===== MEDIA GALLERY ===== -->
+<section class="bg-soft py-5">
+    <div class="container es-page-inner">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold display-6 mb-0">Thư viện hình ảnh & video</h2>
+                <p class="text-muted mb-0">Khoảnh khắc được cộng đồng chia sẻ</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="@Url.Action("Index","Media")" class="btn btn-sm btn-primary">Xem toàn bộ</a>
+            </div>
+        </div>
+
+        <div class="row g-3" id="mediaGrid">
+            @foreach (var m in (Model?.LatestMedia ?? Enumerable.Empty<dynamic>()))
+            {
+                var src = ResolveUpload(m.FileUrl, "~/Client/images/no-image.jpg");
+                var isVideo = src.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase)
+                || src.EndsWith(".webm", StringComparison.OrdinalIgnoreCase)
+                || src.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase);
+                <div class="col-6 col-md-4 col-lg-3 media-item">
+                    <div class="gallery-thumb shadow-sm rounded overflow-hidden">
+                        @if (isVideo)
+                        {
+                            <div class="ratio ratio-16x9 bg-black position-relative">
+                                <video muted playsinline preload="metadata"
+                                       style="width:100%;height:100%;object-fit:cover;"
+                                       poster="@Url.Content("~/Client/images/video-poster.jpg")">
+                                    <source src="@src">
+                                </video>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="@src" loading="lazy" class="w-100 h-100"
+                                 style="object-fit:cover;height:220px;" alt="@m.Caption">
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
