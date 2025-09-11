@@ -36,8 +36,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Client\Data\" />
     <Folder Include="Areas\Client\Models\" />
-
-    <Folder Include="wwwroot\uploads\" />
     <Folder Include="wwwroot\certificates\" />
   </ItemGroup>
 
