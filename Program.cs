@@ -32,6 +32,7 @@ builder.Services.AddScoped<FeedbackRepository>();
 builder.Services.AddScoped<CertificateRepository>();
 builder.Services.AddScoped<EventSeatingRepository>();
 builder.Services.AddScoped<EventShareLogRepository>();
+builder.Services.AddScoped<UserRepositoryEf>();
 builder.Services.AddScoped<HomeRepository>();
 
 var app = builder.Build();
@@ -41,7 +42,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -57,5 +58,11 @@ app.MapControllerRoute(
     name: "client_default",
     pattern: "{controller=Home}/{action=Index}/{id?}",
     defaults: new { area = "Client" });
+
+// Nếu cần admin default route thì bật cái này
+//app.MapControllerRoute(
+//    name: "admin_default",
+//    pattern: "{controller=Attendance}/{action=Index}/{id?}",
+//    defaults: new { area = "Admin" });
 
 app.Run();

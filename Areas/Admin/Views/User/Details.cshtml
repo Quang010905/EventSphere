@@ -1,0 +1,223 @@
+﻿@model EventSphere.Models.entities.TblUser
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "User Details";
+    var detail = Model.TblUserDetails?.FirstOrDefault();
+    // ViewBag.ResolvedImage do controller set
+    var resolvedImage = ViewBag.ResolvedImage as string;
+}
+
+// Helper ResolveUpload (trả về Url.Content)
+@functions {
+    string ResolveUpload(string? path)
+    {
+        var defaultPath = Url.Content("~/uploads/no-image.png");
+
+        if (string.IsNullOrWhiteSpace(path))
+            return defaultPath;
+
+        if (path.StartsWith("http", System.StringComparison.OrdinalIgnoreCase))
+            return path;
+
+        if (path.StartsWith("~/") || path.StartsWith("/"))
+            return Url.Content(path);
+
+        return Url.Content("~/" + path.TrimStart('/'));
+    }
+}
+
+<h2>User Details</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <dl class="row">
+            <dt class="col-sm-4">ID</dt>
+            <dd class="col-sm-8">@Model.Id</dd>
+
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8">@Model.Email</dd>
+
+            <dt class="col-sm-4">Role</dt>
+            <dd class="col-sm-8">@(Model.Role == 0 ? "Student" : Model.Role == 1 ? "Organizer" : "Admin")</dd>
+
+            <dt class="col-sm-4">Status</dt>
+            <dd class="col-sm-8">@(Model.Status == 1 ? "Active" : "Inactive")</dd>
+
+            <dt class="col-sm-4">Created</dt>
+            <dd class="col-sm-8">@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</dd>
+        </dl>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Profile</h4>
+        <dl class="row">
+            <dt class="col-sm-4">Fullname</dt>
+            <dd class="col-sm-8">@detail?.Fullname</dd>
+
+            <dt class="col-sm-4">Department</dt>
+            <dd class="col-sm-8">@detail?.Department</dd>
+
+            <dt class="col-sm-4">Phone</dt>
+            <dd class="col-sm-8">@detail?.Phone</dd>
+
+            <dt class="col-sm-3">Image</dt>
+            <dd class="col-sm-9">
+                @{
+                    // Dùng resolvedImage nếu controller đã set (ưu tiên),
+                    // nếu không thì thử detail?.Image (phòng trường hợp), cuối cùng ResolveUpload sẽ fallback default.
+                    var imgSource = resolvedImage ?? detail?.Image;
+                    var imgUrl = ResolveUpload(imgSource);
+                }
+                <img id="previewEventImage"
+                     src="@imgUrl"
+                     alt="avatar"
+                     class="img-thumbnail"
+                     style="max-width:300px;object-fit:cover;"
+                     onerror="this.onerror=null;this.src='@Url.Content("~/uploads/no-image.png")'" />
+                <div class="mt-2 small text-muted">
+                    @if (!string.IsNullOrWhiteSpace(detail?.Image))
+                    {
+                        <div>From user detail: @detail.Image</div>
+                    }
+                    else if (!string.IsNullOrWhiteSpace(resolvedImage))
+                    {
+                        <div>From event: @resolvedImage</div>
+                    }
+                    else
+                    {
+                        <div>No image, showing default.</div>
+                    }
+                </div>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Change Role (Admin)</h4>
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="userId" value="@Model.Id" />
+        <div class="mb-2">
+            <select id="roleSelect" class="form-control">
+                <option value="0" @(Model.Role == 0 ? "selected" : "")>Student</option>
+                <option value="1" @(Model.Role == 1 ? "selected" : "")>Organizer</option>
+                <option value="2" @(Model.Role == 2 ? "selected" : "")>Admin</option>
+            </select>
+        </div>
+        <button id="btnUpdateRole" class="btn btn-primary">Update Role</button>
+        <div id="roleAlert" class="mt-2"></div>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Change Password (Admin)</h4>
+        <div class="mb-2">
+            <input type="password" id="newPassword" class="form-control" placeholder="New password" />
+        </div>
+        <div class="mb-2">
+            <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm password" />
+        </div>
+        <button id="btnChangePassword" class="btn btn-warning">Change Password</button>
+        <div id="pwdAlert" class="mt-2"></div>
+    </div>
+</div>
+
+<hr />
+<a id="btnBackToList" href="@Url.Action("Index", "User", new { area = "Admin" })" class="btn btn-secondary">Back to list</a>
+
+@section Scripts {
+    <script>
+        // giữ nguyên script AJAX update role / change password như bạn có sẵn
+        (function () {
+            const updateRoleUrl = '@Url.Action("UpdateRole", "User", new { area = "Admin" })';
+            const changePwdUrl = '@Url.Action("ChangePassword", "User", new { area = "Admin" })';
+
+            function getToken() {
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                return tokenInput ? tokenInput.value : '';
+            }
+
+            function showLocal(elId, msg, type = 'success') {
+                const el = document.getElementById(elId);
+                if (!el) return;
+                el.innerHTML = '<div class="alert alert-' + (type === 'error' ? 'danger' : type) + '">' + msg + '</div>';
+                setTimeout(() => el.innerHTML = '', 3000);
+            }
+
+            document.getElementById('btnUpdateRole')?.addEventListener('click', async function () {
+                const id = document.getElementById('userId').value;
+                const role = document.getElementById('roleSelect').value;
+                try {
+                    const form = new FormData();
+                    form.append('__RequestVerificationToken', getToken());
+                    form.append('id', id);
+                    form.append('role', role);
+
+                    const res = await fetch(updateRoleUrl, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        body: form
+                    });
+
+                    if (res.ok) {
+                        const json = await res.json().catch(() => null);
+                        if (json && json.success) {
+                            showLocal('roleAlert', 'Role updated.', 'success');
+                            setTimeout(() => location.reload(), 700);
+                        } else {
+                            showLocal('roleAlert', 'Update failed' + (json && json.message ? ': ' + json.message : ''), 'error');
+                        }
+                    } else {
+                        showLocal('roleAlert', 'Update failed (network).', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showLocal('roleAlert', 'Error updating role', 'error');
+                }
+            });
+
+            document.getElementById('btnChangePassword')?.addEventListener('click', async function () {
+                const id = document.getElementById('userId').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (!newPassword || newPassword !== confirmPassword) {
+                    showLocal('pwdAlert', 'Password invalid or mismatch.', 'error');
+                    return;
+                }
+
+                try {
+                    const form = new FormData();
+                    form.append('__RequestVerificationToken', getToken());
+                    form.append('id', id);
+                    form.append('newPassword', newPassword);
+                    form.append('confirmPassword', confirmPassword);
+
+                    const res = await fetch(changePwdUrl, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        body: form
+                    });
+
+                    if (res.ok) {
+                        const json = await res.json().catch(() => null);
+                        if (json && json.success) {
+                            showLocal('pwdAlert', 'Password updated.', 'success');
+                            setTimeout(() => location.reload(), 700);
+                        } else {
+                            showLocal('pwdAlert', 'Change password failed' + (json && json.message ? ': ' + json.message : ''), 'error');
+                        }
+                    } else {
+                        showLocal('pwdAlert', 'Change password failed (network).', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showLocal('pwdAlert', 'Error changing password', 'error');
+                }
+            });
+        })();
+    </script>
+}
