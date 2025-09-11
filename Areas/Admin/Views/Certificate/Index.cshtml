@@ -24,7 +24,6 @@
         <select id="studentSelect" name="studentId" class="form-control" data-selected="@(Model.StudentId?.ToString() ?? "")">
             <option value="">-- All Students --</option>
         </select>
-        <!-- Optional: add an input for search by student name and submit to call GetStudents?q= -->
     </div>
     <div class="col-md-3">
         <input type="text" name="keyword" class="form-control" value="@(Model.Keyword ?? "")" placeholder="Search..." />
@@ -53,7 +52,11 @@
                 <td>@studentName</td>
                 <td>@c.IssuedOn?.ToString("dd/MM/yyyy")</td>
                 <td>
-                    @if (!string.IsNullOrWhiteSpace(c.CertificateUrl))
+                    @if (string.IsNullOrWhiteSpace(c.CertificateUrl))
+                    {
+                        <span class="text-muted">Chưa có chứng chỉ</span>
+                    }
+                    else
                     {
                         <a href="@Url.Content(c.CertificateUrl)" target="_blank" class="btn btn-sm btn-primary">Open</a>
                     }
@@ -111,11 +114,7 @@
             const stSel = document.querySelector('#studentSelect');
             if (stSel) {
                 const selected = stSel.getAttribute('data-selected') || '';
-                // For initial load, fetch a (limited) list of students
                 fillSelect('@Url.Action("GetStudents", "Certificate", new { area = "Admin" })', stSel, selected);
-
-                // OPTIONAL: if you want a search input that queries GetStudents?q=term,
-                // implement an input and call fillSelect('@Url.Action("GetStudents", "Certificate", new { area = "Admin" })?q=' + encodeURIComponent(term), stSel);
             }
         });
     </script>
