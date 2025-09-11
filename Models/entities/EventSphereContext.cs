@@ -40,7 +40,7 @@ public partial class EventSphereContext : DbContext
     public virtual DbSet<TblUserDetail> TblUserDetails { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?linkid=723263.
         => optionsBuilder.UseSqlServer("Server=(local);Database=EventSphere;uid=sa;pwd=123456789;Trusted_Connection=True;TrustServerCertificate=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -162,6 +162,7 @@ public partial class EventSphereContext : DbContext
                 .HasConstraintName("FK__tbl_event___orga__45F365D3");
         });
 
+        // --- Modified mapping for TblEventSeating: map EventId -> _event_id and use IdNavigation as navigation to TblEvent ---
         modelBuilder.Entity<TblEventSeating>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__tbl_even__DED88B1CB145A37E");
@@ -171,15 +172,24 @@ public partial class EventSphereContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("_id");
+
+            // Map the EventId property to the actual DB column _event_id
+            entity.Property(e => e.EventId)
+                .HasColumnName("_event_id");
+
             entity.Property(e => e.SeatsAvailable).HasColumnName("_seats_available");
             entity.Property(e => e.SeatsBooked).HasColumnName("_seats_booked");
             entity.Property(e => e.TotalSeats).HasColumnName("_total_seats");
             entity.Property(e => e.WaitlistEnabled).HasColumnName("_waitlist_enabled");
 
-            entity.HasOne(d => d.IdNavigation).WithOne(p => p.TblEventSeating)
-                .HasForeignKey<TblEventSeating>(d => d.Id)
+            // Configure relationship between seating and event via EventId -> tbl_event._id
+            // Use existing navigation property IdNavigation on TblEventSeating and TblEvent.TblEventSeating
+            entity.HasOne(d => d.IdNavigation)
+                .WithOne(p => p.TblEventSeating)
+                .HasForeignKey<TblEventSeating>(d => d.EventId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__tbl_eventSe___id__619B8048");
+                .HasConstraintName("FK__tbl_eventSe___even__59063A47");
         });
 
         modelBuilder.Entity<TblEventShareLog>(entity =>

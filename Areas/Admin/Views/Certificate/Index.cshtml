@@ -1,0 +1,121 @@
+﻿@model EventSphere.Models.ViewModels.CertificatesIndexViewModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Certificate Management";
+
+    var total = Model.TotalCount;
+    var page = Model.Page;
+    var pageSize = Model.PageSize;
+    var totalPages = Model.TotalPages;
+}
+
+<h2>Certificate Management</h2>
+<a class="btn btn-success mb-3" href="@Url.Action("Generate","Certificate",new { area="Admin"})">Generate New Certificate</a>
+
+<!-- Filter form -->
+<form method="get" class="row mb-3" id="filterForm">
+    <div class="col-md-3">
+        <select id="eventSelect" name="eventId" class="form-control" data-selected="@(Model.EventId?.ToString() ?? "")">
+            <option value="">-- All Events --</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select id="studentSelect" name="studentId" class="form-control" data-selected="@(Model.StudentId?.ToString() ?? "")">
+            <option value="">-- All Students --</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <input type="text" name="keyword" class="form-control" value="@(Model.Keyword ?? "")" placeholder="Search..." />
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="@Url.Action("Index","Certificate", new { area="Admin"})" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Event</th>
+            <th>Student</th>
+            <th>Issued On</th>
+            <th>Certificate</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model.Certificates)
+        {
+            var studentName = c.Student?.TblUserDetails?.FirstOrDefault()?.Fullname ?? $"User {c.Student?.Id}";
+            <tr>
+                <td>@c.Event?.Title</td>
+                <td>@studentName</td>
+                <td>@c.IssuedOn?.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @if (string.IsNullOrWhiteSpace(c.CertificateUrl))
+                    {
+                        <span class="text-muted">Chưa có chứng chỉ</span>
+                    }
+                    else
+                    {
+                        <a href="@Url.Content(c.CertificateUrl)" target="_blank" class="btn btn-sm btn-primary">Open</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == page ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = pageSize, eventId = Model.EventId, studentId = Model.StudentId, keyword = Model.Keyword })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@section Scripts {
+    <script>
+        async function fillSelect(url, selectEl, selectedValue) {
+            try {
+                const res = await fetch(url, { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Network response was not ok');
+                const data = await res.json(); // [{id, text}, ...]
+
+                // Remove existing dynamic options (keep first placeholder option)
+                while (selectEl.options.length > 1) selectEl.remove(1);
+
+                data.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.text = item.text;
+                    if (selectedValue && String(selectedValue) === String(item.id)) {
+                        opt.selected = true;
+                    }
+                    selectEl.appendChild(opt);
+                });
+
+            } catch (err) {
+                console.error('fillSelect error', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const evSel = document.querySelector('#eventSelect');
+            if (evSel) {
+                const selected = evSel.getAttribute('data-selected') || '';
+                fillSelect('@Url.Action("GetEvents", "Certificate", new { area = "Admin" })', evSel, selected);
+            }
+
+            const stSel = document.querySelector('#studentSelect');
+            if (stSel) {
+                const selected = stSel.getAttribute('data-selected') || '';
+                fillSelect('@Url.Action("GetStudents", "Certificate", new { area = "Admin" })', stSel, selected);
+            }
+        });
+    </script>
+}

@@ -1,0 +1,175 @@
+﻿@model EventSphere.Models.ViewModels.CertificateGenerateViewModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Generate Certificate";
+}
+
+<h2>Generate Certificate</h2>
+
+<!-- Alert area (Bootstrap) -->
+<div id="genAlertPlaceholder" class="mb-3"></div>
+
+<div class="mb-3">
+    <label class="form-label">Event</label>
+    <select id="eventSelectGenerate" class="form-select" style="width:100%">
+        <option value="">-- Select event --</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Student</label>
+    <select id="studentSelectGenerate" class="form-select" style="width:100%">
+        <option value="">-- Select student --</option>
+    </select>
+</div>
+
+<div class="d-flex gap-2 align-items-center">
+    <button id="btnGenerate" type="button" class="btn btn-primary">Generate</button>
+    <a id="btnBack" href="@Url.Action("Index", "Certificate", new { area = "Admin" })" class="btn btn-secondary">Back</a>
+</div>
+
+@section Styles {
+    <!-- Select2 CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        /* make button sizes match a bit */
+        #btnGenerate, #btnBack {
+            min-width: 120px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        function showAlert(message, type = 'danger', timeout = 4000) {
+            // type: 'success','danger','warning','info'
+            const id = 'alert-' + (new Date()).getTime();
+            const html = `<div id="${id}" class="alert alert-${type} alert-dismissible fade show" role="alert">
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                          </div>`;
+            $('#genAlertPlaceholder').html(html);
+
+            if (timeout > 0) {
+                setTimeout(() => {
+                    $('#' + id).alert('close');
+                }, timeout);
+            }
+        }
+
+        $(document).ready(function () {
+            // init Select2 for events
+            $('#eventSelectGenerate').select2({
+                placeholder: '-- Select event --',
+                allowClear: true,
+                ajax: {
+                    url: '@Url.Action("GetEvents", "Certificate", new { area = "Admin" })',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function (data) {
+                        // data: [{id,text}, ...]
+                        return { results: data.map(function(x){ return { id: x.id, text: x.text }; }) };
+                    },
+                    cache: true
+                },
+                width: 'resolve'
+            });
+
+            // init Select2 for students (searchable)
+            $('#studentSelectGenerate').select2({
+                placeholder: '-- Select student --',
+                allowClear: true,
+                ajax: {
+                    url: '@Url.Action("GetStudents", "Certificate", new { area = "Admin" })',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { q: params.term };
+                    },
+                    processResults: function (data) {
+                        return { results: data.map(function(x){ return { id: x.id, text: x.text }; }) };
+                    },
+                    cache: true
+                },
+                width: 'resolve'
+            });
+
+            // If model had preselected values, prefill them
+            const preEvent = '@(Model.EventId?.ToString() ?? "")';
+            const preStudent = '@(Model.StudentId?.ToString() ?? "")';
+
+            if (preEvent) {
+                // try to load the single event option (basic fetch)
+                fetch('@Url.Action("GetEvents", "Certificate", new { area = "Admin" })')
+                    .then(r => r.json())
+                    .then(list => {
+                        const found = list.find(x => String(x.id) === String(preEvent));
+                        if (found) {
+                            const option = new Option(found.text, found.id, true, true);
+                            $('#eventSelectGenerate').append(option).trigger('change');
+                        }
+                    })
+                    .catch(() => {});
+            }
+
+            if (preStudent) {
+                // call API to get single student
+                fetch('@Url.Action("GetStudentById", "Certificate", new { area = "Admin" })?id=' + encodeURIComponent(preStudent))
+                    .then(r => r.json())
+                    .then(obj => {
+                        if (obj && obj.id) {
+                            const option = new Option(obj.text, obj.id, true, true);
+                            $('#studentSelectGenerate').append(option).trigger('change');
+                        }
+                    })
+                    .catch(() => {});
+            }
+
+            // Generate button click (AJAX)
+            $('#btnGenerate').on('click', async function () {
+                const eventId = $('#eventSelectGenerate').val();
+                const studentId = $('#studentSelectGenerate').val();
+
+                if (!eventId || !studentId) {
+                    showAlert('Vui lòng chọn Event và Student.', 'warning', 3500);
+                    return;
+                }
+
+                // Request body
+                const body = { EventId: parseInt(eventId), StudentId: parseInt(studentId) };
+
+                try {
+                    const res = await fetch('@Url.Action("Generate", "Certificate", new { area = "Admin" })', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body),
+                        credentials: 'same-origin'
+                    });
+
+                    const payload = await res.json();
+
+                    if (res.ok && payload.success) {
+                        // open generated certificate
+                        if (payload.url) {
+                            window.open(payload.url, '_blank');
+                            showAlert('Tạo chứng chỉ thành công.', 'success', 3000);
+                        } else {
+                            showAlert('Tạo chứng chỉ thành công.', 'success', 3000);
+                        }
+                    } else {
+                        // server trả BadRequest hoặc error payload
+                        const msg = (payload && payload.message) ? payload.message : 'Lỗi khi tạo chứng chỉ.';
+                        showAlert(msg, 'danger', 6000);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showAlert('Lỗi hệ thống khi gọi API: ' + (err.message || err), 'danger', 8000);
+                }
+            });
+        });
+    </script>
+}
