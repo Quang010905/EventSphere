@@ -1,0 +1,115 @@
+﻿@model EventSphere.Models.ViewModels.EventShareLogIndexViewModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Event Share Logs";
+}
+
+<h2>Event Share Logs</h2>
+
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-auto">
+        <label class="form-label">Event</label>
+        <select name="eventId" class="form-select">
+            <option value="">-- All events --</option>
+            @foreach (var ev in Model.Events)
+            {
+                <option value="@ev.Id" @(Model.EventId == ev.Id ? "selected" : "")>@ev.Title</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <label class="form-label">Platform</label>
+        <select name="platform" class="form-select">
+            <option value="">-- All platforms --</option>
+            @foreach (var p in (ViewBag.Platforms as List<string> ?? new List<string>()))
+            {
+                <option value="@p" @(Model.Platform == p ? "selected" : "")>@p</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <label class="form-label">From</label>
+        <input type="date" name="from" value="@(Model.From ?? "")" class="form-control" />
+    </div>
+
+    <div class="col-auto">
+        <label class="form-label">To</label>
+        <input type="date" name="to" value="@(Model.To ?? "")" class="form-control" />
+    </div>
+
+    <div class="col-auto">
+        <label class="form-label">Keyword</label>
+        <input type="text" name="keyword" value="@(Model.Keyword ?? "")" class="form-control" placeholder="user or message or event..." />
+    </div>
+
+    <div class="col-auto">
+        <button class="btn btn-primary">Filter</button>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index")">Reset</a>
+    </div>
+
+    <div class="col-auto ms-auto">
+        <a class="btn btn-success" href="@Url.Action("ExportCsv", new { eventId = Model.EventId, platform = Model.Platform, from = Model.From, to = Model.To, keyword = Model.Keyword })">Export CSV</a>
+    </div>
+</form>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Event</th>
+            <th>User</th>
+            <th>Platform</th>
+            <th>Message</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Items.Any())
+        {
+            <tr>
+                <td colspan="6" class="text-center">No logs found.</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var it in Model.Items)
+            {
+                var userName = it.User?.TblUserDetails?.FirstOrDefault()?.Fullname ?? $"User {it.UserId}";
+                <tr>
+                    <td>@it.Id</td>
+                    <td>@(it.Event?.Title ?? $"Event {it.EventId}")</td>
+                    <td>@userName</td>
+                    <td>@it.Platform</td>
+                    <td style="max-width:320px; overflow:hidden; text-overflow:ellipsis;">@it.ShareMessage</td>
+                    <td>
+                        @(it.ShareTimestamp.HasValue
+                            ? it.ShareTimestamp.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                            : "-")
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = Model.Page - 1, pageSize = Model.PageSize, eventId = Model.EventId, platform = Model.Platform, from = Model.From, to = Model.To, keyword = Model.Keyword })">Previous</a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = Model.PageSize, eventId = Model.EventId, platform = Model.Platform, from = Model.From, to = Model.To, keyword = Model.Keyword })">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.Page == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = Model.Page + 1, pageSize = Model.PageSize, eventId = Model.EventId, platform = Model.Platform, from = Model.From, to = Model.To, keyword = Model.Keyword })">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

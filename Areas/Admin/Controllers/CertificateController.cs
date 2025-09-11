@@ -21,7 +21,7 @@ namespace EventSphere.Areas.Admin.Controllers
             _env = env;
         }
 
-        // Index
+        // Index (kept for completeness)
         public async Task<IActionResult> Index(int? eventId, int? studentId, string? keyword, int page = 1, int pageSize = 10)
         {
             var (data, total) = await _certRepo.GetPagedCertificatesAsync(
@@ -47,41 +47,49 @@ namespace EventSphere.Areas.Admin.Controllers
             return View(vm);
         }
 
-        // GET: Generate
+        // GET: Generate - trả View form
         [HttpGet]
         public IActionResult Generate()
         {
             return View(new CertificateGenerateViewModel());
         }
 
-        // POST: Generate (AJAX)
-        // POST: Generate (AJAX)
+        // POST: Generate (AJAX) - nhận JSON body { EventId, StudentId }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Generate([FromBody] CertificateGenerateViewModel model)
+        public async Task<IActionResult> Generate([FromBody] CertificateGenerateViewModel? model)
         {
-            if (!model.EventId.HasValue || !model.StudentId.HasValue)
-                return BadRequest(new { success = false, message = "Thiếu Event hoặc Student" });
+            if (model == null)
+                return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ." });
 
-            // Tìm certificate đã tồn tại
+            if (!model.EventId.HasValue || !model.StudentId.HasValue)
+                return BadRequest(new { success = false, message = "Thiếu Event hoặc Student." });
+
+            // Tìm record certificate đã tồn tại (tbl_certificate)
             var cert = await _context.TblCertificates
                 .FirstOrDefaultAsync(c => c.EventId == model.EventId.Value && c.StudentId == model.StudentId.Value);
 
             if (cert == null)
             {
-                return BadRequest(new { success = false, message = "Chưa có certificate trong hệ thống. Sẽ được thêm khi điểm danh." });
+                // Theo yêu cầu của bạn, nếu chưa có row trong tbl_certificate thì KHÔNG thêm mới tại đây
+                return BadRequest(new { success = false, message = "Chưa có bản ghi chứng chỉ cho cặp Event/Student trong hệ thống. (Sẽ được thêm khi người dùng điểm danh.)" });
             }
 
-            // Lấy dữ liệu student & event
+            // Nếu đã có certificate_url => báo cho admin
+            if (!string.IsNullOrWhiteSpace(cert.CertificateUrl))
+            {
+                return BadRequest(new { success = false, message = "Học viên này đã có chứng chỉ cho sự kiện đã chọn rồi." });
+            }
+
+            // Lấy thông tin event + student
             var student = await _context.TblUsers
                 .Include(u => u.TblUserDetails)
-                .FirstOrDefaultAsync(u => u.Id == model.StudentId.Value && u.Role == 1);
+                .FirstOrDefaultAsync(u => u.Id == model.StudentId.Value);
 
             var eventEntity = await _context.TblEvents
                 .FirstOrDefaultAsync(e => e.Id == model.EventId.Value);
 
             if (student == null || eventEntity == null)
-                return BadRequest(new { success = false, message = "Không tìm thấy dữ liệu" });
+                return BadRequest(new { success = false, message = "Không tìm thấy Event hoặc Student." });
 
             var studentName = student.TblUserDetails
                                 .OrderBy(d => d.Id)
@@ -92,6 +100,7 @@ namespace EventSphere.Areas.Admin.Controllers
             var eventTitle = eventEntity.Title ?? $"Event {model.EventId.Value}";
             var issuedOn = DateTime.Now;
 
+            // Generate PDF (CertificateGenerator phải có sẵn trong project)
             byte[] pdfBytes;
             try
             {
@@ -112,17 +121,18 @@ namespace EventSphere.Areas.Admin.Controllers
 
             await System.IO.File.WriteAllBytesAsync(filePath, pdfBytes);
 
-            // Chỉ cập nhật certificate_url
+            // Cập nhật certificate_url cho record có sẵn
             cert.CertificateUrl = $"/certificates/{fileName}";
             cert.IssuedOn = issuedOn;
 
             _context.TblCertificates.Update(cert);
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, url = cert.CertificateUrl });
+            return Json(new { success = true, url = cert.CertificateUrl, message = "Generated" });
         }
-     
-        // ---------- AJAX endpoints for dropdowns ----------
+
+        
+        // AJAX: Get events list for select2
         [HttpGet]
         public async Task<IActionResult> GetEvents()
         {
@@ -134,10 +144,14 @@ namespace EventSphere.Areas.Admin.Controllers
             return Json(events);
         }
 
+        // AJAX: Get students for select2 (q=search term)
         [HttpGet]
         public async Task<IActionResult> GetStudents(string q = null)
         {
-            var query = _context.TblUsers.Where(u => u.Role == 1);
+            var query = _context.TblUsers.AsQueryable();
+
+            // filter to students if your system uses Role==1 for students; if not, remove .Where
+            query = query.Where(u => u.Role == 1);
 
             if (!string.IsNullOrWhiteSpace(q))
             {
@@ -148,10 +162,7 @@ namespace EventSphere.Areas.Admin.Controllers
                 .Select(u => new
                 {
                     u.Id,
-                    Fullname = u.TblUserDetails
-                        .OrderBy(d => d.Id)
-                        .Select(d => d.Fullname)
-                        .FirstOrDefault()
+                    Fullname = u.TblUserDetails.OrderBy(d => d.Id).Select(d => d.Fullname).FirstOrDefault()
                 })
                 .Take(500)
                 .ToListAsync();
@@ -163,18 +174,16 @@ namespace EventSphere.Areas.Admin.Controllers
             return Json(list);
         }
 
+        // AJAX: Get single student name by id (used to prefill)
         [HttpGet]
         public async Task<IActionResult> GetStudentById(int id)
         {
             var st = await _context.TblUsers
-                .Where(u => u.Id == id && u.Role == 1)
+                .Where(u => u.Id == id)
                 .Select(u => new
                 {
                     id = u.Id,
-                    text = u.TblUserDetails
-                        .OrderBy(d => d.Id)
-                        .Select(d => d.Fullname)
-                        .FirstOrDefault()
+                    text = u.TblUserDetails.OrderBy(d => d.Id).Select(d => d.Fullname).FirstOrDefault()
                 })
                 .FirstOrDefaultAsync();
 

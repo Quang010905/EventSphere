@@ -8,7 +8,7 @@ namespace EventSphere.Models.ViewModels
     {
         public IEnumerable<TblCertificate> Certificates { get; set; } = new List<TblCertificate>();
 
-        // Dropdowns (not required to be filled on server with AJAX approach, but kept for compatibility)
+        // Dropdowns
         public SelectList? EventList { get; set; }
         public SelectList? StudentList { get; set; }
 
@@ -23,6 +23,7 @@ namespace EventSphere.Models.ViewModels
         public int TotalCount { get; set; }
         public int TotalPages => (int)System.Math.Ceiling((double)TotalCount / PageSize);
     }
+
     public class CertificateGenerateViewModel
     {
         public int? EventId { get; set; }

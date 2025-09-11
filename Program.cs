@@ -17,6 +17,8 @@ builder.Services.AddScoped<AttendanceRepository>();
 builder.Services.AddScoped<FeedbackRepository>();
 builder.Services.AddScoped<CertificateRepository>();
 builder.Services.AddScoped<EventSeatingRepository>();
+builder.Services.AddScoped<EventShareLogRepository>();
+
 
 var app = builder.Build();
 
