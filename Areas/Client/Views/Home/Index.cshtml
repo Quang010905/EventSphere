@@ -1,0 +1,62 @@
+﻿@model EventSphere.Models.ModelViews.HomeViewModel
+@{
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+}
+
+<section class="container my-5">
+    <h2 class="text-center mb-4">Sự kiện sắp diễn ra</h2>
+    <div class="row">
+        @foreach (var e in Model.UpcomingEvents)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <img src="@Url.Content(e.Image ?? "~/Client/images/default-event.jpg")"
+                         class="card-img-top" alt="@e.Title" />
+                    <div class="card-body">
+                        <h5 class="card-title">@e.Title</h5>
+                        <p class="card-text text-muted">
+                            @(e.Date?.ToString("dd/MM/yyyy")) @e.Time - @e.Venue
+                        </p>
+                        <p class="card-text">
+                            @(e.Description?.Length > 80 ? e.Description.Substring(0, 80) + "..." : e.Description)
+                        </p>
+                        <a class="btn btn-primary btn-sm"
+                           href="@Url.Action("Details", "Event", new { id = e.Id })">
+                            Chi tiết
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Thư viện hình ảnh</h2>
+        <div class="row">
+            @foreach (var m in Model.LatestMedia)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img src="@Url.Content(m.FileUrl ?? "~/Client/images/no-image.jpg")"
+                             class="card-img-top" alt="@m.Caption" />
+                        <div class="card-body">
+                            <p class="card-text">@m.Caption</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-3">
+            <a href="@Url.Action("Index", "Media")" class="btn btn-outline-primary">Xem thêm</a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 text-center">
+    <div class="container">
+        <h3 class="mb-4">Tham gia ngay hôm nay!</h3>
+        <a href="@Url.Action("Index", "Event")" class="btn btn-lg btn-success">Khám phá tất cả sự kiện</a>
+    </div>
+</section>

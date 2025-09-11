@@ -34,6 +34,8 @@ builder.Services.AddScoped<FeedbackRepository>();
 builder.Services.AddScoped<CertificateRepository>();
 builder.Services.AddScoped<EventSeatingRepository>();
 builder.Services.AddScoped<EventShareLogRepository>();
+builder.Services.AddScoped<HomeRepository>();
+
 
 var app = builder.Build();
 
@@ -55,10 +57,9 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
 
-// Default routes for Client and Admin
 app.MapControllerRoute(
     name: "client_default",
-    pattern: "{controller=Client}/{action=Index}/{id?}",
+    pattern: "{controller=Home}/{action=Index}/{id?}",
     defaults: new { area = "Client" });
 
 // Nếu cần admin default route thì bật cái này
