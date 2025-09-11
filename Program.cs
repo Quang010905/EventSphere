@@ -16,6 +16,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<AttendanceRepository>();
 builder.Services.AddScoped<FeedbackRepository>();
 builder.Services.AddScoped<CertificateRepository>();
+builder.Services.AddScoped<EventSeatingRepository>();
 
 var app = builder.Build();
 
