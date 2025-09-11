@@ -55,12 +55,22 @@ namespace EventSphere.Areas.Admin.Controllers
         }
 
         // POST: Generate (AJAX)
+        // POST: Generate (AJAX)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Generate([FromBody] CertificateGenerateViewModel model)
         {
             if (!model.EventId.HasValue || !model.StudentId.HasValue)
                 return BadRequest(new { success = false, message = "Thiếu Event hoặc Student" });
+
+            // Tìm certificate đã tồn tại
+            var cert = await _context.TblCertificates
+                .FirstOrDefaultAsync(c => c.EventId == model.EventId.Value && c.StudentId == model.StudentId.Value);
+
+            if (cert == null)
+            {
+                return BadRequest(new { success = false, message = "Chưa có certificate trong hệ thống. Sẽ được thêm khi điểm danh." });
+            }
 
             // Lấy dữ liệu student & event
             var student = await _context.TblUsers
@@ -102,29 +112,16 @@ namespace EventSphere.Areas.Admin.Controllers
 
             await System.IO.File.WriteAllBytesAsync(filePath, pdfBytes);
 
-            // Lưu DB
-            var cert = new TblCertificate
-            {
-                EventId = model.EventId.Value,
-                StudentId = model.StudentId.Value,
-                CertificateUrl = $"/certificates/{fileName}",
-                IssuedOn = issuedOn
-            };
+            // Chỉ cập nhật certificate_url
+            cert.CertificateUrl = $"/certificates/{fileName}";
+            cert.IssuedOn = issuedOn;
 
-            _context.TblCertificates.Add(cert);
+            _context.TblCertificates.Update(cert);
             await _context.SaveChangesAsync();
 
             return Json(new { success = true, url = cert.CertificateUrl });
         }
-
-        // Details
-        public async Task<IActionResult> Details(int id)
-        {
-            var cert = await _certRepo.GetByIdWithRelationsAsync(id);
-            if (cert == null) return NotFound();
-            return View(cert);
-        }
-
+     
         // ---------- AJAX endpoints for dropdowns ----------
         [HttpGet]
         public async Task<IActionResult> GetEvents()

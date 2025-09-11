@@ -23,7 +23,11 @@
     </select>
 </div>
 
-<button id="btnGenerate" type="button" class="btn btn-primary">Generate</button>
+<!-- Buttons in one row -->
+<div class="d-flex gap-2 align-items-center">
+    <button id="btnGenerate" type="button" class="btn btn-primary">Generate</button>
+    <a href="@Url.Action("Index", "Certificate", new { area = "Admin" })" class="btn btn-secondary">Back</a>
+</div>
 
 @section Scripts {
     <script>
@@ -81,33 +85,42 @@
                     return;
                 }
 
-                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                // đọc antiforgery token từ input ẩn
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                const token = tokenInput ? tokenInput.value : null;
 
                 try {
                     const res = await fetch('@Url.Action("Generate", "Certificate", new { area = "Admin" })', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'RequestVerificationToken': token
+                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ EventId: eventId, StudentId: studentId })
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ EventId: parseInt(eventId, 10), StudentId: parseInt(studentId, 10), __RequestVerificationToken: token })
                     });
 
-                    if (!res.ok) throw new Error(await res.text());
+                    if (!res.ok) {
+                        const text = await res.text();
+                        throw new Error(text || 'Server error');
+                    }
 
-                    const blob = await res.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = "certificate.pdf";
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
+                    const payload = await res.json();
+
+                    if (payload && payload.success) {
+                        // nếu API trả url (mình hiện trả JSON { success:true, url:... }),
+                        // mở file trong tab mới nếu muốn:
+                        if (payload.url) {
+                            window.open(payload.url, '_blank');
+                        } else {
+                            alert('Certificate generated.');
+                        }
+                    } else {
+                        alert(payload?.message ?? 'Error generating certificate');
+                    }
 
                 } catch (err) {
                     console.error('Generate error', err);
-                    alert('Error generating certificate: ' + err.message);
+                    alert('Error generating certificate: ' + (err.message || err));
                 }
             });
         });
