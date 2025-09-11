@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Upload Certificate";
+}
+
+<h2>Upload Certificate</h2>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data" class="mt-3">
+    <div class="mb-3">
+        <label class="form-label">Event</label>
+        <select class="form-select" name="eventId" asp-items="ViewBag.Events"></select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Student</label>
+        <select class="form-select" name="studentId" asp-items="ViewBag.Students"></select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Certificate File</label>
+        <input type="file" name="file" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success">Upload</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>
+</form>

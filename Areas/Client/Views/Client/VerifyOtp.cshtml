@@ -1,0 +1,28 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+    ViewData["Title"] = "OTP";
+}
+<div class="container mt-5" style="max-width: 400px; position: relative; z-index: 1000;">
+    <h2 class="text-center mb-4">Enter OTP</h2>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    <form method="post" action="@Url.Action("vOtp", "Client", new { area = "Client" })">
+        <div class="form-group mb-3">
+            <label for="otp">OTP Code</label>
+            <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP" required />
+        </div>
+
+        <input type="hidden" name="email" value="@ViewBag.Email" />
+
+        <button type="submit" class="btn btn-primary w-100">Verify</button>
+    </form>
+</div>

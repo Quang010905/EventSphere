@@ -1,29 +1,44 @@
-
-﻿using EventSphere.Models.entities;
+using EventSphere.Models.ModelViews;
+using EventSphere.Models.entities;
 using EventSphere.Models.Repositories;
+using EventSphere.Repositories;
+using EventSphere.Service.Email;
+using EventSphere.Service.Otp;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
+builder.Services.AddMemoryCache();
 
+// Otp configuration
+builder.Services.Configure<OtpSettings>(builder.Configuration.GetSection("OtpSettings"));
+builder.Services.AddSingleton<IOtpService, OtpService>();
+builder.Services.AddScoped<IOtpService, OtpService>();
 
-// Đăng ký DbContext
+// Email configuration
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
+// DbContext
 builder.Services.AddDbContext<EventSphereContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Repository pattern
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
 builder.Services.AddScoped<AttendanceRepository>();
-
+builder.Services.AddScoped<FeedbackRepository>();
+builder.Services.AddScoped<CertificateRepository>();
+builder.Services.AddScoped<EventSeatingRepository>();
+builder.Services.AddScoped<EventShareLogRepository>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
+// Configure the HTTP request pipeline
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
@@ -31,25 +46,25 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.MapStaticAssets();
-
 app.UseRouting();
+app.UseSession();
 app.UseAuthorization();
 
-// Area route (chuẩn, controller mặc định = Home trong area nếu có)
+// Area routes
 app.MapControllerRoute(
     name: "areas",
+    pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
 
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-// Default route: nếu muốn trang root mở luôn Admin/Attendance/Index, set defaults tương ứng
+// Default routes for Client and Admin
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Attendance}/{action=Index}/{id?}",
-    defaults: new { area = "Admin" })
+    name: "client_default",
+    pattern: "{controller=Client}/{action=Index}/{id?}",
+    defaults: new { area = "Client" });
 
-    .WithStaticAssets();
-
+// Nếu cần admin default route thì bật cái này
+// app.MapControllerRoute(
+//     name: "admin_default",
+//     pattern: "{controller=Attendance}/{action=Index}/{id?}",
+//     defaults: new { area = "Admin" });
 
 app.Run();
