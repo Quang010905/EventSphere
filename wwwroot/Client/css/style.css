@@ -306,7 +306,9 @@ h1, h2, h3, h4, h5, h6, figure {
   -o-transform: scale(1.2);
   transform: scale(1.2);
 }
-
+.dropdown-menu .dropdown-item {
+    color: #000 !important;
+}
 .gtco-cover {
   height: 700px;
   background-size: cover;

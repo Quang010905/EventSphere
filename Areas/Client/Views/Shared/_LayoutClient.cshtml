@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE HTML>
 <!--
-	Greatness by FreeHTML5.co
-	Twitter: http://twitter.com/fh5co
-	URL: http://FreeHTML5.co
+Greatness by FreeHTML5.co
+Twitter: http://twitter.com/fh5co
+URL: http://FreeHTML5.co
 -->
 <html>
 <head>
@@ -38,7 +38,7 @@
 	<link rel="stylesheet" href="@Url.Content("~/Client")/css/magnific-popup.css">
 
 	<!-- Owl Carousel  -->
-	<link rel="stylesheet" href="@Url.Content("~/Client")//owl.carousel.min.css">
+	<link rel="stylesheet" href="@Url.Content("~/Client")/owl.carousel.min.css">
 	<link rel="stylesheet" href="@Url.Content("~/Client")/css/owl.theme.default.min.css">
 
 	<!-- Theme style  -->
@@ -86,8 +86,27 @@
 								</ul>
 							</li>
 							<li><a href="contact.html">Contact</a></li>
-							<li><a href="@Url.Action("Login", "Client")">Login</a></li>
-							<li><a href="@Url.Action("Register", "Client")">Register</a></li>
+							@{
+								var email = Context.Session.GetString("UEmail");
+								var memId = Context.Session.GetInt32("UId");
+							}
+
+							@if (!string.IsNullOrEmpty(email))
+							{
+								<li class="nav-item dropdown">
+									<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@email</a>
+									<div class="dropdown-menu rounded-0 m-0">
+										<a class="dropdown-item" href="@Url.Action("Index", "ProfileMember", new { memId = memId })">Your profile</a>
+										<a class="dropdown-item" href="@Url.Action("Index", "Order", new { memId = memId })">Your orders</a>
+										<a class="dropdown-item" href="@Url.Action("Logout", "Client")">Logout</a>
+									</div>
+								</li>
+							}
+							else
+							{
+								<li><a href="@Url.Action("Login", "Client")">Login</a></li>
+								<li><a href="@Url.Action("Register", "Client")">Register</a></li>
+							}
 						</ul>
 					</div>
 				</div>

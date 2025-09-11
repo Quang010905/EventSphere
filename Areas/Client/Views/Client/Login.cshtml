@@ -6,13 +6,18 @@
     Layout = "/Areas/Client/Views/Shared/_LayoutClient.cshtml";
     ViewData["Title"] = "Login";
 }
-
 <div class="gtco-section">
     <div class="gtco-container">
         <div class="row justify-content-center">
             <div class="col-md-6 animate-box">
                 <h3>Login</h3>
-                <form method="post" action="@Url.Action("Login", "Client")">
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger" style="margin-top:15px;">
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
+                <form method="post" action="@Url.Action("checkLogin", "Client")">
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="Email" class="form-control" placeholder="Email" required>
