@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -10,12 +10,12 @@
     <title>Admin</title>
 
     <!-- Custom fonts for this template-->
-    <link href="@Url.Content("~/admin")/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="@Url.Content("~/Admin")/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="@Url.Content("~/admin")/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="@Url.Content("~/Admin")/css/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/Admin/css" />
     @RenderSection("headerContent", false)
     @RenderSection("Styles", required: false)
@@ -38,10 +38,18 @@
 
             <!-- Nav Item - Events -->
             <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "Events")">
+                <a class="nav-link" href="@Url.Action("Index", "Events", new { area = "Admin" })">
                     <i class="fas fa-fw fa-calendar"></i>
                     <span>Quản lý Event</span>
                 </a>
+            </li>
+
+            <!-- Nav Item - Media Gallery -->
+            <li class="nav-item">
+                 <a class="nav-link" href="@Url.Action("Index", "MediaGallery", new { area = "Admin" })">
+                     <i class="fas fa-fw fa-images"></i>
+                     <span>Quản lý Thư viện</span>
+                 </a>
             </li>
 
             <!-- Nav Item - Attendance -->
@@ -95,6 +103,7 @@
 
         </ul>
         <!-- End of Sidebar -->
+
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -135,6 +144,7 @@
 
                 </nav>
                 <!-- End of Topbar -->
+
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     @RenderBody()
@@ -143,6 +153,7 @@
 
             </div>
             <!-- End of Main Content -->
+
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -158,6 +169,7 @@
 
     </div>
     <!-- End of Page Wrapper -->
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
