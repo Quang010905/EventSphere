@@ -140,7 +140,7 @@ namespace EventSphere.Areas.Client.Controllers
                     return mv.Role switch
                     {
                         0 => RedirectToAction("Index", "Admin", new { area = "Admin" }),
-                        1 => RedirectToAction("Index", "Client", new { area = "Client" }),
+                        1 => RedirectToAction("Index", "Home", new { area = "Client" }),
                         _ => RedirectToAction("Login", "Client")
                     };
                 }
