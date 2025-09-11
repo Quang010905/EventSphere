@@ -189,7 +189,6 @@ public partial class EventSphereContext : DbContext
                 .HasForeignKey<TblEventSeating>(d => d.EventId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__tbl_eventSe___id__619B8048");
-                .HasConstraintName("FK__tbl_eventSe___even__59063A47");
         });
 
         modelBuilder.Entity<TblEventShareLog>(entity =>

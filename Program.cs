@@ -61,9 +61,9 @@ app.MapControllerRoute(
     pattern: "{controller=Client}/{action=Index}/{id?}",
     defaults: new { area = "Client" });
 
-app.MapControllerRoute(
-    name: "admin_default",
-    pattern: "{controller=Attendance}/{action=Index}/{id?}",
-    defaults: new { area = "Admin" });
+//app.MapControllerRoute(
+//    name: "admin_default",
+//    pattern: "{controller=Attendance}/{action=Index}/{id?}",
+//    defaults: new { area = "Admin" });
 
 app.Run();
