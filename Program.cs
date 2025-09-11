@@ -12,12 +12,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<EventSphereContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-builder.Services.AddDbContext<EventSphereContext>(options =>
-{
-    options.UseSqlServer(connectionString);
-});
-
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped<AttendanceRepository>();

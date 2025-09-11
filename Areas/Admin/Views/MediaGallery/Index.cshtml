@@ -1,0 +1,188 @@
+﻿@model IEnumerable<EventSphere.Models.entities.TblMediaGallery>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    var eventId = ViewBag.EventId as int?;
+}
+
+@section headerContent {
+    <h1 class="h3 mb-0 text-gray-800">Thư viện Media</h1>
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách Media</h6>
+        <a class="btn btn-sm btn-success" href="@Url.Action("Create", "MediaGallery", new { area = "Admin", eventId = eventId })">
+            Thêm Media
+        </a>
+    </div>
+    <div class="card-header py-3">
+        <div class="mt-2">
+            <label>Lọc theo năm:</label>
+            <select id="yearFilter" class="form-control w-auto d-inline-block">
+                <option value="">Tất cả</option>
+                @foreach (var y in Model.Where(m => m.UploadedOn.HasValue)
+                .Select(m => m.UploadedOn.Value.Year)
+                .Distinct()
+                .OrderByDescending(y => y))
+                {
+                    <option value="@y">@y</option>
+                }
+            </select>
+
+            <label class="ml-3">Lọc theo danh mục:</label>
+            <select id="categoryFilter" class="form-control w-auto d-inline-block">
+                <option value="">Tất cả</option>
+                @foreach (var cat in Model.Where(m => m.Event != null)
+                .Select(m => m.Event!.Category!)
+                .Distinct())
+                {
+                    <option value="@cat">@cat</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <ul class="nav nav-tabs" id="mediaTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="images-tab" data-toggle="tab" href="#images" role="tab">Ảnh</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="videos-tab" data-toggle="tab" href="#videos" role="tab">Video</a>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="mediaTabContent">
+            <!-- Bảng Ảnh -->
+            <div class="tab-pane fade show active" id="images" role="tabpanel">
+                <table class="table table-bordered" id="imagesTable" width="100%">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Caption</th>
+                            <th>Event</th>
+                            <th>Người upload</th>
+                            <th>Ngày tải lên</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(m => m.FileType == 1))
+                        {
+                            <tr id="row-@item.Id">
+                                <td><img src="@item.FileUrl" width="80" /></td>
+                                <td>@item.Caption</td>
+                                <td>@item.Event?.Category</td>
+                                <td>@item.UploadedByNavigation?.Email</td>
+                                <td>@item.UploadedOn?.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Admin", id=item.Id })">Sửa</a>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="@item.Id">Xóa</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bảng Video -->
+            <div class="tab-pane fade" id="videos" role="tabpanel">
+                <table class="table table-bordered" id="videosTable" width="100%">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Video</th>
+                            <th>Caption</th>
+                            <th>Event</th>
+                            <th>Người upload</th>
+                            <th>Ngày tải lên</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(m => m.FileType == 2))
+                        {
+                            <tr id="row-@item.Id">
+                                <td>
+                                    <video width="120" controls>
+                                        <source src="@item.FileUrl" type="video/mp4">
+                                    </video>
+                                </td>
+                                <td>@item.Caption</td>
+                                <td>@item.Event?.Category</td>
+                                <td>@item.UploadedByNavigation?.Email</td>
+                                <td>@item.UploadedOn?.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Admin", id=item.Id })">Sửa</a>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="@item.Id">Xóa</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function(){
+            var imagesTable = $('#imagesTable').DataTable({
+                "pageLength": 5,
+                "lengthMenu": [[5,25,50,-1],[5,25,50,"Tất cả"]],
+                "language": {"search":"🔍 Tìm kiếm:", "lengthMenu":"Hiển thị _MENU_ media"}
+            });
+
+            var videosTable = $('#videosTable').DataTable({
+                "pageLength": 5,
+                "lengthMenu": [[5,25,50,-1],[5,25,50,"Tất cả"]],
+                "language": {"search":"🔍 Tìm kiếm:", "lengthMenu":"Hiển thị _MENU_ media"}
+            });
+
+            // Lọc bảng
+            function applyFilters(){
+                var yearFilter = $('#yearFilter').val();
+                var categoryFilter = $('#categoryFilter').val().toLowerCase();
+
+                $.fn.dataTable.ext.search = [];
+
+                function addFilter(table){
+                    $.fn.dataTable.ext.search.push(function(settings, data){
+                        if(settings.nTable.id !== table.table().node().id) return true;
+
+                        var categoryText = data[2].toLowerCase();
+                        var uploadedDate = data[4];
+
+                        var yearMatch = true;
+                        if(yearFilter){
+                            var uploadedYear = uploadedDate ? uploadedDate.split('/')[2] : '';
+                            yearMatch = uploadedYear === yearFilter;
+                        }
+
+                        var categoryMatch = !categoryFilter || categoryText.includes(categoryFilter);
+                        return yearMatch && categoryMatch;
+                    });
+                }
+
+                addFilter(imagesTable);
+                addFilter(videosTable);
+
+                imagesTable.draw();
+                videosTable.draw();
+            }
+
+            $('#yearFilter, #categoryFilter').change(applyFilters);
+
+            // Xóa Media
+            $(document).on('click', '.delete-btn', function(){
+                if(!confirm("Bạn có chắc muốn xóa media này?")) return;
+                var id = $(this).data('id');
+                $.post('/Admin/MediaGallery/DeleteAjax', {id:id}, function(res){
+                    if(res.success){
+                        $('#row-' + id).fadeOut(300, function(){ $(this).remove(); });
+                    } else alert("Xóa thất bại!");
+                });
+            });
+        });
+    </script>
+}
