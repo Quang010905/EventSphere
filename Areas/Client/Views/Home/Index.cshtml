@@ -2,48 +2,123 @@
 @{
     Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
 
-    // Helper chuẩn để build URL tới /uploads
+    // === Helpers ===
     string ResolveUpload(string? path, string fallback)
     {
         if (string.IsNullOrWhiteSpace(path))
             return Url.Content(fallback);
         if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             return path;
-
-        // Nếu đã chứa /uploads thì dùng trực tiếp
         if (path.Contains("/uploads/", StringComparison.OrdinalIgnoreCase))
             return Url.Content("~" + path.TrimStart('~'));
-
         return Url.Content("~/uploads/" + path.TrimStart('/'));
     }
+
+    int? ToNullableInt(object? value)
+    {
+        if (value == null) return null;
+        if (value is int i) return i;
+        if (value is int ni) return ni;
+        try { return Convert.ToInt32(value); } catch { return null; }
+    }
+
+    int ToIntOrZero(object? value) => ToNullableInt(value) ?? 0;
+
+    bool ToBool(object? value, bool defaultValue = false)
+    {
+        if (value == null) return defaultValue;
+        if (value is bool b) return b;
+        var s = value.ToString();
+        if (bool.TryParse(s, out var bp)) return bp;
+        if (int.TryParse(s, out var ip)) return ip != 0;
+        return defaultValue;
+    }
+
+    var isAuth = (Model?.IsAuthenticated ?? false) || (User?.Identity?.IsAuthenticated ?? false);
+
+    var request = ViewContext?.HttpContext?.Request;
+    var qQuery = request?.Query["q"].ToString() ?? string.Empty;
+    var departmentQuery = request?.Query["department"].ToString() ?? string.Empty;
+    var currentScheme = ViewContext?.HttpContext?.Request?.Scheme ?? "https";
 }
 
-<!-- ===== REDESIGNED HERO ===== -->
-<section class="hero-advanced py-7 text-white" aria-label="Hero - EventSphere">
-    <div class="hero-bg" aria-hidden="true"></div>
-    <div class="container position-relative z-2">
+<!-- ===== BANNER ===== -->
+<section class="bg-primary text-white py-2">
+    <div class="container es-page-inner d-flex align-items-center justify-content-between">
+        <div class="d-flex gap-3 align-items-center">
+            <i class="bi bi-bell-fill fs-5"></i>
+            <div class="marquee-notice">
+                @if (Model?.SiteAnnouncements?.Any() ?? false)
+                {
+                    foreach (var a in Model.SiteAnnouncements.Take(5))
+                    {
+                        <span class="me-4">@a.Title — @a.ShortText</span>
+                    }
+                }
+                else
+                {
+                    <span>Chào mừng đến với EventSphere — khám phá sự kiện nổi bật của trường!</span>
+                }
+            </div>
+        </div>
+        <div>
+            <a href="@Url.Action("Sitemap","Home")" class="text-white text-decoration-underline me-3">Sơ đồ trang</a>
+            <a href="@Url.Action("Index","Media")" class="text-white">Xem thư viện</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== HERO ===== -->
+<section class="hero-advanced py-6 text-white">
+    <div class="hero-bg"></div>
+    <div class="container position-relative z-2 es-page-inner">
         <div class="row align-items-center">
             <div class="col-lg-7">
-                <h1 class="display-2 fw-bold mb-3 hero-title">EventSphere</h1>
-                <p class="lead mb-4 hero-sub">Khám phá – Trải nghiệm – Kết nối các sự kiện nổi bật của trường</p>
-                <div class="d-flex gap-2">
-                    <a href="@Url.Action("Index","Event")" class="btn btn-cta btn-lg shadow">Xem sự kiện</a>
-                    <a href="@Url.Action("Index","Media")" class="btn btn-outline-cta btn-lg">Thư viện</a>
-                </div>
+                <h1 class="display-2 fw-bold mb-3">EventSphere</h1>
+                <p class="lead mb-3">Khám phá – Trải nghiệm – Kết nối các sự kiện nổi bật của trường</p>
+
+                <form method="get" action="@Url.Action("Index","Event")" class="row g-2 align-items-center">
+                    <div class="col-12 col-md-6">
+                        <input type="search" name="q" value="@qQuery" class="form-control form-control-lg"
+                               placeholder="Tìm sự kiện, từ khóa, phòng ban...">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <select name="department" class="form-select form-select-lg">
+                            <option value="">Tất cả khoa</option>
+                            @if (Model?.Departments != null)
+                            {
+                                foreach (var d in Model.Departments)
+                                {
+                                    <option value="@d.Key" @(departmentQuery == d.Key ? "selected" : "")>@d.Value</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-cta btn-lg w-100">Tìm</button>
+                    </div>
+                </form>
             </div>
+
             <div class="col-lg-5 d-none d-lg-block">
                 <div class="hero-card p-4 rounded-3 shadow-lg">
                     <h5 class="mb-3">Sự kiện sắp tới</h5>
                     <ul class="list-unstyled mb-0 small text-muted">
-                        @foreach (var e in Model.UpcomingEvents.Take(3))
+                        @foreach (var e in (Model?.UpcomingEvents ?? Enumerable.Empty<dynamic>()).Take(4))
                         {
                             var imgSmall = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
                             var dateSmall = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("dd MMM yyyy") ?? "";
+                            int? seatsLeft = ToNullableInt(e.SeatsAvailable);
+
                             <li class="d-flex align-items-center mb-3">
-                                <img src="@imgSmall" loading="lazy" onerror="this.src='@Url.Content("~/Client/images/default-event.jpg")'" class="rounded me-3" style="width:64px;height:64px;object-fit:cover;" alt="@e.Title" />
-                                <div>
+                                <img src="@imgSmall" class="rounded me-3" style="width:64px;height:64px;object-fit:cover;" alt="@e.Title" />
+                                <div class="flex-grow-1">
                                     <div class="fw-semibold text-primary">@e.Title</div>
                                     <div class="text-muted">@dateSmall • @e.Venue</div>
+                                    @if (seatsLeft.HasValue)
+                                    {
+                                        <div class="small text-success">Còn @seatsLeft.Value chỗ</div>
+                                    }
                                 </div>
                             </li>
                         }
@@ -54,263 +129,147 @@
     </div>
 </section>
 
-<!-- ===== UPCOMING EVENTS CARDS ===== -->
-<section class="container py-5" aria-label="Sự kiện sắp diễn ra">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold display-6 mb-2">Sự kiện sắp diễn ra</h2>
-        <p class="text-muted fs-5">Trải nghiệm những khoảnh khắc khó quên</p>
+<!-- ===== EVENTS ===== -->
+<section class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Sự kiện sắp diễn ra</h2>
+        <a asp-area="Client" asp-controller="Events" asp-action="Index" class="btn btn-outline-primary">Xem tất cả</a>
     </div>
 
     <div class="row g-4">
-        @foreach (var e in Model.UpcomingEvents)
+        @foreach (var e in Model?.UpcomingEvents ?? Enumerable.Empty<dynamic>())
         {
             var img = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
-            var date = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("ddd, dd MMM yyyy") ?? "";
-            var time = e.Time?.ToString("HH:mm") ?? "";
-            var cat = string.IsNullOrWhiteSpace(e.Category) ? "Sự kiện" : e.Category;
+            var date = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("dd MMM yyyy") ?? "";
+            var time = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("HH:mm") ?? "";
+
+            object seatsObj = null;
+            try { seatsObj = e.SeatsAvailable; } catch { seatsObj = null; }
+
+            if (seatsObj == null)
+            {
+                try
+                {
+                    var max = e.MaxSeats;
+                    if (max != null)
+                    {
+                        var bookedObj = e.SeatsBooked;
+                        int booked = ToIntOrZero(bookedObj);
+                        seatsObj = (int?)(ToIntOrZero(max) - booked);
+                    }
+                }
+                catch { seatsObj = null; }
+            }
+
+            int? seatsLeft = ToNullableInt(seatsObj);
+            var isFull = (seatsLeft ?? 0) <= 0;
+            var waitlist = ToBool(e.IsWaitlistEnabled, false);
+            var approved = ToBool(e.IsApproved, true);
 
             <div class="col-12 col-md-6 col-lg-4">
-                <article class="card event-card-modern h-100 border-0 shadow-sm" role="article">
-                    <div class="ratio ratio-16x9 position-relative overflow-hidden rounded-top">
-                        <img src="@img" loading="lazy" onerror="this.src='@Url.Content("~/Client/images/default-event.jpg")'" class="w-100 h-100 object-cover" alt="@e.Title" />
-                        <div class="card-badges">
-                            <span class="badge badge-date">@date</span>
-                            <span class="badge badge-cat">@cat</span>
-                        </div>
+                <article class="card h-100 border-0 shadow-sm rounded-3">
+                    <div class="overflow-hidden rounded-top">
+                        <img src="@img"
+                             class="w-100"
+                             style="height:200px; object-fit:cover;"
+                             alt="@e.Title" />
                     </div>
-                    <div class="card-body d-flex flex-column p-4">
-                        <h5 class="card-title mb-2 text-truncate" title="@e.Title">@e.Title</h5>
-                        <p class="text-muted small mb-3">
+                    <div class="card-body d-flex flex-column p-3">
+                        <h5 class="card-title mb-1 text-truncate" title="@e.Title">@e.Title</h5>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-calendar-event me-1"></i> @date
                             @if (!string.IsNullOrEmpty(time))
                             {
-                                <i class="bi bi-clock me-1" aria-hidden="true"></i>
-                                <span class="me-3">@time</span>
-                            }
-                            @if (!string.IsNullOrEmpty(e.Venue))
-                            {
-                                <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>
-                                <span>@e.Venue</span>
+                                <span> • <i class="bi bi-clock"></i> @time</span>
                             }
                         </p>
-                        <p class="card-text text-secondary flex-grow-1">@(e.Description?.Length > 140 ? e.Description[..140] + "..." : e.Description)</p>
-                        <a href="@Url.Action("Details","Event", new { id = e.Id })" class="btn btn-outline-primary w-100 mt-3">Chi tiết</a>
+                        <p class="text-muted mb-3"><i class="bi bi-geo-alt me-1"></i>@e.Venue</p>
+
+                        <p class="card-text text-secondary flex-grow-1">
+                            @(e.Description?.Length > 100 ? e.Description[..100] + "..." : e.Description)
+                        </p>
+
+                        <div class="mt-auto">
+                            @if (!approved)
+                            {
+                                <span class="badge bg-secondary">Chưa duyệt</span>
+                            }
+                            else if (isFull && !waitlist)
+                            {
+                                <span class="badge bg-danger">Hết chỗ</span>
+                            }
+                            else if (isFull && waitlist)
+                            {
+                                <span class="badge bg-warning text-dark">Danh sách chờ</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Còn chỗ</span>
+                            }
+
+                            @if (seatsLeft.HasValue)
+                            {
+                                <div class="small mt-1">
+                                    <span class="text-muted">Còn @seatsLeft.Value chỗ</span>
+                                </div>
+                            }
+
+                            <a asp-area="Client" asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId"
+                               class="btn btn-sm btn-primary mt-3">
+                                Chi tiết
+                            </a>
+                        </div>
                     </div>
                 </article>
             </div>
         }
     </div>
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index","Event")" class="btn btn-primary px-4">Xem tất cả sự kiện</a>
+    </div>
 </section>
 
-<!-- ===== MEDIA GALLERY (GRID) ===== -->
-<section class="bg-soft py-5" aria-label="Thư viện hình ảnh & video">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold display-6 mb-2">Thư viện hình ảnh & video</h2>
-            <p class="text-muted fs-5">Khoảnh khắc được cộng đồng chia sẻ</p>
+<!-- ===== MEDIA GALLERY ===== -->
+<section class="bg-soft py-5">
+    <div class="container es-page-inner">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold display-6 mb-0">Thư viện hình ảnh & video</h2>
+                <p class="text-muted mb-0">Khoảnh khắc được cộng đồng chia sẻ</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="@Url.Action("Index","Media")" class="btn btn-sm btn-primary">Xem toàn bộ</a>
+            </div>
         </div>
 
         <div class="row g-3" id="mediaGrid">
-            @foreach (var m in Model.LatestMedia)
+            @foreach (var m in (Model?.LatestMedia ?? Enumerable.Empty<dynamic>()))
             {
                 var src = ResolveUpload(m.FileUrl, "~/Client/images/no-image.jpg");
-                var isVideo = src.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase) || src.EndsWith(".webm", StringComparison.OrdinalIgnoreCase) || src.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase);
-
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="gallery-thumb shadow-sm rounded overflow-hidden" role="button"
-                         tabindex="0"
-                         data-bs-toggle="modal"
-                         data-bs-target="#galleryModal"
-                         data-src="@src"
-                         data-caption="@m.Caption"
-                         data-type="@(isVideo ? "video" : "image")">
+                var isVideo = src.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase)
+                || src.EndsWith(".webm", StringComparison.OrdinalIgnoreCase)
+                || src.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase);
+                <div class="col-6 col-md-4 col-lg-3 media-item">
+                    <div class="gallery-thumb shadow-sm rounded overflow-hidden">
                         @if (isVideo)
                         {
                             <div class="ratio ratio-16x9 bg-black position-relative">
-                                <video muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;" poster="@Url.Content("~/Client/images/video-poster.jpg")">
+                                <video muted playsinline preload="metadata"
+                                       style="width:100%;height:100%;object-fit:cover;"
+                                       poster="@Url.Content("~/Client/images/video-poster.jpg")">
                                     <source src="@src">
                                 </video>
-                                <div class="video-play-icon"><i class="bi bi-play-circle-fill fs-1"></i></div>
                             </div>
                         }
                         else
                         {
-                            <img src="@src" loading="lazy" onerror="this.src='@Url.Content("~/Client/images/no-image.jpg")'" class="w-100 h-100" style="object-fit:cover;height:220px;" alt="@m.Caption">
+                            <img src="@src" loading="lazy" class="w-100 h-100"
+                                 style="object-fit:cover;height:220px;" alt="@m.Caption">
                         }
-
-                        <div class="overlay-caption position-absolute bottom-0 start-0 w-100 text-white px-2 py-1 small bg-dark bg-opacity-50">@m.Caption</div>
                     </div>
                 </div>
             }
         </div>
-
-        <div class="text-center mt-4">
-            <a href="@Url.Action("Index","Media")" class="btn btn-primary px-4">Xem toàn bộ thư viện</a>
-        </div>
     </div>
 </section>
-
-<!-- ===== MODAL PREVIEW (IMAGE / VIDEO) ===== -->
-<div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content border-0">
-            <div class="modal-body p-0 bg-dark text-white rounded-top position-relative">
-                <div id="galleryPreviewWrap" class="w-100" style="min-height:360px;display:flex;align-items:center;justify-content:center;">
-                    <!-- nội dung sẽ được inject: img hoặc video -->
-                </div>
-            </div>
-
-            <div class="modal-footer border-0 justify-content-between bg-white">
-                <div class="text-muted" id="galleryModalCaption"></div>
-                <div>
-                    <a id="galleryModalOpen" class="btn btn-sm btn-outline-primary me-2" href="#" target="_blank" rel="noopener">Mở nguyên bản</a>
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <style>
-        /* --- Layout giới hạn để nhìn gọn hơn --- */
-        .es-page-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        /* --- Giảm kích thước ảnh, tăng emphasis cho nội dung --- */
-        .event-card-modern {
-            border-radius: .6rem;
-            overflow: hidden;
-            transition: transform .25s ease, box-shadow .25s ease;
-        }
-
-            .event-card-modern:hover {
-                transform: translateY(-6px);
-                box-shadow: 0 18px 36px rgba(13,40,80,0.08);
-            }
-
-            /* Media: Rút height xuống để ảnh nhỏ hơn */
-            .event-card-modern .media-wrapper {
-                height: 120px; /* <-- ảnh nhỏ lại (tăng/decrease nếu muốn) */
-                overflow: hidden;
-                background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.02));
-                border-bottom: 1px solid rgba(0,0,0,0.04);
-            }
-
-                .event-card-modern .media-wrapper img,
-                .event-card-modern .media-wrapper video {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover; /* giữ cover cho landscape */
-                    transition: transform .45s ease;
-                }
-
-            /* Portrait xử lý: JS sẽ gán .portrait nếu cần, để tránh cắt mặt */
-            .event-card-modern.portrait .media-wrapper {
-                background: #fbfdff;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: .4rem;
-            }
-
-                .event-card-modern.portrait .media-wrapper img {
-                    object-fit: contain !important;
-                    height: 100%;
-                    width: auto;
-                    max-width: 100%;
-                }
-
-            /* --- Typography: nội dung lớn, rõ ràng --- */
-            .event-card-modern .card-body {
-                padding: 1.1rem 1.1rem 1.2rem;
-                display: flex;
-                flex-direction: column;
-                gap: .45rem;
-            }
-
-            .event-card-modern .card-title {
-                font-size: 1.28rem; /* lớn hơn */
-                font-weight: 700;
-                line-height: 1.15;
-                margin: 0;
-                color: var(--es-contrast, #0f1724);
-                letter-spacing: -0.2px;
-            }
-
-            .event-card-modern .meta-row {
-                display: flex;
-                gap: .8rem;
-                align-items: center;
-                font-size: .92rem; /* tăng cỡ meta */
-                color: #6b7280;
-            }
-
-            .event-card-modern .card-text {
-                font-size: 1.02rem; /* mô tả lớn hơn, đọc thoải mái */
-                color: #374151;
-                line-height: 1.5;
-                margin-top: .2rem;
-                margin-bottom: .6rem;
-                flex-grow: 1;
-            }
-
-        /* Badge & button */
-        .badge-date, .badge-cat {
-            font-size: .72rem;
-            padding: .28rem .55rem;
-        }
-
-        .event-card-modern .btn {
-            padding: .55rem .65rem;
-            font-weight: 700;
-            font-size: .96rem;
-        }
-
-        /* Responsive tweaks */
-        @@media (max-width: 768px) {
-            .event-card-modern .media-wrapper
-
-        {
-            height: 160px;
-        }
-        /* mobile: ảnh cao hơn 1 chút */
-        .event-card-modern .card-title {
-            font-size: 1.14rem;
-        }
-
-        .event-card-modern .card-text {
-            font-size: .98rem;
-        }
-
-        }
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          // Áp es-page-inner cho các section chứa content để căn giữa
-          document.querySelectorAll('section.container, section.bg-soft.container, .hero-advanced .container').forEach(el => {
-            el.classList.add('es-page-inner');
-          });
-
-          // Phát hiện ảnh portrait vs landscape, nếu portrait thêm class .portrait để tránh cắt mặt
-          document.querySelectorAll('.event-card-modern').forEach(card => {
-            const img = card.querySelector('.media-wrapper img');
-            if (!img) return;
-            function mark() {
-              try {
-                const w = img.naturalWidth || img.width || 1;
-                const h = img.naturalHeight || img.height || 1;
-                if (h > w) card.classList.add('portrait');
-                else card.classList.remove('portrait');
-              } catch(e) { /* ignore */ }
-            }
-            if (img.complete) mark();
-            else img.addEventListener('load', mark);
-          });
-        });
-    </script>
-}
-
