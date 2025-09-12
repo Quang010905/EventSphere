@@ -7,14 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\Client\css\.DS_Store" />
-    <None Include="wwwroot\Client\fonts\.DS_Store" />
-    <None Include="wwwroot\Client\images\.DS_Store" />
-    <None Include="wwwroot\Client\js\.DS_Store" />
-    <None Include="wwwroot\Client\sass\.DS_Store" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
     <PackageReference Include="MailKit" Version="4.13.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
@@ -28,6 +20,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="QuestPDF" Version="2025.7.1" />
   </ItemGroup>
 

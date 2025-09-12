@@ -291,6 +291,7 @@
                     <h5 class="mb-3">Sự kiện sắp tới</h5>
                     <ul class="list-unstyled mb-0 small text-muted">
                         @{
+
                             var upcoming = (Model?.UpcomingEvents
                             ?? Enumerable.Empty<EventSphere.Models.ModelViews.HomeViewModel.EventBriefDto>())
                             .Where(ev => ev.Date.HasValue && ev.Date.Value >= today)
@@ -332,7 +333,6 @@
             var waitlist = ToBool(e.IsWaitlistEnabled, false);
             var approved = ToBool(e.IsApproved, true);
 
-            // kiểm tra sự kiện đã qua
             bool isPast = false;
             if (e.Date.HasValue)
             {
@@ -404,8 +404,7 @@
     </div>
 </section>
 
-
-<!-- PAGINATION -->
+<!-- ===== PAGINATION ===== -->
 @if (totalPages > 1)
 {
     <nav aria-label="Page navigation" class="mt-4">
@@ -435,7 +434,6 @@
     </nav>
 }
 
-</section>
 <!-- ===== MEDIA GALLERY ===== -->
 <section class="bg-soft py-5 mt-5">
     <div class="container es-page-inner">
