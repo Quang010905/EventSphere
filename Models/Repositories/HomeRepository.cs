@@ -19,6 +19,7 @@ namespace EventSphere.Models.Repositories
         {
             _context = context;
         }
+
         public async Task<(List<EventBriefDto> Items, int Total)> SearchEventsAsync(
             string q,
             string department,
@@ -256,6 +257,7 @@ namespace EventSphere.Models.Repositories
                 _semaphore.Release();
             }
         }
+
         public async Task<List<TblMediaGallery>> GetLatestAsync(int top)
         {
             await _semaphore.WaitAsync();
@@ -299,8 +301,7 @@ namespace EventSphere.Models.Repositories
             await _semaphore.WaitAsync();
             try
             {
-                return await _context.TblMediaGalleries
-                    .AsNoTracking()
+                return await _context.TblMediaGalleries.AsNoTracking()
                     .Where(m => m.UploadedOn.HasValue)
                     .Select(m => m.UploadedOn!.Value.Year)
                     .Distinct()
