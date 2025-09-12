@@ -35,6 +35,9 @@ builder.Services.AddScoped<EventShareLogRepository>();
 builder.Services.AddScoped<UserRepositoryEf>();
 builder.Services.AddScoped<HomeRepository>();
 
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -59,10 +62,14 @@ app.MapControllerRoute(
 //    pattern: "{controller=Home}/{action=Index}/{id?}",
 //    defaults: new { area = "Client" });
 
-
 app.MapControllerRoute(
-    name: "admin_default",
-    pattern: "{controller=Attendance}/{action=Index}/{id?}",
-    defaults: new { area = "Admin" });
+    name: "client_default",
+    pattern: "{controller=ORegistration}/{action=Index}/{id?}",
+    defaults: new { area = "Organizer" });
+
+//app.MapControllerRoute(
+//    name: "admin_default",
+//    pattern: "{controller=Attendance}/{action=Index}/{id?}",
+//    defaults: new { area = "Admin" });
 
 app.Run();
