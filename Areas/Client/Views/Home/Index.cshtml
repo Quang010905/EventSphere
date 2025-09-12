@@ -214,7 +214,7 @@
                                 </div>
                             }
 
-                            <a asp-area="Client" asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId"
+                            <a href="@Url.Action("Index", "EventDetail", new{id = e.EventId, area = "Client"})"
                                class="btn btn-sm btn-primary mt-3">
                                 Chi tiết
                             </a>
