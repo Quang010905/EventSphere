@@ -18,7 +18,6 @@
     {
         if (value == null) return null;
         if (value is int i) return i;
-        if (value is int ni) return ni;
         try { return Convert.ToInt32(value); } catch { return null; }
     }
 
@@ -34,7 +33,6 @@
         return defaultValue;
     }
 
-    // --- Format helpers ---
     string FormatDate(DateOnly? d)
     {
         return d.HasValue ? d.Value.ToString("dd MMM yyyy") : string.Empty;
@@ -46,45 +44,41 @@
 
         try
         {
-            // TimeOnly (preferred)
             if (t is TimeOnly to) return to.ToString("HH:mm");
-
-            // TimeSpan (common when DB stores TIME -> mapped to TimeSpan)
             if (t is TimeSpan ts) return TimeOnly.FromTimeSpan(ts).ToString("HH:mm");
-
-            // DateTime (rare, but handle)
             if (t is DateTime dt) return dt.ToString("HH:mm");
-
-            // string attempts
             var s = t.ToString() ?? string.Empty;
             if (TimeOnly.TryParse(s, out var p)) return p.ToString("HH:mm");
             if (TimeSpan.TryParse(s, out var pts)) return TimeOnly.FromTimeSpan(pts).ToString("HH:mm");
-
         }
-        catch
-        {
-            // ignore and return empty
-        }
+        catch { }
         return string.Empty;
     }
 
-    var isAuth = (Model?.IsAuthenticated ?? false) || (User?.Identity?.IsAuthenticated ?? false);
-
     var request = ViewContext?.HttpContext?.Request;
-    var qQuery = request?.Query["q"].ToString() ?? string.Empty;
-    var departmentQuery = request?.Query["department"].ToString() ?? string.Empty;
-    var currentScheme = ViewContext?.HttpContext?.Request?.Scheme ?? "https";
-}
+    var qQuery = Model?.SearchQuery ?? request?.Query["q"].ToString() ?? string.Empty;
+    var departmentQuery = Model?.SelectedDepartment ?? request?.Query["department"].ToString() ?? string.Empty;
+    var startQuery = Model?.StartDateStr ?? request?.Query["start"].ToString() ?? string.Empty;
+    var endQuery = Model?.EndDateStr ?? request?.Query["end"].ToString() ?? string.Empty;
+    var statusQuery = Model?.SelectedStatus ?? request?.Query["status"].ToString() ?? "all";
 
+    int currentPage = Model?.CurrentPage ?? 1;
+    int pageSize = Model?.EventsPageSize ?? 6;
+    int totalItems = Model?.TotalItems ?? 0;
+    int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+    // Biến phục vụ so sánh
+    var today = DateOnly.FromDateTime(DateTime.Today);
+    var nowTime = TimeOnly.FromDateTime(DateTime.Now);
+}
 <!-- ====== LOCAL STYLES FOR THIS PAGE (GÁN VÀO <style> TRONG FILE Index) ====== -->
 <style>
     /* ===== Event cards ===== */
     .event-card {
         border: 1px solid #e6e6e6;
-        padding: 0;
         overflow: hidden;
-        transition: transform .12s ease, box-shadow .12s ease;
         background: #fff;
+        transition: transform .12s ease, box-shadow .12s ease;
     }
 
         .event-card:hover {
@@ -92,35 +86,23 @@
             box-shadow: 0 8px 20px rgba(20,20,40,0.06);
         }
 
-        .event-card .card-body {
-            padding: 1rem;
+        .event-card .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
         }
 
-    /* --- Event Title: lớn hơn, cho xuống dòng khi dài (không dùng ...) --- */
     .card-title {
-        font-size: 1.6rem; /* to hơn */
-        font-weight: 700; /* đậm hơn */
-        white-space: normal; /* cho xuống dòng khi tên dài */
-        overflow: visible; /* không cắt chữ */
-        text-overflow: unset; /* bỏ ... */
+        font-size: 1.6rem;
+        font-weight: 700;
         line-height: 1.15;
         margin-bottom: .5rem;
     }
 
-    /* Fix ảnh không tràn khung và cắt gọn theo tỉ lệ */
-    .event-card .card-img {
-        width: 100%;
-        height: 200px; /* chiều cao cố định cho ảnh sự kiện */
-        object-fit: cover; /* cắt ảnh thay vì co dãn */
-        display: block;
-    }
-
-    /* Badge / trạng thái chỗ: to hơn, pill */
     .seat-badge {
-        font-size: 1.05rem; /* to hơn */
-        padding: .45rem .9rem; /* khoảng padding */
+        font-size: 1.05rem;
+        padding: .45rem .9rem;
         border-radius: 999px;
-        display: inline-block;
         font-weight: 600;
     }
 
@@ -128,6 +110,10 @@
             font-size: .95rem;
             padding: .3rem .6rem;
         }
+
+    .event-past {
+        opacity: 0.6;
+    }
 
     /* Button chi tiết */
     .event-card .btn-sm {
@@ -258,11 +244,13 @@
                 <h1 class="display-2 fw-bold mb-3">EventSphere</h1>
                 <p class="lead mb-3">Khám phá – Trải nghiệm – Kết nối các sự kiện nổi bật của trường</p>
 
-                <form method="get" action="@Url.Action("Index","Event")" class="row g-2 align-items-center">
-                    <div class="col-12 col-md-6">
+                <!-- FILTER / SEARCH FORM -->
+                <form method="get" action="@Url.Action("Index","Home", new { area = "Client" })" class="row g-2 align-items-center">
+                    <div class="col-12 col-md-5">
                         <input type="search" name="q" value="@qQuery" class="form-control form-control-lg"
-                               placeholder="Tìm sự kiện, từ khóa, phòng ban...">
+                               placeholder="Từ khóa, tiêu đề, địa điểm...">
                     </div>
+
                     <div class="col-12 col-md-3">
                         <select name="department" class="form-select form-select-lg">
                             <option value="">Tất cả khoa</option>
@@ -275,7 +263,24 @@
                             }
                         </select>
                     </div>
-                    <div class="col-12 col-md-3 d-flex gap-2">
+
+                    <div class="col-6 col-md-2">
+                        <input type="date" name="start" value="@startQuery" class="form-control form-control-lg" />
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <input type="date" name="end" value="@endQuery" class="form-control form-control-lg" />
+                    </div>
+
+                    <div class="col-12 col-md-3 mt-2">
+                        <select name="status" class="form-select">
+                            <option value="all" @(statusQuery == "all" ? "selected" : "")>Tất cả trạng thái</option>
+                            <option value="upcoming" @(statusQuery == "upcoming" ? "selected" : "")>Sắp diễn ra</option>
+                            <option value="ongoing" @(statusQuery == "ongoing" ? "selected" : "")>Đang diễn ra</option>
+                            <option value="past" @(statusQuery == "past" ? "selected" : "")>Đã qua</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-3 d-flex gap-2 mt-2">
                         <button type="submit" class="btn btn-cta btn-lg w-100">Tìm</button>
                     </div>
                 </form>
@@ -285,21 +290,23 @@
                 <div class="hero-card p-4 rounded-3 shadow-lg">
                     <h5 class="mb-3">Sự kiện sắp tới</h5>
                     <ul class="list-unstyled mb-0 small text-muted">
-                        @foreach (var e in (Model?.UpcomingEvents ?? Enumerable.Empty<dynamic>()).Take(4))
+                        @{
+                            var upcoming = (Model?.UpcomingEvents
+                            ?? Enumerable.Empty<EventSphere.Models.ModelViews.HomeViewModel.EventBriefDto>())
+                            .Where(ev => ev.Date.HasValue && ev.Date.Value >= today)
+                            .OrderBy(ev => ev.Date.Value)
+                            .Take(4);
+                        }
+                        @foreach (var e in upcoming)
                         {
                             var imgSmall = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
                             var dateSmall = FormatDate(e.Date);
-                            int? seatsLeft = ToNullableInt(e.SeatsAvailable);
 
                             <li class="d-flex align-items-center mb-3">
                                 <img src="@imgSmall" class="rounded me-3" style="width:64px;height:64px;object-fit:cover;" alt="@e.Title" />
                                 <div class="flex-grow-1">
                                     <div class="fw-semibold text-primary">@e.Title</div>
                                     <div class="text-muted">@dateSmall • @e.Venue</div>
-                                    @if (seatsLeft.HasValue)
-                                    {
-                                        <div class="small text-success">Còn @seatsLeft.Value chỗ</div>
-                                    }
                                 </div>
                             </li>
                         }
@@ -312,52 +319,34 @@
 
 <!-- ===== EVENTS ===== -->
 <section class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Sự kiện sắp diễn ra</h2>
-        <a asp-area="Client" asp-controller="Events" asp-action="Index" class="btn btn-outline-primary">Xem tất cả</a>
-    </div>
-
+    <h2 class="fw-bold mb-4">Sự kiện</h2>
     <div class="row g-4">
-        @foreach (var e in Model?.UpcomingEvents ?? Enumerable.Empty<dynamic>())
+        @foreach (var e in Model?.UpcomingEvents ?? Enumerable.Empty<EventSphere.Models.ModelViews.HomeViewModel.EventBriefDto>())
         {
             var img = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
             var date = FormatDate(e.Date);
             var time = FormatTime(e.Time);
 
-            object seatsObj = null;
-            try { seatsObj = e.SeatsAvailable; } catch { seatsObj = null; }
-
-            if (seatsObj == null)
-            {
-                try
-                {
-                    var max = e.MaxSeats;
-                    if (max != null)
-                    {
-                        var bookedObj = e.SeatsBooked;
-                        int booked = ToIntOrZero(bookedObj);
-                        seatsObj = (int?)(ToIntOrZero(max) - booked);
-                    }
-                }
-                catch { seatsObj = null; }
-            }
-
-            int? seatsLeft = ToNullableInt(seatsObj);
+            int? seatsLeft = ToNullableInt(e.SeatsAvailable);
             var isFull = (seatsLeft ?? 0) <= 0;
             var waitlist = ToBool(e.IsWaitlistEnabled, false);
             var approved = ToBool(e.IsApproved, true);
 
+            // kiểm tra sự kiện đã qua
+            bool isPast = false;
+            if (e.Date.HasValue)
+            {
+                if (e.Date.Value < today) isPast = true;
+                else if (e.Date.Value == today && e.Time.HasValue && e.Time.Value < nowTime) isPast = true;
+            }
+
             <div class="col-12 col-md-6 col-lg-4">
-                <!-- thêm class event-card và class card-img cho ảnh -->
-                <article class="card h-100 border shadow-sm rounded-3 p-0 event-card">
+                <article class="card h-100 border shadow-sm rounded-3 event-card @(isPast ? "event-past" : "")">
                     <div class="overflow-hidden rounded-top">
-                        <img src="@img"
-                             alt="@e.Title"
-                             class="card-img" />
+                        <img src="@img" alt="@e.Title" class="card-img" />
                     </div>
                     <div class="card-body d-flex flex-column p-3">
-                        <!-- Tên sự kiện: lớn và cho xuống dòng -->
-                        <h5 class="card-title" title="@e.Title">@e.Title</h5>
+                        <h5 class="card-title">@e.Title</h5>
                         <p class="text-muted mb-2">
                             <i class="bi bi-calendar-event me-1"></i> @date
                             @if (!string.IsNullOrEmpty(time))
@@ -369,47 +358,41 @@
 
                         <div class="mt-3 d-flex align-items-center justify-content-between">
                             <div>
-                                @{
-                                    if (!approved)
+                                @if (isPast)
+                                {
+                                    <span class="seat-badge bg-secondary text-white small">Sự kiện đã qua</span>
+                                }
+                                else if (!approved)
+                                {
+                                    <span class="seat-badge bg-secondary text-white small">Chưa duyệt</span>
+                                }
+                                else if (isFull)
+                                {
+                                    <span class="seat-badge bg-danger text-white small">Hết chỗ</span>
+                                }
+                                else if (seatsLeft.HasValue)
+                                {
+                                    if (seatsLeft.Value > 10)
                                     {
-                                        <span class="seat-badge bg-secondary text-white small">Chưa duyệt</span>
-                                        ;
+                                        <span class="seat-badge bg-success text-white small">Còn @seatsLeft.Value chỗ</span>
                                     }
-                                    else if (isFull)
+                                    else if (seatsLeft.Value > 0)
                                     {
-                                        <span class="seat-badge bg-danger text-white small">Hết chỗ</span>
-                                        ;
-                                    }
-                                    else if (seatsLeft.HasValue)
-                                    {
-                                        if (seatsLeft.Value > 10)
-                                        {
-                                            <span class="seat-badge bg-success text-white small">Còn @seatsLeft.Value chỗ</span>
-                                            ;
-                                        }
-                                        else if (seatsLeft.Value > 0)
-                                        {
-                                            <span class="seat-badge bg-warning text-dark small">Còn @seatsLeft.Value chỗ</span>
-                                            ;
-                                        }
-                                        else
-                                        {
-                                            <span class="seat-badge bg-danger text-white small">Hết chỗ</span>
-                                            ;
-                                        }
+                                        <span class="seat-badge bg-warning text-dark small">Còn @seatsLeft.Value chỗ</span>
                                     }
                                     else
                                     {
-                                        // Nếu không biết số chỗ nhưng approved => hiển thị "Còn chỗ"
-                                        <span class="seat-badge bg-success text-white small">Còn chỗ</span>
-                                        ;
+                                        <span class="seat-badge bg-danger text-white small">Hết chỗ</span>
                                     }
                                 }
+                                else
+                                {
+                                    <span class="seat-badge bg-success text-white small">Còn chỗ</span>
+                                }
                             </div>
-
                             <div>
-                                <a asp-area="Client" asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId"
-                                   class="btn btn-sm btn-primary">
+                                <a href="@Url.Action("Index", "EventDetail", new{id = e.EventId, area = "Client"})"
+                                   class="btn btn-sm btn-primary mt-3">
                                     Chi tiết
                                 </a>
                             </div>
@@ -419,15 +402,43 @@
             </div>
         }
     </div>
-
-    <div class="text-center mt-4">
-        <a href="@Url.Action("Index","Event")" class="btn btn-primary px-4">Xem tất cả sự kiện</a>
-    </div>
 </section>
 
+
+    <!-- PAGINATION -->
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index","Home", new { area="Client", q = qQuery, department = departmentQuery, status = statusQuery, start = startQuery, end = endQuery, page = currentPage - 1, pageSize = pageSize })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                @{
+                    var startPage = Math.Max(1, currentPage - 3);
+                    var endPage = Math.Min(totalPages, currentPage + 3);
+                    for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index","Home", new { area="Client", q = qQuery, department = departmentQuery, status = statusQuery, start = startQuery, end = endQuery, page = i, pageSize = pageSize })">@i</a>
+                        </li>
+                    }
+                }
+
+                <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index","Home", new { area="Client", q = qQuery, department = departmentQuery, status = statusQuery, start = startQuery, end = endQuery, page = currentPage + 1, pageSize = pageSize })" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+
+</section>
 <!-- ===== MEDIA GALLERY ===== -->
 <section class="bg-soft py-5 mt-5">
-    <!-- mt-5 để tách phần media -->
     <div class="container es-page-inner">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>

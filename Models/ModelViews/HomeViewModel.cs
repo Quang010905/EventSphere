@@ -1,5 +1,4 @@
-﻿// Models/ModelViews/HomeViewModel.cs
-using EventSphere.Models.entities;
+﻿using EventSphere.Models.entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +11,20 @@ namespace EventSphere.Models.ModelViews
         public IEnumerable<TblMediaGallery> LatestMedia { get; set; } = new List<TblMediaGallery>();
         public IEnumerable<KeyValuePair<string, string>> Categories { get; set; } = new List<KeyValuePair<string, string>>();
         public IEnumerable<int> MediaYears { get; set; } = new List<int>();
-
         public IEnumerable<Announcement> SiteAnnouncements { get; set; } = new List<Announcement>();
 
-        public int TotalUpcomingEvents { get; set; } = 0;
+        // Paging + Filter states
+        public int TotalItems { get; set; } = 0;
         public int EventsPageSize { get; set; } = 6;
-        public int CurrentEventsPage { get; set; } = 1;
+        public int CurrentPage { get; set; } = 1;
+
+        // Search + filter model
+        public string SearchQuery { get; set; } = string.Empty;
+        public string SelectedDepartment { get; set; } = string.Empty;
+        public string SelectedStatus { get; set; } = "all"; // all | upcoming | ongoing | past
+        public string StartDateStr { get; set; } = string.Empty; // yyyy-MM-dd
+        public string EndDateStr { get; set; } = string.Empty;
+
         public bool IsAuthenticated { get; set; } = false;
 
         public IEnumerable<KeyValuePair<string, string>> Departments
@@ -54,15 +61,15 @@ namespace EventSphere.Models.ModelViews
             public string? Title { get; set; }
             public DateOnly? Date { get; set; }
             public TimeOnly? Time { get; set; }
-            public string? Image { get; set; }  
+            public string? Image { get; set; }
             public string? Venue { get; set; }
             public string? Category { get; set; }
             public string? Description { get; set; }
 
             // Seating / availability
-            public int? MaxSeats { get; set; }          
-            public int SeatsBooked { get; set; }        
-            public int SeatsAvailable { get; set; }      
+            public int? MaxSeats { get; set; }
+            public int SeatsBooked { get; set; }
+            public int SeatsAvailable { get; set; }
 
             // Feature flags used in view
             public bool IsWaitlistEnabled { get; set; }
