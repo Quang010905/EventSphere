@@ -10,7 +10,9 @@
     Layout = "/Areas/Client/Views/Shared/_LayoutClient.cshtml";
 }
 <h5 style="visibility: hidden;">Event Detail</h5>
-
+@{
+    var stuId = Context.Session.GetInt32("UId");
+}
 <div class="container py-5" style="margin-top:100px; margin-bottom:50px; position: relative; z-index: 1000;">
     <h3 class="mb-4 text-center">Event Detail</h3>
     @if (ViewBag.itemEvent != null)
@@ -26,34 +28,46 @@
                          style="max-height: 350px; object-fit: contain;">
                 </div>
             </div>
+            <form action="@Url.Action("RegisterEvent", "EventDetail", new {area = "Client"})" method="post">
+                <!-- Thông tin sự kiện -->
+                <div class="col-lg-7">
+                    <h3 class="font-weight-semi-bold">@eve.Title</h3>
+                    <div class="d-flex mb-3">
+                        <small class="text-muted mr-3"><i class="fa fa-calendar-alt"></i>@eve.Date</small>
+                        <small class="text-muted"><i class="fa fa-map-marker-alt"></i>@eve.Time</small>
+                    </div>
+                    <h4 class="text-primary mb-4">@eve.Venue</h4>
+                    <h3>@eve.Title</h3>
+                    <p class="mb-4">@eve.Description</p>
+                    <input type="hidden" name="EventId" value="@eve.Id"/>
+                    <input type="hidden" name="StuId" value="@stuId"/>
+                    <div class="d-flex align-items-center mb-4 pt-2">
+                        @if (ViewBag.AlreadyRegistered != null && (bool)ViewBag.AlreadyRegistered)
+                        {
+                            <button class="btn btn-secondary px-4" type="button" disabled>
+                                <i class="fa fa-ticket-alt mr-1"></i> Already Registered
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary px-4" type="submit">
+                                <i class="fa fa-ticket-alt mr-1"></i> Register
+                            </button>
+                        }
+                    </div>
 
 
-            <!-- Thông tin sự kiện -->
-            <div class="col-lg-7">
-                <h3 class="font-weight-semi-bold">adf</h3>
-                <div class="d-flex mb-3">
-                    <small class="text-muted mr-3"><i class="fa fa-calendar-alt"></i>@eve.Date</small>
-                    <small class="text-muted"><i class="fa fa-map-marker-alt"></i>@eve.Time</small>
-                </div>
-                <h4 class="text-primary mb-4">@eve.Venue</h4>
-                <h3>@eve.Title</h3>
-                <p class="mb-4">@eve.Description</p>
-                <div class="d-flex align-items-center mb-4 pt-2">
-                    <button class="btn btn-primary px-4">
-                        <i class="fa fa-ticket-alt mr-1"></i> Register
-                    </button>
-                </div>
-
-                <div class="d-flex pt-2">
-                    <p class="text-dark font-weight-medium mb-0 mr-2">Chia sẻ:</p>
-                    <div class="d-inline-flex">
-                        <a class="text-dark px-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="text-dark px-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="text-dark px-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="text-dark px-2" href="#"><i class="fab fa-pinterest"></i></a>
+                    <div class="d-flex pt-2">
+                        <p class="text-dark font-weight-medium mb-0 mr-2">Chia sẻ:</p>
+                        <div class="d-inline-flex">
+                            <a class="text-dark px-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="text-dark px-2" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="text-dark px-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="text-dark px-2" href="#"><i class="fab fa-pinterest"></i></a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
 
     }

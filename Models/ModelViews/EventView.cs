@@ -8,8 +8,8 @@
         public string Venue { get; set; } = "";
         public string Category { get; set; } = "";
         public int OrganizerId { get; set; } = 0;
-        public DateOnly Date {  get; set; } 
-        public TimeOnly Time { get; set; }
+        public DateOnly? Date {  get; set; } 
+        public TimeOnly? Time { get; set; }
         public string Image { get; set; } = "";
         public int status { get; set; } = 0;
     }
