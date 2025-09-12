@@ -18,8 +18,8 @@ builder.Services.Configure<OtpSettings>(builder.Configuration.GetSection("OtpSet
 builder.Services.AddScoped<IOtpService, OtpService>();
 
 // Email
-builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // DbContext (Scoped mặc định)
 builder.Services.AddDbContext<EventSphereContext>(options =>
@@ -34,9 +34,6 @@ builder.Services.AddScoped<EventSeatingRepository>();
 builder.Services.AddScoped<EventShareLogRepository>();
 builder.Services.AddScoped<UserRepositoryEf>();
 builder.Services.AddScoped<HomeRepository>();
-
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
@@ -57,13 +54,13 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
 
-//app.MapControllerRoute(
-//    name: "client_default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}",
-//    defaults: new { area = "Client" });
-
 app.MapControllerRoute(
     name: "client_default",
+    pattern: "{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Client" });
+
+app.MapControllerRoute(
+    name: "organizer_default",
     pattern: "{controller=ORegistration}/{action=Index}/{id?}",
     defaults: new { area = "Organizer" });
 
