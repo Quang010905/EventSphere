@@ -1,6 +1,9 @@
 ﻿using EventSphere.Models.entities;
 using EventSphere.Models.ModelViews;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Runtime.Intrinsics.Arm;
+using System.Text;
 
 namespace EventSphere.Models.Repositories
 {
@@ -16,6 +19,38 @@ namespace EventSphere.Models.Repositories
                 return _instance;
             }
         }
+        public List<RegistrationView> GetAll()
+        {
+            var db = new EventSphereContext();
+            var ls = new List<RegistrationView>();
+            try
+            {
+                ls = db.TblRegistrations
+                       .Include(x => x.Event)   // load dữ liệu Event
+                       .Include(x => x.Student)    // load dữ liệu User trực tiếp
+                       .Select(x => new RegistrationView
+                       {
+                           EventId = x.EventId ?? 0,
+                           Status = x.Status ?? 0,
+                           Venue = x.Event.Venue,
+                           EventImage = x.Event.Image,
+                           EventName = x.Event.Title,
+                           EventDate = x.Event.Date,
+                           EventTime = (TimeOnly)x.Event.Time,
+                           StudentEmail = x.Student.Email  // email trực tiếp từ User
+                       })
+                       .ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return ls;
+        }
+
+
+
+
         public void Add(RegistrationView entity)
         {
             var db = new EventSphereContext();
@@ -25,8 +60,8 @@ namespace EventSphere.Models.Repositories
                 {
                     StudentId = entity.StudentId,
                     EventId = entity.EventId,
-                    RegisteredOn = entity.RegisterOn,
-                    Status = entity.Status,
+                    RegisteredOn = DateTime.Now,
+                    Status = 0,
                 };
                 db.TblRegistrations.Add(item);
                 db.SaveChanges();
@@ -37,35 +72,62 @@ namespace EventSphere.Models.Repositories
                 throw;
             }
         }
-        public RegistrationView GetRegistrationByStuId(int id)
+        public bool CheckRegistered(int stuId, int eventId)
         {
             var db = new EventSphereContext();
-            var reg = new RegistrationView();
+            return db.TblRegistrations
+                     .Any(r => r.StudentId == stuId && r.EventId == eventId);
+        }
+
+        public List<RegistrationView> GetRegistrationByStuId(int id)
+        {
+            var db = new EventSphereContext();
+            var ls = new List<RegistrationView>();
             try
             {
-                var idItem = id;
-                var q = db.TblRegistrations.Where(r => r.StudentId == id).OrderByDescending(r => r.Id).Select(r => new RegistrationView
+                ls = db.TblRegistrations.Where(x => x.StudentId == id).Include(x => x.Event).Select(x => new RegistrationView
                 {
-                    EventId = r.EventId ?? 0,
-                    StudentId = id,
-                    Status = r.Status ?? 0,
-                    RegisterOn = (DateTime)r.RegisteredOn,
-                    EventName = r.Event.Title,
-                    EventImage = r.Event.Image,
-                    EventDate = (DateOnly)r.Event.Date,
-                    EventTime = (TimeOnly)r.Event.Time
-                }).FirstOrDefault();
-                if (q != null)
-                {
-                    reg = q;
-                }
+                    EventId = x.EventId ??0,
+                    Status = x.Status?? 0,
+                    Venue = x.Event.Venue,
+                    EventImage = x.Event.Image,
+                    EventName = x.Event.Title,
+                    EventDate = x.Event.Date,
+                    EventTime = (TimeOnly)x.Event.Time,
+                }).ToList();
             }
             catch (Exception)
             {
 
                 throw;
             }
-            return reg;
+            return ls;
+        }
+        public string NormalizeSearch(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return "";
+
+
+            string lower = input.ToLowerInvariant();
+
+            // 2. Dùng FormD để tách dấu ra khỏi chữ
+            string normalized = lower.Normalize(NormalizationForm.FormD);
+
+            // 3. Loại bỏ các ký tự dấu (non-spacing mark)
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in normalized)
+            {
+                UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return new string(sb.ToString()
+                .Where(c => !char.IsWhiteSpace(c))
+                .ToArray());
         }
     }
 }

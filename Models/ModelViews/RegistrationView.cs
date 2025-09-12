@@ -12,6 +12,8 @@
         public string Venue { get; set; }
         public DateOnly? EventDate { get; set; }
         public TimeOnly EventTime { get; set; }
+         public string StudentEmail { get; set; }
         public virtual EventView Event { get; set; }
+        public virtual UserView User{ get; set; }
     }
 }
