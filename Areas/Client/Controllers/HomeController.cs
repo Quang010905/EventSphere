@@ -1,5 +1,4 @@
-﻿// Areas/Client/Controllers/HomeController.cs
-using EventSphere.Models.ModelViews;
+﻿using EventSphere.Models.ModelViews;
 using EventSphere.Models.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -19,23 +18,25 @@ namespace EventSphere.Areas.Client.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var upcomingTask = _repo.GetUpcomingEventBriefsAsync();
+            // Lấy các dữ liệu song song
+            var upcomingTask = _repo.GetUpcomingEventBriefsAsync(); // Đảm bảo repo trả về Time
             var mediaTask = _repo.GetLatestAsync(6);
             var catsTask = _repo.GetDistinctCategoriesAsync();
             var mediaYearsTask = _repo.GetMediaYearsAsync();
-            // nếu bạn có announcements trong DB, có thể gọi _repo.GetSiteAnnouncementsAsync()
 
             await Task.WhenAll(upcomingTask, mediaTask, catsTask, mediaYearsTask);
 
+            var upcomingEvents = await upcomingTask;
+
             var vm = new HomeViewModel
             {
-                UpcomingEvents = await upcomingTask,
+                UpcomingEvents = upcomingEvents,
                 LatestMedia = await mediaTask,
                 Categories = await catsTask ?? Enumerable.Empty<KeyValuePair<string, string>>(),
                 MediaYears = await mediaYearsTask ?? Enumerable.Empty<int>(),
-                TotalUpcomingEvents = (await upcomingTask).Count,
+                TotalUpcomingEvents = upcomingEvents.Count,
                 IsAuthenticated = User.Identity?.IsAuthenticated ?? false,
-                SiteAnnouncements = Enumerable.Empty<HomeViewModel.Announcement>() // tạm thời rỗng nếu chưa map DB
+                SiteAnnouncements = Enumerable.Empty<HomeViewModel.Announcement>() // nếu chưa map DB
             };
 
             ViewData["Title"] = "Trang chủ";

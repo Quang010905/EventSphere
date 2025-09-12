@@ -34,6 +34,40 @@
         return defaultValue;
     }
 
+    // --- Format helpers ---
+    string FormatDate(DateOnly? d)
+    {
+        return d.HasValue ? d.Value.ToString("dd MMM yyyy") : string.Empty;
+    }
+
+    string FormatTime(object? t)
+    {
+        if (t == null) return string.Empty;
+
+        try
+        {
+            // TimeOnly (preferred)
+            if (t is TimeOnly to) return to.ToString("HH:mm");
+
+            // TimeSpan (common when DB stores TIME -> mapped to TimeSpan)
+            if (t is TimeSpan ts) return TimeOnly.FromTimeSpan(ts).ToString("HH:mm");
+
+            // DateTime (rare, but handle)
+            if (t is DateTime dt) return dt.ToString("HH:mm");
+
+            // string attempts
+            var s = t.ToString() ?? string.Empty;
+            if (TimeOnly.TryParse(s, out var p)) return p.ToString("HH:mm");
+            if (TimeSpan.TryParse(s, out var pts)) return TimeOnly.FromTimeSpan(pts).ToString("HH:mm");
+
+        }
+        catch
+        {
+            // ignore and return empty
+        }
+        return string.Empty;
+    }
+
     var isAuth = (Model?.IsAuthenticated ?? false) || (User?.Identity?.IsAuthenticated ?? false);
 
     var request = ViewContext?.HttpContext?.Request;
@@ -41,6 +75,153 @@
     var departmentQuery = request?.Query["department"].ToString() ?? string.Empty;
     var currentScheme = ViewContext?.HttpContext?.Request?.Scheme ?? "https";
 }
+
+<!-- ====== LOCAL STYLES FOR THIS PAGE (GÁN VÀO <style> TRONG FILE Index) ====== -->
+<style>
+    /* ===== Event cards ===== */
+    .event-card {
+        border: 1px solid #e6e6e6;
+        padding: 0;
+        overflow: hidden;
+        transition: transform .12s ease, box-shadow .12s ease;
+        background: #fff;
+    }
+
+        .event-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(20,20,40,0.06);
+        }
+
+        .event-card .card-body {
+            padding: 1rem;
+        }
+
+    /* --- Event Title: lớn hơn, cho xuống dòng khi dài (không dùng ...) --- */
+    .card-title {
+        font-size: 1.6rem; /* to hơn */
+        font-weight: 700; /* đậm hơn */
+        white-space: normal; /* cho xuống dòng khi tên dài */
+        overflow: visible; /* không cắt chữ */
+        text-overflow: unset; /* bỏ ... */
+        line-height: 1.15;
+        margin-bottom: .5rem;
+    }
+
+    /* Fix ảnh không tràn khung và cắt gọn theo tỉ lệ */
+    .event-card .card-img {
+        width: 100%;
+        height: 200px; /* chiều cao cố định cho ảnh sự kiện */
+        object-fit: cover; /* cắt ảnh thay vì co dãn */
+        display: block;
+    }
+
+    /* Badge / trạng thái chỗ: to hơn, pill */
+    .seat-badge {
+        font-size: 1.05rem; /* to hơn */
+        padding: .45rem .9rem; /* khoảng padding */
+        border-radius: 999px;
+        display: inline-block;
+        font-weight: 600;
+    }
+
+        .seat-badge.small {
+            font-size: .95rem;
+            padding: .3rem .6rem;
+        }
+
+    /* Button chi tiết */
+    .event-card .btn-sm {
+        min-width: 86px;
+    }
+
+    /* ===== Media gallery ===== */
+    #mediaGrid {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -8px;
+        margin-right: -8px;
+    }
+
+    .media-item {
+        padding-left: 8px;
+        padding-right: 8px;
+        margin-bottom: 16px; /* khoảng cách dọc giữa các hàng */
+    }
+
+    /* thumb */
+    .gallery-thumb {
+        overflow: hidden;
+        border-radius: 8px;
+        background: #fff;
+        display: block;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(10,10,20,0.03);
+    }
+
+        .gallery-thumb img,
+        .gallery-thumb video {
+            width: 100%;
+            height: 220px; /* chiều cao cố định cho gallery */
+            object-fit: cover;
+            display: block;
+        }
+
+    /* Khi màn hình nhỏ, giảm chiều cao để tránh tràn */
+    @@media (max-width: 767.98px) {
+        .event-card .card-img {
+            height: 160px;
+        }
+
+        .gallery-thumb img,
+        .gallery-thumb video {
+            height: 160px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        .seat-badge {
+            font-size: 0.95rem;
+            padding: .35rem .7rem;
+        }
+    }
+
+    /* Đảm bảo các cột bootstrap không bị overflow và ảnh luôn nằm trong container */
+    .row.g-3 > .media-item {
+        width: 50%;
+    }
+    /* default cho col-6 ở mobile */
+    @@media (min-width: 768px) {
+        .row.g-3 > .media-item.col-md-4 {
+            width: 33.3333%;
+        }
+    }
+
+    @@media (min-width: 992px) {
+        .row.g-3 > .media-item.col-lg-3 {
+            width: 25%;
+        }
+    }
+
+    /* loại bỏ khoảng trắng không mong muốn giữa grid và footer */
+    .bg-soft {
+        padding-bottom: 2.5rem;
+    }
+
+    /* style nhỏ khác */
+    .es-page-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
 
 <!-- ===== BANNER ===== -->
 <section class="bg-primary text-white py-2">
@@ -107,7 +288,7 @@
                         @foreach (var e in (Model?.UpcomingEvents ?? Enumerable.Empty<dynamic>()).Take(4))
                         {
                             var imgSmall = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
-                            var dateSmall = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("dd MMM yyyy") ?? "";
+                            var dateSmall = FormatDate(e.Date);
                             int? seatsLeft = ToNullableInt(e.SeatsAvailable);
 
                             <li class="d-flex align-items-center mb-3">
@@ -140,8 +321,8 @@
         @foreach (var e in Model?.UpcomingEvents ?? Enumerable.Empty<dynamic>())
         {
             var img = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
-            var date = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("dd MMM yyyy") ?? "";
-            var time = e.Date?.ToDateTime(TimeOnly.MinValue).ToString("HH:mm") ?? "";
+            var date = FormatDate(e.Date);
+            var time = FormatTime(e.Time);
 
             object seatsObj = null;
             try { seatsObj = e.SeatsAvailable; } catch { seatsObj = null; }
@@ -167,15 +348,16 @@
             var approved = ToBool(e.IsApproved, true);
 
             <div class="col-12 col-md-6 col-lg-4">
-                <article class="card h-100 border-0 shadow-sm rounded-3">
+                <!-- thêm class event-card và class card-img cho ảnh -->
+                <article class="card h-100 border shadow-sm rounded-3 p-0 event-card">
                     <div class="overflow-hidden rounded-top">
                         <img src="@img"
-                             class="w-100"
-                             style="height:200px; object-fit:cover;"
-                             alt="@e.Title" />
+                             alt="@e.Title"
+                             class="card-img" />
                     </div>
                     <div class="card-body d-flex flex-column p-3">
-                        <h5 class="card-title mb-1 text-truncate" title="@e.Title">@e.Title</h5>
+                        <!-- Tên sự kiện: lớn và cho xuống dòng -->
+                        <h5 class="card-title" title="@e.Title">@e.Title</h5>
                         <p class="text-muted mb-2">
                             <i class="bi bi-calendar-event me-1"></i> @date
                             @if (!string.IsNullOrEmpty(time))
@@ -183,41 +365,54 @@
                                 <span> • <i class="bi bi-clock"></i> @time</span>
                             }
                         </p>
-                        <p class="text-muted mb-3"><i class="bi bi-geo-alt me-1"></i>@e.Venue</p>
+                        <p class="text-muted mb-2"><i class="bi bi-geo-alt me-1"></i>@e.Venue</p>
 
-                        <p class="card-text text-secondary flex-grow-1">
-                            @(e.Description?.Length > 100 ? e.Description[..100] + "..." : e.Description)
-                        </p>
+                        <div class="mt-3 d-flex align-items-center justify-content-between">
+                            <div>
+                                @{
+                                    if (!approved)
+                                    {
+                                        <span class="seat-badge bg-secondary text-white small">Chưa duyệt</span>
+                                        ;
+                                    }
+                                    else if (isFull)
+                                    {
+                                        <span class="seat-badge bg-danger text-white small">Hết chỗ</span>
+                                        ;
+                                    }
+                                    else if (seatsLeft.HasValue)
+                                    {
+                                        if (seatsLeft.Value > 10)
+                                        {
+                                            <span class="seat-badge bg-success text-white small">Còn @seatsLeft.Value chỗ</span>
+                                            ;
+                                        }
+                                        else if (seatsLeft.Value > 0)
+                                        {
+                                            <span class="seat-badge bg-warning text-dark small">Còn @seatsLeft.Value chỗ</span>
+                                            ;
+                                        }
+                                        else
+                                        {
+                                            <span class="seat-badge bg-danger text-white small">Hết chỗ</span>
+                                            ;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Nếu không biết số chỗ nhưng approved => hiển thị "Còn chỗ"
+                                        <span class="seat-badge bg-success text-white small">Còn chỗ</span>
+                                        ;
+                                    }
+                                }
+                            </div>
 
-                        <div class="mt-auto">
-                            @if (!approved)
-                            {
-                                <span class="badge bg-secondary">Chưa duyệt</span>
-                            }
-                            else if (isFull && !waitlist)
-                            {
-                                <span class="badge bg-danger">Hết chỗ</span>
-                            }
-                            else if (isFull && waitlist)
-                            {
-                                <span class="badge bg-warning text-dark">Danh sách chờ</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-success">Còn chỗ</span>
-                            }
-
-                            @if (seatsLeft.HasValue)
-                            {
-                                <div class="small mt-1">
-                                    <span class="text-muted">Còn @seatsLeft.Value chỗ</span>
-                                </div>
-                            }
-
-                            <a asp-area="Client" asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId"
-                               class="btn btn-sm btn-primary mt-3">
-                                Chi tiết
-                            </a>
+                            <div>
+                                <a asp-area="Client" asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId"
+                                   class="btn btn-sm btn-primary">
+                                    Chi tiết
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -231,7 +426,8 @@
 </section>
 
 <!-- ===== MEDIA GALLERY ===== -->
-<section class="bg-soft py-5">
+<section class="bg-soft py-5 mt-5">
+    <!-- mt-5 để tách phần media -->
     <div class="container es-page-inner">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
@@ -250,22 +446,20 @@
                 var isVideo = src.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase)
                 || src.EndsWith(".webm", StringComparison.OrdinalIgnoreCase)
                 || src.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase);
-                <div class="col-6 col-md-4 col-lg-3 media-item">
+
+                <div class="media-item col-6 col-md-4 col-lg-3">
                     <div class="gallery-thumb shadow-sm rounded overflow-hidden">
                         @if (isVideo)
                         {
-                            <div class="ratio ratio-16x9 bg-black position-relative">
-                                <video muted playsinline preload="metadata"
-                                       style="width:100%;height:100%;object-fit:cover;"
-                                       poster="@Url.Content("~/Client/images/video-poster.jpg")">
+                            <div class="ratio ratio-16x9 bg-black position-relative" style="height:220px;">
+                                <video muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;" poster="@Url.Content("~/Client/images/video-poster.jpg")">
                                     <source src="@src">
                                 </video>
                             </div>
                         }
                         else
                         {
-                            <img src="@src" loading="lazy" class="w-100 h-100"
-                                 style="object-fit:cover;height:220px;" alt="@m.Caption">
+                            <img src="@src" loading="lazy" alt="@m.Caption" />
                         }
                     </div>
                 </div>
