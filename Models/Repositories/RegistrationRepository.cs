@@ -31,13 +31,15 @@ namespace EventSphere.Models.Repositories
                        .Select(x => new RegistrationView
                        {
                            EventId = x.EventId ?? 0,
+                           StudentId = x.StudentId ?? 0,
                            Status = x.Status ?? 0,
                            Venue = x.Event.Venue,
                            EventImage = x.Event.Image,
                            EventName = x.Event.Title,
                            EventDate = x.Event.Date,
                            EventTime = (TimeOnly)x.Event.Time,
-                           StudentEmail = x.Student.Email  // email trực tiếp từ User
+                           StudentEmail = x.Student.Email,// email trực tiếp từ User
+                           Id = x.Id
                        })
                        .ToList();
             }
@@ -88,12 +90,14 @@ namespace EventSphere.Models.Repositories
                 ls = db.TblRegistrations.Where(x => x.StudentId == id).Include(x => x.Event).Select(x => new RegistrationView
                 {
                     EventId = x.EventId ??0,
+                    StudentId = x.StudentId ?? 0,
                     Status = x.Status?? 0,
                     Venue = x.Event.Venue,
                     EventImage = x.Event.Image,
                     EventName = x.Event.Title,
                     EventDate = x.Event.Date,
                     EventTime = (TimeOnly)x.Event.Time,
+                    Id = x.Id
                 }).ToList();
             }
             catch (Exception)
@@ -129,5 +133,26 @@ namespace EventSphere.Models.Repositories
                 .Where(c => !char.IsWhiteSpace(c))
                 .ToArray());
         }
+
+        public void CancelRegistration(int id)
+        {
+            var db = new EventSphereContext();
+            try
+            {
+                var reg = db.TblRegistrations
+                            .FirstOrDefault(x => x.Id == id);
+
+                if (reg != null)
+                {
+                    reg.Status = 3; // 3 = Đã hủy
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }
