@@ -1,36 +1,88 @@
-﻿@* 
-    For more information on enabling MVC for empty projects, visit 
-    https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
     Layout = "/Areas/Client/Views/Shared/_LayoutClient.cshtml";
     ViewData["Title"] = "Login";
 }
-<div class="gtco-section">
-    <div class="gtco-container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 animate-box">
-                <h3>Login</h3>
-                @if (ViewBag.ErrorMessage != null)
-                {
-                    <div class="alert alert-danger" style="margin-top:15px;">
-                        @ViewBag.ErrorMessage
+
+<div class="ms-all-content ms-all-content-space">
+    <main>
+        <!-- page title area start  -->
+        <section class="page-title-area page-title-spacing p-relative zindex-1"
+                 data-background="@Url.Content("~/Client/assets/img/bg/work-bg.jpg")">
+            <div class="ms-overlay ms-overlay9 p-absolute zindex--1"></div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xxl-11">
+                        <h3 class="ms-page-title text-center">Login</h3>
                     </div>
-                }
-                <form method="post" action="@Url.Action("checkLogin", "Client")">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="Email" class="form-control" placeholder="Email" required>
+                </div>
+            </div>
+        </section>
+        <!-- page title area end  -->
+        <!-- login Area Start Here  -->
+        <section class="ms-login-area pb-50 pt-130">
+            <div class="container">
+                <div class="ms-maxw-510 mx-auto">
+                    <div class="ms-login-wrap text-center ms-login-space ms-bg-2">
+                        <h3 class="ms-title4 mb-50">Welcome Again</h3>
+
+                        @* Thông báo lỗi nếu có *@
+                        @if (ViewBag.ErrorMessage != null)
+                        {
+                            <div class="alert alert-danger mb-3">
+                                @ViewBag.ErrorMessage
+                            </div>
+                        }
+
+                        <form method="post" action="@Url.Action("checkLogin", "Client")">
+                            <div class="ms-input2-box mb-25">
+                                <input type="email" name="Email" placeholder="Email" required />
+                            </div>
+                            <div class="ms-input2-box mb-50">
+                                <input type="password" name="Password" placeholder="Password" required />
+                            </div>
+                            <div class="ms-submit-btn mb-40">
+                                <button class="unfill__btn d-block w-100" type="submit">Log in</button>
+                            </div>
+                            <div class="ms-divided-btn mb-45">
+                                <span>or</span>
+                            </div>
+                            
+                            <div class="ms-not-account mb-35">
+                                <p>
+                                    Don’t have an account?
+                                    <a href="@Url.Action("Register", "Client")">Register Now</a>
+                                </p>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="Password" class="form-control" placeholder="Password" required>
+                </div>
+            </div>
+        </section>
+        <!-- login Area End Here  -->
+        <!-- Partner Area Start Here  -->
+        <div class="ms-partner-area fix pt-80 pb-130">
+            <div class="container">
+                <div class="swiper-container ms-partner-active">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Client/assets/img/partner/partner-01.png")" alt="partner image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Client/assets/img/partner/partner-02.png")" alt="partner image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Client/assets/img/partner/partner-03.png")" alt="partner image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Client/assets/img/partner/partner-04.png")" alt="partner image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Client/assets/img/partner/partner-05.png")" alt="partner image" />
+                        </div>
                     </div>
-                    <div class="form-group mt-3">
-                        <button type="submit" class="btn btn-primary btn-block">Login</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
+        <!-- Partner Area End Here  -->
+    </main>
 </div>
