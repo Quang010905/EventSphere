@@ -150,7 +150,7 @@ namespace EventSphere.Models.Repositories
                         Description = e.Description,
                         MaxSeats = maxSeats,
                         SeatsBooked = booked,
-                        SeatsAvailable = (int)seatsAvailable,
+                        SeatsAvailable = seatsAvailable ?? 0,
                         IsWaitlistEnabled = waitlist,
                         IsApproved = (e.Status ?? 0) == 1
                     });
