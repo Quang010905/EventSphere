@@ -19,6 +19,7 @@ namespace EventSphere.Models.Repositories
         {
             _context = context;
         }
+
         public async Task<(List<EventBriefDto> Items, int Total)> SearchEventsAsync(
             string q,
             string department,
@@ -72,7 +73,8 @@ namespace EventSphere.Models.Repositories
                     var keyword = q.Trim();
                     baseQuery = baseQuery.Where(e =>
                         (!string.IsNullOrEmpty(e.Title) && EF.Functions.Like(e.Title, $"%{keyword}%")) ||
-                        (!string.IsNullOrEmpty(e.Description) && EF.Functions.Like(e.Description, $"%{keyword}%")) || (!string.IsNullOrEmpty(e.Venue) && EF.Functions.Like(e.Venue, $"%{keyword}%"))
+                        (!string.IsNullOrEmpty(e.Description) && EF.Functions.Like(e.Description, $"%{keyword}%")) ||
+                        (!string.IsNullOrEmpty(e.Venue) && EF.Functions.Like(e.Venue, $"%{keyword}%"))
                     );
                 }
 
@@ -255,6 +257,7 @@ namespace EventSphere.Models.Repositories
                 _semaphore.Release();
             }
         }
+
         public async Task<List<TblMediaGallery>> GetLatestAsync(int top)
         {
             await _semaphore.WaitAsync();
