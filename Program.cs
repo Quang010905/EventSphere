@@ -35,6 +35,8 @@ builder.Services.AddScoped<EventShareLogRepository>();
 builder.Services.AddScoped<UserRepositoryEf>();
 builder.Services.AddScoped<HomeRepository>();
 
+
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

@@ -22,20 +22,23 @@ namespace EventSphere.Areas.Admin.Controllers
 
         // Index load page
         public async Task<IActionResult> Index(
-            int page = 1, int pageSize = 10,
-            int? role = null, int? status = null,
-            string? search = null)
+      int page = 1, int pageSize = 10,
+      int? role = null, int? status = null,
+      string? search = null)
         {
+            // Các role đúng theo yêu cầu
             var roles = new List<object>
-            {
-                new { Id = 0, Name = "Student" },
-                new { Id = 1, Name = "Organizer" },
-                new { Id = 2, Name = "Admin" }
-            };
+    {
+        new { Id = 0, Name = "Admin" },
+        new { Id = 1, Name = "Student" },
+        new { Id = 2, Name = "Organizer" }
+    };
             ViewBag.Roles = roles;
 
+            // Lấy dữ liệu phân trang từ repository
             var (data, totalCount) = await _userRepo.GetPagedUsersAsync(page, pageSize, role, status, search);
 
+            // Truyền dữ liệu ra view
             ViewBag.TotalCount = totalCount;
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;

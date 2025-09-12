@@ -81,27 +81,40 @@ Greatness by FreeHTML5.co (adapted to EventSphere)
 							<li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
 
 							@{
-								// giữ nguyên phần login/register theo yêu cầu
 								var email = Context.Session.GetString("UEmail");
-								var memId = Context.Session.GetInt32("UId");
+								var memId = Context.Session.GetInt32("UId") ?? 0;
 							}
 
-							@if (!string.IsNullOrEmpty(email))
-							{
-								<li class="nav-item dropdown">
+							<li class="nav-item dropdown">
+								@if (!string.IsNullOrEmpty(email))
+								{
 									<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@email</a>
 									<div class="dropdown-menu rounded-0 m-0">
-										<a class="dropdown-item" href="@Url.Action("Index", "ProfileMember", new { memId = memId })">Your profile</a>
-										<a class="dropdown-item" href="@Url.Action("Index", "Order", new { memId = memId })">Your orders</a>
-										<a class="dropdown-item" href="@Url.Action("Logout", "Client")">Logout</a>
+										<!-- Profile -->
+										<a class="dropdown-item"
+										   href="@Url.Action("Index", "Profile", new { area = "Client", id = memId })">
+											Your profile
+										</a>
+
+										<!-- Orders -->
+										<a class="dropdown-item"
+										   href="@Url.Action("Index", "Order", new { area = "Client", memId = memId })">
+											Your orders
+										</a>
+
+										<!-- Logout -->
+										<a class="dropdown-item"
+										   href="@Url.Action("Logout", "Client", new { area = "Client" })">
+											Logout
+										</a>
 									</div>
-								</li>
-							}
-							else
-							{
-								<li><a href="@Url.Action("Login", "Client")">Login</a></li>
-								<li><a href="@Url.Action("Register", "Client")">Register</a></li>
-							}
+								}
+								else
+								{
+									<a href="@Url.Action("Login", "Client", new { area = "Client" })">Login</a>
+									<a href="@Url.Action("Register", "Client", new { area = "Client" })">Register</a>
+								}
+							</li>
 						</ul>
 					</div>
 				</div>

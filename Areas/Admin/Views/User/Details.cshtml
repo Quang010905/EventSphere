@@ -39,7 +39,9 @@
             <dd class="col-sm-8">@Model.Email</dd>
 
             <dt class="col-sm-4">Role</dt>
-            <dd class="col-sm-8">@(Model.Role == 0 ? "Student" : Model.Role == 1 ? "Organizer" : "Admin")</dd>
+            <dd class="col-sm-8">
+                @(Model.Role == 0 ? "Admin" : Model.Role == 1 ? "Student" : "Organizer")
+            </dd>
 
             <dt class="col-sm-4">Status</dt>
             <dd class="col-sm-8">@(Model.Status == 1 ? "Active" : "Inactive")</dd>
@@ -48,6 +50,7 @@
             <dd class="col-sm-8">@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</dd>
         </dl>
     </div>
+</div>
 
     <div class="col-md-6">
         <h4>Profile</h4>
@@ -103,9 +106,9 @@
         <input type="hidden" id="userId" value="@Model.Id" />
         <div class="mb-2">
             <select id="roleSelect" class="form-control">
-                <option value="0" @(Model.Role == 0 ? "selected" : "")>Student</option>
-                <option value="1" @(Model.Role == 1 ? "selected" : "")>Organizer</option>
-                <option value="2" @(Model.Role == 2 ? "selected" : "")>Admin</option>
+                <option value="1" @(Model.Role == 1 ? "selected" : "")>Student</option>
+                <option value="2" @(Model.Role == 2 ? "selected" : "")>Organizer</option>
+                <option value="0" @(Model.Role == 0 ? "selected" : "")>Admin</option>
             </select>
         </div>
         <button id="btnUpdateRole" class="btn btn-primary">Update Role</button>

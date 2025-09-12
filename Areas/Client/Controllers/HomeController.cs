@@ -41,5 +41,20 @@ namespace EventSphere.Areas.Client.Controllers
             ViewData["Title"] = "Trang chủ";
             return View(vm);
         }
+        public IActionResult About()
+        {
+            ViewData["Title"] = "Giới thiệu EventSphere";
+
+            // Bạn có thể tạo một ViewModel riêng nếu cần truyền thông tin chi tiết về About
+            var aboutInfo = new
+            {
+                Name = "EventSphere",
+                Description = "Hệ thống thông tin sự kiện trực tuyến cho sinh viên, giảng viên và nhân viên trường đại học.",
+                Purpose = "Cung cấp thông tin sự kiện, quản lý đăng ký, và cải thiện trải nghiệm người dùng.",
+                ContactEmail = "support@eventsphere.edu.vn"
+            };
+
+            return View(aboutInfo); // truyền dữ liệu tới View nếu muốn
+        }
     }
 }
