@@ -1,4 +1,4 @@
-﻿using EventSphere.Models.entities;
+using EventSphere.Models.entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -152,8 +152,7 @@ namespace EventSphere.Models.Repositories
                         SeatsBooked = booked,
                         SeatsAvailable = seatsAvailable ?? 0,
                         IsWaitlistEnabled = waitlist,
-                        IsApproved = (e.Status ?? 0) == 1,
-                        EventId = e.Id
+                        IsApproved = (e.Status ?? 0) == 1
                     });
                 }
 
