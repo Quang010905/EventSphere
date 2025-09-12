@@ -1,4 +1,4 @@
-﻿using EventSphere.Models.entities;
+using EventSphere.Models.entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,80 +13,28 @@ namespace EventSphere.Models.Repositories
     public class HomeRepository
     {
         private readonly EventSphereContext _context;
+
+        // Semaphore để đảm bảo chỉ có 1 thao tác EF chạy trên context này tại 1 thời điểm
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
         public HomeRepository(EventSphereContext context)
         {
             _context = context;
         }
-        public async Task<(List<EventBriefDto> Items, int Total)> SearchEventsAsync(
-            string q,
-            string department,
-            DateOnly? startDate,
-            DateOnly? endDate,
-            string status,
-            int page,
-            int pageSize)
+
+        // ví dụ method (lưu ý: luôn lock trước khi dùng _context)
+        public async Task<List<EventBriefDto>> GetUpcomingEventBriefsAsync(int top = 6)
         {
             await _semaphore.WaitAsync();
             try
             {
-                IQueryable<TblEvent> baseQuery = _context.TblEvents.AsNoTracking();
-
-                // filter by status
                 DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-                status = (status ?? "all").ToLowerInvariant();
-                if (status == "upcoming")
-                {
-                    baseQuery = baseQuery.Where(e => e.Date.HasValue && e.Date.Value >= today);
-                }
-                else if (status == "ongoing")
-                {
-                    baseQuery = baseQuery.Where(e => e.Date.HasValue && e.Date.Value == today);
-                }
-                else if (status == "past")
-                {
-                    baseQuery = baseQuery.Where(e => e.Date.HasValue && e.Date.Value < today);
-                }
 
-                // department/category filter
-                if (!string.IsNullOrWhiteSpace(department))
-                {
-                    var depTrim = department.Trim();
-                    baseQuery = baseQuery.Where(e => !string.IsNullOrEmpty(e.Category) && e.Category.Trim() == depTrim);
-                }
-
-                // date range filter
-                if (startDate.HasValue)
-                {
-                    baseQuery = baseQuery.Where(e => e.Date.HasValue && e.Date.Value >= startDate.Value);
-                }
-                if (endDate.HasValue)
-                {
-                    baseQuery = baseQuery.Where(e => e.Date.HasValue && e.Date.Value <= endDate.Value);
-                }
-
-                // search q in Title, Description, Venue
-                if (!string.IsNullOrWhiteSpace(q))
-                {
-                    var keyword = q.Trim();
-                    baseQuery = baseQuery.Where(e =>
-                        (!string.IsNullOrEmpty(e.Title) && EF.Functions.Like(e.Title, $"%{keyword}%")) ||
-                        (!string.IsNullOrEmpty(e.Description) && EF.Functions.Like(e.Description, $"%{keyword}%")) ||
-                        (!string.IsNullOrEmpty(e.Venue) && EF.Functions.Like(e.Venue, $"%{keyword}%"))
-                    );
-                }
-
-                // total count
-                var total = await baseQuery.CountAsync();
-
-                // paging & order
-                var skip = Math.Max(0, (page - 1) * pageSize);
-                var events = await baseQuery
+                var events = await _context.TblEvents
+                    .AsNoTracking()
+                    .Where(e => e.Date.HasValue && e.Status == 1 && e.Date.Value >= today)
                     .OrderBy(e => e.Date)
-                    .ThenBy(e => e.Title)
-                    .Skip(skip)
-                    .Take(pageSize)
+                    .Take(top)
                     .Select(e => new
                     {
                         e.Id,
@@ -102,42 +50,38 @@ namespace EventSphere.Models.Repositories
                     .ToListAsync();
 
                 var ids = events.Select(x => x.Id).ToList();
+                if (!ids.Any()) return new List<EventBriefDto>();
 
-                // registration counts
-                Dictionary<int, int> regCounts = new();
-                if (ids.Any())
+                // registrations counts
+                Dictionary<int, int> regCounts;
+                try
                 {
-                    try
-                    {
-                        regCounts = await _context.Set<TblRegistration>()
-                            .AsNoTracking()
-                            .Where(r => r.EventId.HasValue && ids.Contains(r.EventId.Value))
-                            .GroupBy(r => r.EventId!.Value)
-                            .Select(g => new { EventId = g.Key, Count = g.Count() })
-                            .ToDictionaryAsync(x => x.EventId, x => x.Count);
-                    }
-                    catch
-                    {
-                        regCounts = new Dictionary<int, int>();
-                    }
+                    regCounts = await _context.Set<TblRegistration>()
+                        .AsNoTracking()
+                        .Where(r => r.EventId.HasValue && ids.Contains(r.EventId.Value))
+                        .GroupBy(r => r.EventId!.Value)
+                        .Select(g => new { EventId = g.Key, Count = g.Count() })
+                        .ToDictionaryAsync(x => x.EventId, x => x.Count);
+                }
+                catch
+                {
+                    regCounts = new Dictionary<int, int>();
                 }
 
                 // seatings
-                List<TblEventSeating> seatings = new();
-                if (ids.Any())
+                List<TblEventSeating> seatings;
+                try
                 {
-                    try
-                    {
-                        seatings = await _context.Set<TblEventSeating>()
-                            .AsNoTracking()
-                            .Where(s => s.EventId.HasValue && ids.Contains(s.EventId.Value))
-                            .ToListAsync();
-                    }
-                    catch
-                    {
-                        seatings = new List<TblEventSeating>();
-                    }
+                    seatings = await _context.Set<TblEventSeating>()
+                        .AsNoTracking()
+                        .Where(s => s.EventId.HasValue && ids.Contains(s.EventId.Value))
+                        .ToListAsync();
                 }
+                catch
+                {
+                    seatings = new List<TblEventSeating>();
+                }
+
                 var seatingMap = seatings.GroupBy(s => s.EventId).ToDictionary(g => g.Key, g => g.First());
 
                 int? GetCapacityFromSeating(object? seatingObj)
@@ -174,7 +118,6 @@ namespace EventSphere.Models.Repositories
                     return false;
                 }
 
-                // map to DTOs
                 var result = new List<EventBriefDto>(events.Count);
                 foreach (var e in events)
                 {
@@ -188,74 +131,40 @@ namespace EventSphere.Models.Repositories
                         waitlist = GetWaitlistFlagFromSeating(seatingEntity);
                     }
 
-                    int seatsAvailableVal = 0;
+                    int? seatsAvailable = null;
                     if (maxSeats.HasValue)
                     {
                         var avail = maxSeats.Value - booked;
-                        seatsAvailableVal = avail < 0 ? 0 : avail;
-                    }
-
-                    TimeOnly? timeOnly = null;
-                    try
-                    {                       
-                        object? rawObj = (object?)e.Time;
-
-                        if (rawObj == null)
-                        {
-                            timeOnly = null;
-                        }
-                        else if (rawObj is TimeOnly to) 
-                        {
-                            timeOnly = to;
-                        }
-                        else if (rawObj is TimeSpan ts) 
-                        {
-                            timeOnly = TimeOnly.FromTimeSpan(ts);
-                        }
-                        else if (rawObj is DateTime dt)
-                        {
-                            timeOnly = TimeOnly.FromDateTime(dt);
-                        }
-                        else
-                        {
-                            var s = rawObj.ToString();
-                            if (!string.IsNullOrWhiteSpace(s))
-                            {
-                                if (TimeOnly.TryParse(s, out var p)) timeOnly = p;
-                                else if (TimeSpan.TryParse(s, out var pts)) timeOnly = TimeOnly.FromTimeSpan(pts);
-                            }
-                        }
-                    }
-                    catch
-                    {
+                        seatsAvailable = avail < 0 ? 0 : avail;
                     }
 
                     result.Add(new EventBriefDto
                     {
                         Id = e.Id,
-                        EventId = e.Id,
                         Title = e.Title,
                         Date = e.Date,
-                        Time = timeOnly,
+                        Time = e.Time,
                         Image = e.Image,
                         Venue = e.Venue,
                         Category = e.Category,
                         Description = e.Description,
                         MaxSeats = maxSeats,
                         SeatsBooked = booked,
-                        SeatsAvailable = seatsAvailableVal,
+                        SeatsAvailable = seatsAvailable ?? 0,
                         IsWaitlistEnabled = waitlist,
                         IsApproved = (e.Status ?? 0) == 1
                     });
                 }
 
-                return (result, total);
+                return result;
             }
             finally
             {
                 _semaphore.Release();
             }
         }
+
+        // Fix GetLatestAsync with same semaphore
         public async Task<List<TblMediaGallery>> GetLatestAsync(int top)
         {
             await _semaphore.WaitAsync();
@@ -273,6 +182,7 @@ namespace EventSphere.Models.Repositories
             }
         }
 
+        // Fix other methods similarly
         public async Task<IEnumerable<KeyValuePair<string, string>>> GetDistinctCategoriesAsync()
         {
             await _semaphore.WaitAsync();

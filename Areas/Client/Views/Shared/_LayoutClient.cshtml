@@ -59,7 +59,7 @@ Greatness by FreeHTML5.co (adapted to EventSphere)
 								<a href="@Url.Action("Index", "Home")">Home</a>
 							</li>
 							<li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "About" ? "active" : "")">
-								<a href="@Url.Action("About", "Home")">About</a>
+								<a href="@Url.Action("Index", "EventDetail", new{id = 1})">About</a>
 							</li>
 							<li class="has-dropdown">
 								<a href="@Url.Action("Index", "Event")">Events</a>
@@ -93,6 +93,7 @@ Greatness by FreeHTML5.co (adapted to EventSphere)
 									<div class="dropdown-menu rounded-0 m-0">
 										<a class="dropdown-item" href="@Url.Action("Index", "ProfileMember", new { memId = memId })">Your profile</a>
 										<a class="dropdown-item" href="@Url.Action("Index", "Order", new { memId = memId })">Your orders</a>
+										<a class="dropdown-item" href="@Url.Action("Index", "Registration", new { id = memId })">Your registration</a>
 										<a class="dropdown-item" href="@Url.Action("Logout", "Client")">Logout</a>
 									</div>
 								</li>
