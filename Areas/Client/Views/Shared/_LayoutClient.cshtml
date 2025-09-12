@@ -1,255 +1,237 @@
-﻿@using System.Security.Claims
+@using System.Security.Claims
 @{
-	Layout = null;
+    Layout = null;
 }
 <!DOCTYPE HTML>
-<!--
-Greatness by FreeHTML5.co (adapted to EventSphere)
--->
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@(ViewData["Title"] ?? "EventSphere")</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="EventSphere - Quản lý và tham gia sự kiện của trường đại học" />
-	<meta name="author" content="Aptech" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EventSphere</title>
 
-	<!-- Social meta (can fill dynamically later) -->
-	<meta property="og:title" content="@(ViewData["Title"] ?? "EventSphere")" />
-	<meta property="og:description" content="@(ViewData["Description"] ?? "Khám phá sự kiện của trường")" />
-	<meta property="og:image" content="@(Url.Content("~/Client/images/og-image.png"))" />
-	<meta name="twitter:card" content="summary_large_image" />
+    <link rel="shortcut icon" type="image/x-icon" href="@Url.Content("~/Client/assets/img/favicon.svg")" />
 
-	<link href='https://fonts.googleapis.com/css?family=Raleway:400,300,600,400italic,700' rel='stylesheet' type='text/css'>
+    <!-- CSS here -->
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/bootstrap.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/meanmenu.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/nice-select.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/swiper-bundle.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/slick.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/jquery-ui.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/backtotop.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/magnific-popup.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/flaticon_musicly.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/fontawesome-pro.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/spacing.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Client/assets/app/css/main.css")" />
 
-	<!-- CSS: use Url.Content to resolve paths -->
-	<link rel="stylesheet" href="@(Url.Content("~/Client/css/animate.css"))">
-	<link rel="stylesheet" href="@(Url.Content("~/Client/css/icomoon.css"))">
-	<link rel="stylesheet" href="@(Url.Content("~/Client/css/bootstrap.css"))">
-	<link rel="stylesheet" href="@(Url.Content("~/Client/css/magnific-popup.css"))">
-	<link rel="stylesheet" href="@(Url.Content("~/Client/css/owl.carousel.min.css"))">
-	<link rel="stylesheet" href="@(Url.Content("~/Client/css/owl.theme.default.min.css"))">
-	<link rel="stylesheet" href="@(Url.Content("~/Client/css/style.css"))">
-
-	@RenderSection("styles", required: false)
-
-	<!-- Modernizr -->
-	<script src="@(Url.Content("~/Client/js/modernizr-2.6.2.min.js"))"></script>
-	<!--[if lt IE 9]>
-	<script src="@(Url.Content("~/Client/js/respond.min.js"))"></script>
-	<![endif]-->
+    @RenderSection("styles", required: false)
 </head>
 <body>
 
-	<div class="gtco-loader"></div>
+    <div class="gtco-loader"></div>
 
-	<div id="page">
-		<nav class="gtco-nav" role="navigation">
-			<div class="gtco-container">
-				<div class="row">
-					<div class="col-xs-2">
-						<div id="gtco-logo">
-							<a href="@Url.Action("Index", "Home")">EventSphere</a>
-						</div>
-					</div>
-					<div class="col-xs-10 text-right menu-1">
-						<ul>
-							<li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
-								<a href="@Url.Action("Index", "Home")">Home</a>
-							</li>
-							<li class="@(ViewContext.RouteData.Values["action"]?.ToString() == "About" ? "active" : "")">
-								<a href="@Url.Action("About", "Home")">About</a>
-							</li>
-							<li class="has-dropdown">
-								<a href="@Url.Action("Index", "Event")">Events</a>
-								<ul class="dropdown">
-									<li><a href="@Url.Action("Index", "Event", new { category = "Workshop" })">Workshop</a></li>
-									<li><a href="@Url.Action("Index", "Event", new { category = "Competition" })">Competition</a></li>
-									<li><a href="@Url.Action("Index", "Event", new { category = "Cultural" })">Cultural</a></li>
-									<li><a href="@Url.Action("Index", "Event", new { category = "Sports" })">Sports</a></li>
-								</ul>
-							</li>
-							<li class="has-dropdown">
-								<a href="#">More</a>
-								<ul class="dropdown">
-									<li><a href="@Url.Action("Services", "Home")">Services</a></li>
-									<li><a href="@Url.Action("Faq", "Home")">FAQ</a></li>
-									<li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
-								</ul>
-							</li>
-							<li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
+    <div id="page">
+        <!-- ==== Header ==== -->
+        <header>
+            <div id="header-sticky" class="header__area header-1 ms-header-fixed ms-bg-body">
+                <div class="container-fluid ms-maw-1710">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <div class="mega__menu-wrapper p-relative">
+                                <div class="header__main ms-border2 d-flex align-items-center justify-content-between">
+                                    <!-- Logo -->
+                                    <div class="header__logo pt-25 pb-25">
+                                        <a href="@Url.Action("Index", "Home")">
+                                            <img src="@Url.Content("~/Client/assets/img/logo/logo.svg")" alt="logo not found">
+                                        </a>
+                                    </div>
 
-							@{
-								var email = Context.Session.GetString("UEmail");
-								var memId = Context.Session.GetInt32("UId") ?? 0;
-							}
+                                    <!-- Browse Acts -->
+                                    <div class="d-none d-xxl-block">
+                                        <div class="browse-filter p-relative ms-browse-act-wrap">
+                                            <div class="ms-browse-icon ms-cp">
+                                                <a class="browse-filter__text" href="javascript:void(0)">
+                                                    <i class="flaticon-options-lines"></i> Browse Acts
+                                                </a>
+                                            </div>
+                                            <div class="ms-browse-act-item-wrap p-absolute">
+                                                <div class="ms-song-item">
+                                                    <div class="ms-song-img p-relative">
+                                                        <a href="@Url.Action("Index","Event", new { category="Workshop"})">
+                                                            <img src="~/assets/img/genres/genres-01.jpg" alt="brand-song">
+                                                        </a>
+                                                    </div>
+                                                    <div class="ms-song-content">
+                                                        <h3 class="ms-song-title">
+                                                            <a href="@Url.Action("Index","Event", new { category="Workshop"})">Workshop</a>
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                                <div class="ms-song-item">
+                                                    <div class="ms-song-img p-relative">
+                                                        <a href="@Url.Action("Index","Event", new { category="Competition"})">
+                                                            <img src="~/assets/img/genres/genres-02.jpg" alt="brand-song">
+                                                        </a>
+                                                    </div>
+                                                    <div class="ms-song-content">
+                                                        <h3 class="ms-song-title">
+                                                            <a href="@Url.Action("Index","Event", new { category="Competition"})">Competition</a>
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                                <div class="ms-song-item">
+                                                    <div class="ms-song-img p-relative">
+                                                        <a href="@Url.Action("Index","Event", new { category="Cultural"})">
+                                                            <img src="~/assets/img/genres/genres-03.jpg" alt="brand-song">
+                                                        </a>
+                                                    </div>
+                                                    <div class="ms-song-content">
+                                                        <h3 class="ms-song-title">
+                                                            <a href="@Url.Action("Index","Event", new { category="Cultural"})">Cultural</a>
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                                <div class="ms-song-item">
+                                                    <div class="ms-song-img p-relative">
+                                                        <a href="@Url.Action("Index","Event", new { category="Sports"})">
+                                                            <img src="~/assets/img/genres/genres-04.jpg" alt="brand-song">
+                                                        </a>
+                                                    </div>
+                                                    <div class="ms-song-content">
+                                                        <h3 class="ms-song-title">
+                                                            <a href="@Url.Action("Index","Event", new { category="Sports"})">Sports</a>
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-							<li class="nav-item dropdown">
-								@if (!string.IsNullOrEmpty(email))
-								{
-									<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@email</a>
-									<div class="dropdown-menu rounded-0 m-0">
-										<!-- Profile -->
-										<a class="dropdown-item"
-										   href="@Url.Action("Index", "Profile", new { area = "Client", id = memId })">
-											Your profile
-										</a>
+                                    <!-- Main Menu -->
+                                    <div class="header__right">
+                                        <div class="mean__menu-wrapper">
+                                            <div class="main-menu main-menu-ff-space">
+                                                <nav id="mobile-menu">
+                                                    <ul>
+                                                        <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                                                            <a href="@Url.Action("Index", "Home")">Home</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="@Url.Action("Index", "EventDetail", new{id = 1})">About</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="@Url.Action("WorkSystem", "Home")">How It Works</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="@Url.Action("Index","Event")">Events</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="@Url.Action("News", "Home")">Blog</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="@Url.Action("Contact", "Home")">Help Center</a>
+                                                        </li>
+                                                        @* Login/Register *@
+                                                        @{
+                                                            var email = Context.Session.GetString("UEmail");
+                                                            var memId = Context.Session.GetInt32("UId");
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(email))
+                                                        {
+                                                            <li class="has-dropdown">
+                                                                <a href="#">@email</a>
+                                                                <ul class="submenu">
+                                                                    <li><a href="@Url.Action("Index", "ProfileMember", new { memId = memId })">Your profile</a></li>
+                                                                    <li><a href="@Url.Action("Index", "Order", new { memId = memId })">Your orders</a></li>
+                                                                    <li><a href="@Url.Action("Index", "Registration", new { id = memId })">Your registration</a></li>
+                                                                    <li><a href="@Url.Action("Logout", "Client")">Logout</a></li>
+                                                                </ul>
+                                                            </li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="user__acount d-none d-xxl-inline-flex">
+                                                                <span>
+                                                                    <a href="@Url.Action("Login", "Client", new {area = "Client"})"><i class="flaticon-user"></i></a>
+                                                                </span>
+                                                            </div>
+                                                        }
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                        <!-- Action buttons -->
+                                        <div class="header__action-inner d-flex align-items-center">
+                                            <div class="header__btn">
+                                                <a href="@Url.Action("Join","Home")" class="ms-border-btn">
+                                                    <i class="fa-regular fa-plus"></i>List Your Service
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div> <!-- End Right -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- ==== End Header ==== -->
+        
+        <!-- Hero giữ nguyên -->
+        <header id="gtco-header" class="gtco-cover" role="banner" style="background-image: url('@(Url.Content("~/Client/images/img_bg_1.jpg"))');">
+            <div class="overlay"></div>
+            <div class="gtco-container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <div class="display-t">
+                            <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                                <h1>@(ViewData["HeroTitle"] as string ?? "Sự kiện nổi bật của trường")</h1>
+                                <h2 class="lead text-light">@(ViewData["HeroSubtitle"] as string ?? "Khám phá — Đăng ký — Tham dự")</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-										<!-- Orders -->
-										<a class="dropdown-item"
-										   href="@Url.Action("Index", "Order", new { area = "Client", memId = memId })">
-											Your orders
-										</a>
+        @RenderBody()
 
-										<!-- Logout -->
-										<a class="dropdown-item"
-										   href="@Url.Action("Logout", "Client", new { area = "Client" })">
-											Logout
-										</a>
-									</div>
-								}
-								else
-								{
-									<a href="@Url.Action("Login", "Client", new { area = "Client" })">Login</a>
-									<a href="@Url.Action("Register", "Client", new { area = "Client" })">Register</a>
-								}
-							</li>
-						</ul>
-					</div>
-				</div>
+        <!-- ==== Footer giữ lại từ main ==== -->
+        <footer>
+            <div class="ms-footer-bg ms-footer-overlay zindex-1 include__bg pt-120"
+                 data-background="@Url.Content("~/Client/assets/img/bg/sound-bg.png")">
+                ...
+            </div>
+        </footer>
+    </div>
 
-			</div>
-		</nav>
+    <div class="gototop js-top">
+        <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+    </div>
 
-		<header id="gtco-header" class="gtco-cover" role="banner" style="background-image: url('@(Url.Content("~/Client/images/img_bg_1.jpg"))');">
-			<div class="overlay"></div>
-			<div class="gtco-container">
-				<div class="row">
-					<div class="col-md-12 text-center">
-						<div class="display-t">
-							<div class="display-tc animate-box" data-animate-effect="fadeIn">
-								<h1>@(ViewData["HeroTitle"] as string ?? "Sự kiện nổi bật của trường")</h1>
-								<h2 class="lead text-light">@(ViewData["HeroSubtitle"] as string ?? "Khám phá — Đăng ký — Tham dự")</h2>
-								<p>
-									<a href="@Url.Action("Index","Event")" class="btn btn-primary btn-lg">Khám phá sự kiện</a>
-									<a href="@Url.Action("Index","Media")" class="btn btn-white btn-outline btn-lg">Thư viện</a>
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</header>
+    <!-- Scripts -->
+    <script src="@Url.Content("~/Client/assets/app/js/jquery-3.6.0.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/waypoints.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/bootstrap.bundle.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/nice-select.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/meanmenu.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/swiper-bundle.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/slick.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/magnific-popup.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/backtotop.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/ajax-form.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/jquery-ui.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/gsap.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/ScrollToPlugin.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/SplitText.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/ScrollTrigger.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/jquery.jplayer.min.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/jplayer.playlist.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/settings.js")"></script>
+    <script src="@Url.Content("~/Client/assets/app/js/main.js")"></script>
 
-		@RenderBody()
-
-		<footer id="gtco-footer" role="contentinfo">
-			<div class="gtco-container">
-				<div class="row row-pb-md">
-					<div class="col-md-2 col-sm-4 col-xs-6 ">
-						<ul class="gtco-footer-links">
-							<li><a href="@Url.Action("About","Home")">About</a></li>
-							<li><a href="@Url.Action("Help","Home")">Help</a></li>
-							<li><a href="@Url.Action("Contact","Home")">Contact</a></li>
-							<li><a href="@Url.Action("Terms","Home")">Terms</a></li>
-							<li><a href="@Url.Action("Meetups","Home")">Meetups</a></li>
-						</ul>
-					</div>
-					<div class="col-md-2 col-sm-4 col-xs-6">
-						<ul class="gtco-footer-links">
-							<li><a href="#">Creative Design</a></li>
-							<li><a href="#">Branding</a></li>
-							<li><a href="#">Illustration</a></li>
-							<li><a href="#">Subscribe</a></li>
-							<li><a href="#">Monthly Event</a></li>
-						</ul>
-					</div>
-
-					<div class="clearfix visible-xs-block"></div>
-
-					<div class="col-md-2 col-sm-4 col-xs-6">
-						<ul class="gtco-footer-links">
-							<li><a href="#">About</a></li>
-							<li><a href="#">Help</a></li>
-							<li><a href="#">Contact</a></li>
-							<li><a href="#">Terms</a></li>
-							<li><a href="#">Meetups</a></li>
-						</ul>
-					</div>
-
-					<div class="clearfix visible-sm-block"></div>
-
-					<div class="col-md-2 col-sm-4 col-xs-6">
-						<ul class="gtco-footer-links">
-							<li><a href="#">Shop</a></li>
-							<li><a href="#">Privacy</a></li>
-							<li><a href="#">Testimonials</a></li>
-							<li><a href="#">Handbook</a></li>
-							<li><a href="#">Held Desk</a></li>
-						</ul>
-					</div>
-
-					<div class="clearfix visible-xs-block"></div>
-
-					<div class="col-md-2 col-sm-4 col-xs-6">
-						<ul class="gtco-footer-links">
-							<li><a href="#">Find Designers</a></li>
-							<li><a href="#">Find Developers</a></li>
-							<li><a href="#">Teams</a></li>
-							<li><a href="#">Advertise</a></li>
-							<li><a href="#">API</a></li>
-						</ul>
-					</div>
-
-					<div class="col-md-2 col-sm-4 col-xs-6">
-						<ul class="gtco-footer-links">
-							<li><a href="#">About</a></li>
-							<li><a href="#">Help</a></li>
-							<li><a href="#">Contact</a></li>
-							<li><a href="#">Terms</a></li>
-							<li><a href="#">Meetups</a></li>
-						</ul>
-					</div>
-
-				</div>
-
-				<div class="row copyright">
-					<div class="col-md-12 d-flex justify-content-between align-items-center">
-						<div>
-							<small class="block">&copy; @DateTime.Now.Year EventSphere. All Rights Reserved.</small>
-							<small class="block">Designed and maintained by Aptech</small>
-						</div>
-						<div>
-							<ul class="gtco-social-icons list-unstyled d-flex gap-2 mb-0">
-								<li><a href="#"><i class="icon-twitter"></i></a></li>
-								<li><a href="#"><i class="icon-facebook"></i></a></li>
-								<li><a href="#"><i class="icon-linkedin"></i></a></li>
-								<li><a href="#"><i class="icon-dribbble"></i></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</footer>
-	</div>
-
-	<div class="gototop js-top">
-		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
-	</div>
-
-	<!-- JS: use Url.Content -->
-	<script src="@(Url.Content("~/Client/js/jquery.min.js"))"></script>
-	<script src="@(Url.Content("~/Client/js/jquery.easing.1.3.js"))"></script>
-	<script src="@(Url.Content("~/Client/js/bootstrap.min.js"))"></script>
-	<script src="@(Url.Content("~/Client/js/jquery.waypoints.min.js"))"></script>
-	<script src="@(Url.Content("~/Client/js/owl.carousel.min.js"))"></script>
-	<script src="@(Url.Content("~/Client/js/jquery.countTo.js"))"></script>
-	<script src="@(Url.Content("~/Client/js/jquery.magnific-popup.min.js"))"></script>
-	<script src="@(Url.Content("~/Client/js/magnific-popup-options.js"))"></script>
-	<script src="@(Url.Content("~/Client/js/main.js"))"></script>
-
-	@RenderSection("scripts", required: false)
+    @RenderSection("scripts", required: false)
 </body>
 </html>

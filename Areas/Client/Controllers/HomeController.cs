@@ -1,7 +1,7 @@
-﻿// Areas/Client/Controllers/HomeController.cs
-using EventSphere.Models.ModelViews;
+﻿using EventSphere.Models.ModelViews;
 using EventSphere.Models.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,25 +17,59 @@ namespace EventSphere.Areas.Client.Controllers
             _repo = repo;
         }
 
-        public async Task<IActionResult> Index()
+        // Index với filter + paging
+        public async Task<IActionResult> Index(
+            string q = "",
+            string department = "",
+            string status = "all",
+            string start = "",
+            string end = "",
+            int page = 1,
+            int pageSize = 6)
         {
-            var upcomingTask = _repo.GetUpcomingEventBriefsAsync();
-            var mediaTask = _repo.GetLatestAsync(6);
-            var catsTask = _repo.GetDistinctCategoriesAsync();
-            var mediaYearsTask = _repo.GetMediaYearsAsync();
-            // nếu bạn có announcements trong DB, có thể gọi _repo.GetSiteAnnouncementsAsync()
+            // parse dates from querystring safe
+            DateOnly? startDate = null;
+            DateOnly? endDate = null;
+            if (!string.IsNullOrWhiteSpace(start))
+            {
+                if (DateTime.TryParse(start, out var dtStart))
+                    startDate = DateOnly.FromDateTime(dtStart);
+            }
+            if (!string.IsNullOrWhiteSpace(end))
+            {
+                if (DateTime.TryParse(end, out var dtEnd))
+                    endDate = DateOnly.FromDateTime(dtEnd);
+            }
 
-            await Task.WhenAll(upcomingTask, mediaTask, catsTask, mediaYearsTask);
+            // fetch categories + media in parallel (for filter selects and sidebar)
+            var catsTask = _repo.GetDistinctCategoriesAsync();
+            var mediaTask = _repo.GetLatestAsync(6);
+            var yearsTask = _repo.GetMediaYearsAsync();
+
+            var searchTask = _repo.SearchEventsAsync(q, department, startDate, endDate, status, Math.Max(1, page), pageSize);
+
+            await Task.WhenAll(catsTask, mediaTask, yearsTask, searchTask);
+
+            var (items, total) = await searchTask;
 
             var vm = new HomeViewModel
             {
-                UpcomingEvents = await upcomingTask,
+                UpcomingEvents = items,
                 LatestMedia = await mediaTask,
-                Categories = await catsTask ?? Enumerable.Empty<KeyValuePair<string, string>>(),
-                MediaYears = await mediaYearsTask ?? Enumerable.Empty<int>(),
-                TotalUpcomingEvents = (await upcomingTask).Count,
+                Categories = await catsTask ?? Enumerable.Empty<System.Collections.Generic.KeyValuePair<string, string>>(),
+                MediaYears = await yearsTask ?? Enumerable.Empty<int>(),
+
+                TotalItems = total,
+                EventsPageSize = pageSize,
+                CurrentPage = Math.Max(1, page),
+
+                SearchQuery = q ?? string.Empty,
+                SelectedDepartment = department ?? string.Empty,
+                SelectedStatus = status ?? "all",
+                StartDateStr = string.IsNullOrWhiteSpace(startDate?.ToString()) ? start : start,
+                EndDateStr = string.IsNullOrWhiteSpace(endDate?.ToString()) ? end : end,
                 IsAuthenticated = User.Identity?.IsAuthenticated ?? false,
-                SiteAnnouncements = Enumerable.Empty<HomeViewModel.Announcement>() // tạm thời rỗng nếu chưa map DB
+                SiteAnnouncements = Enumerable.Empty<HomeViewModel.Announcement>()
             };
 
             ViewData["Title"] = "Trang chủ";

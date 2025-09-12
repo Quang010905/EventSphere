@@ -141,6 +141,7 @@ namespace EventSphere.Areas.Client.Controllers
                     {
                         0 => RedirectToAction("Index", "Admin", new { area = "Admin" }),
                         1 => RedirectToAction("Index", "Home", new { area = "Client" }),
+                        2 => RedirectToAction("Index", "Organizer", new {area = "Organizer"}),
                         _ => RedirectToAction("Login", "Client")
                     };
                 }

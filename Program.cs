@@ -56,15 +56,15 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
 
-app.MapControllerRoute(
-    name: "client_default",
-    pattern: "{controller=Home}/{action=Index}/{id?}",
-    defaults: new { area = "Client" });
-
-// Nếu cần admin default route thì bật cái này
 //app.MapControllerRoute(
-//    name: "admin_default",
-//    pattern: "{controller=Attendance}/{action=Index}/{id?}",
-//    defaults: new { area = "Admin" });
+//    name: "client_default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}",
+//    defaults: new { area = "Client" });
+
+
+app.MapControllerRoute(
+    name: "admin_default",
+    pattern: "{controller=Attendance}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" });
 
 app.Run();
