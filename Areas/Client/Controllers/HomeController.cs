@@ -68,7 +68,6 @@ namespace EventSphere.Areas.Client.Controllers
                 SelectedStatus = status ?? "all",
                 StartDateStr = string.IsNullOrWhiteSpace(startDate?.ToString()) ? start : start,
                 EndDateStr = string.IsNullOrWhiteSpace(endDate?.ToString()) ? end : end,
-
                 IsAuthenticated = User.Identity?.IsAuthenticated ?? false,
                 SiteAnnouncements = Enumerable.Empty<HomeViewModel.Announcement>()
             };

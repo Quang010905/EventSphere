@@ -66,12 +66,10 @@ namespace EventSphere.Models.ModelViews
             public string? Category { get; set; }
             public string? Description { get; set; }
 
-            // Seating / availability
             public int? MaxSeats { get; set; }
             public int SeatsBooked { get; set; }
             public int SeatsAvailable { get; set; }
 
-            // Feature flags used in view
             public bool IsWaitlistEnabled { get; set; }
             public bool IsApproved { get; set; }
         }
