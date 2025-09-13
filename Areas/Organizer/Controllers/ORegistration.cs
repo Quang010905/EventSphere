@@ -25,7 +25,8 @@ namespace EventSphere.Areas.Organizer.Controllers
 
         public IActionResult Index()
         {
-            var list = RegistrationRepository.Instance.GetAll();
+            var organizerId = HttpContext.Session.GetInt32("UId");
+            var list = RegistrationRepository.Instance.GetByOrganizerId(organizerId.Value);
             ViewBag.listReg = list;
             return View();
         }
@@ -37,19 +38,26 @@ namespace EventSphere.Areas.Organizer.Controllers
             try
             {
                 var result = RegistrationRepository.Instance.ApproveAndCreateAttendance(id);
-                if (string.IsNullOrWhiteSpace(result.StudentEmail))
-                    return Json(new { success = true, message = "Đã duyệt nhưng không gửi mail vì sinh viên chưa có email." });
 
-                // ✅ Luôn lấy BaseUrl từ appsettings.json – KHÔNG fallback về localhost
+                if (result == null)
+                    return Json(new { success = false, message = "No results from repository." });
+
+                if (result.IsWaitlisted)
+                {
+                    // Nếu đã đưa vào danh sách chờ thì không gửi mail
+                    return Json(new { success = true, message = "The event is currently full. The student has been placed on the waitlist. No email sent yet.." });
+                }
+
+                if (string.IsNullOrWhiteSpace(result.StudentEmail))
+                    return Json(new { success = true, message = "Approved but not sent email because student does not have email yet." });
+
                 var baseUrl = _configuration["AppSettings:BaseUrl"];
                 if (string.IsNullOrWhiteSpace(baseUrl))
-                    throw new InvalidOperationException("BaseUrl chưa được cấu hình trong appsettings.json");
+                    throw new InvalidOperationException("BaseUrl is not configured in appsettings.json");
 
-                // URL công khai để điểm danh
                 var qrUrl = $"{baseUrl}/Organizer/Scan/MarkAttendance" +
                             $"?attendanceId={result.AttendanceId}&eventId={result.EventId}&studentId={result.StudentId}";
 
-                // Tạo QR code
                 byte[] qrBytes;
                 using (var qrGen = new QRCodeGenerator())
                 using (var qrData = qrGen.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
@@ -76,7 +84,7 @@ namespace EventSphere.Areas.Organizer.Controllers
                     result.StudentEmail, subject, htmlBody, qrBytes, "qrImage"
                 );
 
-                return Json(new { success = true, message = "Đã duyệt và gửi mail." });
+                return Json(new { success = true, message = "Approved and sent email." });
             }
             catch (Exception ex)
             {
@@ -85,6 +93,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             }
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Deny(int id)
@@ -92,7 +101,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             try
             {
                 RegistrationRepository.Instance.DenyRegistration(id);
-                return Json(new { success = true, message = "Đã từ chối đăng ký." });
+                return Json(new { success = true, message = "Registration refused." });
             }
             catch (Exception ex)
             {

@@ -1,0 +1,118 @@
+﻿@model IEnumerable<EventSphere.Models.entities.TblEvent>
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section headerContent {
+    <h1 class="h3 mb-0 text-gray-800">Review Events</h1>
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Pending Events List</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Date &amp; Time</th>
+                        <th>Venue</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr id="row-@item.Id">
+                                <td>@item.Title</td>
+                                <td>
+                                    @if (item.Date.HasValue && item.Time.HasValue)
+                                    {
+                                        <div>@item.Date.Value.ToString("dd/MM/yyyy")</div>
+                                        <div>@item.Time.Value.ToString(@"HH\:mm")</div>
+                                    }
+                                    else if (item.Date.HasValue)
+                                    {
+                                        <div>@item.Date.Value.ToString("dd/MM/yyyy")</div>
+                                    }
+                                    else
+                                    {
+                                        <span>No date set</span>
+                                    }
+                                </td>
+                                <td>@item.Venue</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success approve-btn" data-id="@item.Id">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+
+                                    <a href="@Url.Action("Details", "EventsAdmin", new { area = "Admin", id = item.Id })"
+                                       class="btn btn-sm btn-info" title="View details">
+                                        <i class="fas fa-eye"></i> View details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No events pending approval</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // ✅ Destroy before init to avoid "Cannot reinitialise DataTable"
+            if ($.fn.DataTable.isDataTable('#dataTable')) {
+                $('#dataTable').DataTable().destroy();
+            }
+
+            // ✅ Initialize DataTable
+            $('#dataTable').DataTable({
+                "language": {
+                    "search": "🔍 Search:",
+                    "lengthMenu": "Events per page: _MENU_",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ events",
+                    "infoEmpty": "No data available",
+                    "zeroRecords": "No matching records found",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
+                },
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                "ordering": true,
+                "autoWidth": false
+            });
+
+            // ✅ Approve event
+            $('#dataTable').on('click', '.approve-btn', function () {
+                var id = $(this).data("id");
+                $.post("/Admin/Events/Approve", { id: id }, function (res) {
+                    if (res.success) {
+                        // Remove the row from the table instead of reloading the whole page
+                        $('#row-' + id).fadeOut(500, function () { $(this).remove(); });
+                    } else {
+                        alert("❌ Approval failed!");
+                    }
+                });
+            });
+        });
+    </script>
+}

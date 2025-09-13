@@ -23,6 +23,7 @@
     "iisExpress": {
       "applicationUrl": "http://localhost:49848/",
       "sslPort": 44377
+
     }
   }
 }

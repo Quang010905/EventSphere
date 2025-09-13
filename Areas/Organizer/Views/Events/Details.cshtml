@@ -1,0 +1,66 @@
+﻿@model EventSphere.Models.entities.TblEvent
+@{
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
+}
+
+<h2>Event Detail</h2>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <p><b>Title:</b> @Model.Title</p>
+
+        <p>
+            <b>Date & Time:</b>
+            @if (Model.Date != null && Model.Time != null)
+            {
+                @Model.Date.Value.ToString("dd/MM/yyyy") @Model.Time.Value.ToString(@"hh\:mm")
+            }
+            else if (Model.Date != null)
+            {
+                @Model.Date.Value.ToString("dd/MM/yyyy")
+            }
+            else
+            {
+                <span>No information</span>
+            }
+        </p>
+
+        <p><b>Venue:</b> @Model.Venue</p>
+        <p><b>Category:</b> @Model.Category</p>
+        <p><b>Organizer:</b> @Model.Organizer?.Email"</p>
+        <p><b>Description:</b> @Model.Description</p>
+
+        <p>
+            <b>Status:</b>
+            @switch (Model.Status)
+            {
+                case 1:
+                    <span class="badge bg-success">Accepted</span>
+                    ;
+                    break;
+                case 2:
+                    <span class="badge bg-danger">Denied</span>
+                    ;
+                    break;
+                default:
+                    <span class="badge bg-warning">Pending</span>
+                    ;
+                    break;
+            }
+        </p>
+
+        <p>
+            <b>Image's event:</b><br />
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="~/uploads/@Model.Image" alt="Event Image" width="300" />
+            }
+            else
+            {
+                <span>No image</span>
+            }
+        </p>
+    </div>
+</div>
+
+<a href="@Url.Action("Index", "Events", new { area = "Organizer" })" class="btn btn-secondary">⬅ Back</a>

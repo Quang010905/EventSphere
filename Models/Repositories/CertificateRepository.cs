@@ -15,13 +15,18 @@ namespace EventSphere.Repositories
             int pageIndex, int pageSize,
             int? eventId = null, int? studentId = null,
             DateTime? issuedFrom = null, DateTime? issuedTo = null,
-            string? keyword = null)
+            string? keyword = null,
+            int? organizerId = null      // thêm
+ )
         {
             var query = _dbSet
                 .Include(c => c.Event)
                 .Include(c => c.Student)
                     .ThenInclude(s => s.TblUserDetails)
                 .AsQueryable();
+
+            if (organizerId.HasValue)
+                query = query.Where(c => c.Event.OrganizerId == organizerId.Value);
 
             if (eventId.HasValue)
                 query = query.Where(c => c.EventId == eventId.Value);

@@ -184,11 +184,45 @@
 
         <!-- ==== Footer giữ lại từ main ==== -->
         <footer>
-            <div class="ms-footer-bg ms-footer-overlay zindex-1 include__bg pt-120"
-                 data-background="@Url.Content("~/Client/assets/img/bg/sound-bg.png")">
-                ...
+            <div class="ms-footer-bg ms-footer-overlay zindex-1 include__bg pt-120">                 
+                <div class="container">
+                    <div class="footer-logos d-flex justify-content-center align-items-center mt-4">
+                        <a href="~/" title="Home" class="me-3">
+                            <img src="@Url.Content("~/uploads/Logo1.png")" alt="Logo 1" class="img-fluid footer-logo" />
+                        </a>
+                        <a href="~/" title="Home" class="me-3">
+                            <img src="@Url.Content("~/uploads/Logo2.png")" alt="Logo 2" class="img-fluid footer-logo" />
+                        </a>
+                        <a href="~/" title="Home">
+                            <img src="@Url.Content("~/uploads/Logo3.png")" alt="Logo 3" class="img-fluid footer-logo" />
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </footer>
+
+        <style>
+            /* small styles for footer logos */
+            .footer-logos .footer-logo {
+                height: 40px;
+                max-height: 40px;
+                object-fit: contain;
+                display: inline-block;
+            }
+
+            /* spacing on small screens */
+            @@edia (max-width: 576px) {
+                .footer-logos .footer-logo
+
+            {
+                height: 32px;
+                max-height: 32px;
+            }
+
+            }
+        </style>
+
     </div>
 
     <div class="gototop js-top">

@@ -14,13 +14,16 @@ namespace EventSphere.Models.Repositories
         // Lấy danh sách có phân trang
         public async Task<(IEnumerable<TblAttendance> data, int totalCount)> GetPagedAttendancesAsync(
             int pageIndex, int pageSize, int? eventId = null, int? studentId = null,
-            bool? attended = null, string? keyword = null)
+            bool? attended = null, string? keyword = null, int? organizerId = null)
         {
             var query = _dbSet
                 .Include(a => a.Event)
                 .Include(a => a.Student)
                 .AsQueryable();
-
+            if (organizerId.HasValue)
+            {
+                query = query.Where(a => a.Event.OrganizerId == organizerId.Value);
+            }
             if (eventId.HasValue)
                 query = query.Where(a => a.EventId == eventId);
 

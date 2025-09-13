@@ -18,83 +18,62 @@ namespace EventSphere.Repositories
 
         // Lấy danh sách event + seating info theo filter + search
         public async Task<IEnumerable<EventWithSeatingDto>> GetEventsAsync(
-            string filter = "upcoming", // "upcoming", "ongoing", "past", "all"
-            string? keyword = null)
+        int organizerId,                      // 👈 thêm tham số
+        string filter = "upcoming",
+        string? keyword = null)
         {
             var now = DateTime.Now;
 
-            // Lấy events kèm seating thông qua navigation property
-            var events = await _context.TblEvents
+            var query = _context.TblEvents
                 .Include(e => e.TblEventSeating)
-                .AsNoTracking()
-                .ToListAsync();
+                .Where(e => e.OrganizerId == organizerId)   // 👈 lọc theo organizer
+                .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 var k = keyword.Trim().ToLowerInvariant();
-                events = events.Where(e =>
-                       (e.Title ?? "").ToLowerInvariant().Contains(k)
-                    || (e.Category ?? "").ToLowerInvariant().Contains(k)
-                    || (e.Venue ?? "").ToLowerInvariant().Contains(k)
-                ).ToList();
+                query = query.Where(e =>
+                    (e.Title ?? "").ToLower().Contains(k) ||
+                    (e.Category ?? "").ToLower().Contains(k) ||
+                    (e.Venue ?? "").ToLower().Contains(k));
             }
+
+            var events = await query.ToListAsync();
 
             var dtoList = events.Select(ev =>
             {
-                // lấy seating từ navigation (có thể null)
                 var seating = ev.TblEventSeating;
-
-                // chuyển DateOnly?/TimeOnly? -> DateTime + TimeSpan (an toàn)
-                DateOnly? dateOnly = ev.Date;
-                TimeOnly? timeOnly = ev.Time;
-                var timeValue = timeOnly ?? TimeOnly.MinValue;
-                var dateTimeStart = dateOnly.HasValue ? dateOnly.Value.ToDateTime(timeValue) : DateTime.MinValue;
-                var timeSpan = timeValue.ToTimeSpan();
-
-                bool isPast = dateTimeStart < now;
-                bool isUpcoming = !isPast;
-                bool isOngoing = false; // cần duration nếu muốn chính xác
+                DateTime start = ev.Date?.ToDateTime(ev.Time ?? TimeOnly.MinValue) ?? DateTime.MinValue;
+                bool isPast = start < now;
 
                 return new EventWithSeatingDto
                 {
                     EventId = ev.Id,
                     Title = ev.Title ?? "",
-                    Date = dateTimeStart,
-                    Time = timeSpan,
+                    Date = start,
+                    Time = (ev.Time ?? TimeOnly.MinValue).ToTimeSpan(),
                     TotalSeats = seating?.TotalSeats ?? 0,
                     SeatsBooked = seating?.SeatsBooked ?? 0,
                     SeatsAvailable = seating?.SeatsAvailable ?? ((seating?.TotalSeats ?? 0) - (seating?.SeatsBooked ?? 0)),
                     WaitlistEnabled = seating?.WaitlistEnabled ?? false,
                     IsPast = isPast,
-                    IsUpcoming = isUpcoming,
-                    IsOngoing = isOngoing
+                    IsUpcoming = !isPast,
+                    IsOngoing = false
                 };
-            }).ToList();
+            });
 
-            // Áp filter
-            IEnumerable<EventWithSeatingDto> filtered = dtoList;
-            filter = (filter ?? "upcoming").ToLowerInvariant();
-            switch (filter)
+            IEnumerable<EventWithSeatingDto> filtered = filter?.ToLower() switch
             {
-                case "upcoming":
-                    filtered = dtoList.Where(d => d.IsUpcoming && !d.IsPast);
-                    break;
-                case "ongoing":
-                    filtered = dtoList.Where(d => d.IsOngoing);
-                    break;
-                case "past":
-                    filtered = dtoList.Where(d => d.IsPast);
-                    break;
-                case "all":
-                    filtered = dtoList;
-                    break;
-                default:
-                    filtered = dtoList.Where(d => d.IsUpcoming && !d.IsPast);
-                    break;
-            }
+                "upcoming" => dtoList.Where(d => d.IsUpcoming && !d.IsPast),
+                "ongoing" => dtoList.Where(d => d.IsOngoing),
+                "past" => dtoList.Where(d => d.IsPast),
+                "all" => dtoList,
+                _ => dtoList.Where(d => d.IsUpcoming && !d.IsPast)
+            };
 
             return filtered.OrderBy(d => d.Date).ThenBy(d => d.Time);
         }
+
 
         // Lấy thông tin seating của 1 event (dùng navigation)
         public async Task<EventWithSeatingDto?> GetSeatingByEventIdAsync(int eventId)

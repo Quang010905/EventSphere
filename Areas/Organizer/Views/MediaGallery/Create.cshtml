@@ -1,0 +1,108 @@
+﻿@using EventSphere.Areas.Organizer.Controllers
+@model MediaGalleryDto
+@{
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
+    var events = ViewBag.Events as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>());
+    var users = ViewBag.Users as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>());
+}
+
+<h2 class="mb-4">Create Media</h2>
+
+<form id="createMediaForm" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label>Select Event</label>
+        <select name="EventId" class="form-select" required>
+            <option value="">-- Select Event --</option>
+            @foreach (var e in events)
+            {
+                <option value="@e.Value">@e.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>File Type</label>
+        <select name="FileType" class="form-select" required>
+            <option value="1">Image</option>
+            <option value="2">Video</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Upload File</label>
+        <input type="file" name="file" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Caption</label>
+        <input type="text" name="Caption" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Uploader</label>
+        <select name="UploadedBy" class="form-select" required>
+            <option value="">-- Select uploader --</option>
+            @foreach (var u in users)
+            {
+                <option value="@u.Value">@u.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success">Create Media</button>
+        <a href="@Url.Action("Index", "MediaGallery", new { area = "Organizer" })" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function validateFileInput(fileInput, fileType) {
+            if(fileInput.files.length === 0) return true; 
+            var file = fileInput.files[0];
+            var allowedImage = ['image/jpeg','image/png','image/gif'];
+            var allowedVideo = ['video/mp4','video/quicktime','video/x-msvideo'];
+
+            if(fileType == '1' && !allowedImage.includes(file.type)) {
+                alert('Select valid image (.jpg, .png, .gif) when File Type is Image!');
+                fileInput.value = '';
+                return false;
+            }
+            if(fileType == '2' && !allowedVideo.includes(file.type)) {
+                alert('Select valid video (.mp4, .mov, .avi) when File Type is Video!');
+                fileInput.value = '';
+                return false;
+            }
+            return true;
+        }
+
+        $(function(){
+            // Create
+            $('#createMediaForm').submit(function(e){
+                e.preventDefault();
+                var fileInput = this.querySelector('input[name="file"]');
+                var fileType = this.querySelector('select[name="FileType"]').value;
+
+                if(!validateFileInput(fileInput, fileType)) return;
+
+                var formData = new FormData(this);
+                $.ajax({
+                    url: '/Organizer/MediaGallery/CreateAjax',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(res){
+                        if(res.success){
+                            alert('Create media success!');
+                            window.location.href = '/Organizer/MediaGallery/Index';
+                        } else {
+                            alert('Create fail: ' + (res.message || ""));
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

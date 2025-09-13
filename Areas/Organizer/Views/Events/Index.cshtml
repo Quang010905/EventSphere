@@ -1,0 +1,147 @@
+﻿@model IEnumerable<EventSphere.Models.entities.TblEvent>
+@{
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
+}
+
+@section headerContent {
+    <h1 class="h3 mb-0 text-gray-800">Manage Event</h1>
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">List event</h6>
+
+        <div class="d-flex align-items-center gap-2">
+            <div class="mr-3">
+                <label class="mr-2">Status:</label>
+                <select id="statusFilter" class="custom-select custom-select-sm" style="width:auto; display:inline-block;">
+                    <option value="">All</option>
+                    <option value="Đã duyệt">Accepted</option>
+                    <option value="Chưa duyệt">Pending</option>
+                    <option value="Đã vô hiệu">Denied</option>
+                </select>
+            </div>
+
+            <a href="@Url.Action("Create", "Events", new { area = "Organizer" })"
+               class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i> Create event
+            </a>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Date & Time</th>
+                        <th>Venue</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row-@item.Id">
+                            <td>@item.Title</td>
+                            <td>
+                                @if (item.Date.HasValue && item.Time.HasValue)
+                                {
+                                    <div>@item.Date.Value.ToString("dd/MM/yyyy")</div>
+                                    <div>@item.Time.Value.ToString(@"HH\:mm")</div>
+                                }
+                                else if (item.Date.HasValue)
+                                {
+                                    <div>@item.Date.Value.ToString("dd/MM/yyyy")</div>
+                                }
+                                else
+                                {
+                                    <span>No date</span>
+                                }
+                            </td>
+                            <td>@item.Venue</td>
+                            <td>
+                                @if (item.Status == 1)
+                                {
+                                    <span class="badge bg-success">Accepted</span>
+                                }
+                                else if (item.Status == 0 || item.Status == null)
+                                {
+                                    <span class="badge bg-warning">Pending</span>
+                                }
+                                else if (item.Status == 2)
+                                {
+                                    <span class="badge bg-danger">Denied</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", "Events", new { area = "Organizer", id = item.Id })"
+                                   class="btn btn-sm btn-info" title="See Detail">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                @if (item.Status == 0 || item.Status == null)
+                                {
+                                    <a href="@Url.Action("Edit", "Events", new { area = "Organizer", id = item.Id })"
+                                       class="btn btn-sm btn-warning" title="Update event">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                }
+
+                                <a href="@Url.Action("Index", "MediaGallery", new { area = "Organizer", eventId = item.Id })"
+                                   class="btn btn-sm btn-primary" title="Image/Video">
+                                    <i class="fas fa-photo-video"></i> Library
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function () {
+            if ($.fn.DataTable.isDataTable('#dataTable')) {
+                $('#dataTable').DataTable().destroy();
+            }
+
+            var table = $('#dataTable').DataTable({
+                "language": {
+                    "search": "🔍 Tìm kiếm:",
+                    "lengthMenu": "Events: _MENU_",
+                    "info": "Show _START_ to _END_ of event",
+                    "infoEmpty": "No data",
+                    "zeroRecords": "Can not find result",
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
+                    }
+                },
+                "pageLength": 10,
+                "lengthMenu": [[1, 10, 25, 50, -1], [1, 10, 25, 50, "All"]],
+                "ordering": true,
+                "autoWidth": false
+            });
+
+          
+            $('#dataTable_filter input').off().on('keyup', function () {
+                table.search(removeDiacritics(this.value.toLowerCase())).draw();
+            });
+
+    
+            $('#statusFilter').on('change', function () {
+                var val = $(this).val();
+                table.column(3).search(val).draw();
+            });
+
+            
+        });
+    </script>
+}

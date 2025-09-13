@@ -27,7 +27,6 @@ namespace EventSphere.Areas.Client.Controllers
             int page = 1,
             int pageSize = 6)
         {
-            // parse dates from querystring safe
             DateOnly? startDate = null;
             DateOnly? endDate = null;
             if (!string.IsNullOrWhiteSpace(start))
@@ -40,8 +39,6 @@ namespace EventSphere.Areas.Client.Controllers
                 if (DateTime.TryParse(end, out var dtEnd))
                     endDate = DateOnly.FromDateTime(dtEnd);
             }
-
-            // fetch categories + media in parallel (for filter selects and sidebar)
             var catsTask = _repo.GetDistinctCategoriesAsync();
             var mediaTask = _repo.GetLatestAsync(6);
             var yearsTask = _repo.GetMediaYearsAsync();
@@ -72,23 +69,21 @@ namespace EventSphere.Areas.Client.Controllers
                 SiteAnnouncements = Enumerable.Empty<HomeViewModel.Announcement>()
             };
 
-            ViewData["Title"] = "Trang chủ";
+            ViewData["Title"] = "Home"; 
             return View(vm);
         }
         public IActionResult About()
         {
-            ViewData["Title"] = "Giới thiệu EventSphere";
-
-            // Bạn có thể tạo một ViewModel riêng nếu cần truyền thông tin chi tiết về About
+            ViewData["Title"] = "Introducing EventSphere";
             var aboutInfo = new
             {
                 Name = "EventSphere",
-                Description = "Hệ thống thông tin sự kiện trực tuyến cho sinh viên, giảng viên và nhân viên trường đại học.",
-                Purpose = "Cung cấp thông tin sự kiện, quản lý đăng ký, và cải thiện trải nghiệm người dùng.",
+                Description = "Online event information system for university students, faculty and staff.",
+                Purpose = "Provide event information, manage registration, and improve user experience.",
                 ContactEmail = "support@eventsphere.edu.vn"
             };
 
-            return View(aboutInfo); // truyền dữ liệu tới View nếu muốn
+            return View(aboutInfo); 
         }
     }
 }

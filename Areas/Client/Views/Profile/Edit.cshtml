@@ -4,7 +4,7 @@
     Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
     ViewData["Title"] = "Edit profile";
     ViewData["HeroTitle"] = ViewData["Title"];
-    ViewData["HeroSubtitle"] = "Cập nhật thông tin cá nhân của bạn";
+    ViewData["HeroSubtitle"] = "Update your personal information";
 }
 
 @section styles {
@@ -150,6 +150,7 @@
                             </div>
 
                             <div class="col-12 d-flex justify-content-between mt-3">
+
                                 <a href="@Url.Action("Index", "Profile", new { area = "Client", id = Model.UserId })" class="btn btn-cancel">⬅Come back</a>
                                 <button type="submit" class="btn btn-save">💾 Save changes</button>
                             </div>

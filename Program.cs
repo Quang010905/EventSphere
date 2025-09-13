@@ -79,9 +79,10 @@ app.MapControllerRoute(
 //    pattern: "{controller=ORegistration}/{action=Index}/{id?}",
 //    defaults: new { area = "Organizer" });
 
-//app.MapControllerRoute(
-//    name: "admin_default",
-//    pattern: "{controller=Attendance}/{action=Index}/{id?}",
-//    defaults: new { area = "Admin" });
+
+// app.MapControllerRoute(
+//     name: "admin_default",
+//     pattern: "{controller=EventsAdmin}/{action=Index}/{id?}",
+//     defaults: new { area = "Admin" });
 
 app.Run();

@@ -24,13 +24,13 @@ namespace EventSphere.Models.Repositories
         }
 
         // Lấy toàn bộ đăng ký
-        public List<RegistrationView> GetAll()
+        public List<RegistrationView> GetByOrganizerId(int id)
         {
             using var db = new EventSphereContext();
             return db.TblRegistrations
                      .Include(x => x.Event)
                      .Include(x => x.Student)
-                        .ThenInclude(s => s.TblUserDetails)
+                        .ThenInclude(s => s.TblUserDetails).Where(x => x.Event.OrganizerId == id).OrderBy(x => x.RegisteredOn)
                      .Select(x => new RegistrationView
                      {
                          Id = x.Id,
@@ -47,6 +47,8 @@ namespace EventSphere.Models.Repositories
                          StudentName = x.Student.TblUserDetails.FirstOrDefault().Fullname ?? x.Student.Email
                      }).ToList();
         }
+
+        
 
         public void Add(RegistrationView entity)
         {
@@ -132,33 +134,161 @@ namespace EventSphere.Models.Repositories
             using var tran = db.Database.BeginTransaction();
             try
             {
+                // Cập nhật atomic: chỉ set status = 1 nếu đang pending (NULL hoặc 0)
                 int updated = db.Database.ExecuteSqlInterpolated(
                     $"UPDATE dbo.tbl_registration SET _status = 1 WHERE _id = {registrationId} AND (_status IS NULL OR _status = 0)");
 
                 if (updated == 0)
-                    throw new InvalidOperationException("Registration đã được xử lý trước đó hoặc không thể duyệt.");
+                {
+                    // Đã được xử lý trước đó (hoặc không tồn tại) -> trả về thông tin để caller biết
+                    var already = db.TblRegistrations
+                                   .Include(r => r.Event)
+                                   .Include(r => r.Student)
+                                   .FirstOrDefault(r => r.Id == registrationId);
 
+                    return new RegistrationProcessResult
+                    {
+                        RegistrationId = registrationId,
+                        EventId = already?.EventId ?? 0,
+                        EventName = already?.Event?.Title ?? "",
+                        EventDate = already?.Event?.Date,
+                        EventTime = already?.Event?.Time,
+                        StudentId = already?.StudentId ?? 0,
+                        StudentEmail = already?.Student?.Email ?? "",
+                        StudentName = already?.Student?.TblUserDetails?.FirstOrDefault()?.Fullname ?? already?.Student?.Email ?? "",
+                        AlreadyProcessed = true,
+                        Message = "Registration đã được xử lý trước đó hoặc không thể duyệt."
+                    };
+                }
+
+                // Lấy lại registration sau khi cập nhật status
                 var reg = db.TblRegistrations
                             .Include(r => r.Event)
                             .Include(r => r.Student)
                             .FirstOrDefault(r => r.Id == registrationId);
 
-                if (reg == null) throw new InvalidOperationException("Registration not found after update.");
+                if (reg == null)
+                    throw new InvalidOperationException("Registration not found after update.");
 
+                var evt = reg.Event;
+                var student = reg.Student;
+
+                // --- 1) Kiểm tra TblEventSeatings (nếu có) ---
                 var seating = db.TblEventSeatings.FirstOrDefault(s => s.EventId == reg.EventId);
                 if (seating != null && (seating.SeatsAvailable ?? 0) <= 0)
-                    throw new InvalidOperationException("Event is fully booked.");
+                {
+                    // Hết chỗ -> đưa vào waitlist
+                    var wait = new TblEventWaitlist
+                    {
+                        UserId = reg.StudentId,
+                        EventId = reg.EventId,
+                        WaitlistTime = DateTime.Now,
+                        Status = 0
+                    };
+                    db.TblEventWaitlists.Add(wait);
+
+                    // Cập nhật registration status sang "waitlisted" (ví dụ 3)
+                    reg.Status = 3;
+                    db.TblRegistrations.Update(reg);
+
+                    db.SaveChanges();
+                    tran.Commit();
+
+                    return new RegistrationProcessResult
+                    {
+                        RegistrationId = reg.Id,
+                        WaitlistId = wait.Id,
+                        EventId = reg.EventId ?? 0,
+                        EventName = evt?.Title ?? "",
+                        EventDate = evt?.Date,
+                        EventTime = evt?.Time,
+                        StudentId = reg.StudentId ?? 0,
+                        StudentEmail = student?.Email ?? "",
+                        StudentName = student?.TblUserDetails?.FirstOrDefault()?.Fullname ?? student?.Email ?? "",
+                        IsWaitlisted = true,
+                        Message = "Sự kiện đã đầy. Đã chuyển vào danh sách chờ."
+                    };
+                }
+
+                // --- 2) Nếu có seating và còn chỗ: cập nhật seating trước khi tạo attendance ---
+                TblAttendance attendance = db.TblAttendances
+                    .FirstOrDefault(a => a.EventId == reg.EventId && a.StudentId == reg.StudentId);
 
                 if (seating != null)
                 {
-                    seating.SeatsBooked = (seating.SeatsBooked ?? 0) + 1;
-                    seating.SeatsAvailable = Math.Max(0, (seating.SeatsAvailable ?? 0) - 1);
-                    db.TblEventSeatings.Update(seating);
+                    // Nếu chưa có attendance thì tăng booked
+                    if (attendance == null)
+                    {
+                        seating.SeatsBooked = (seating.SeatsBooked ?? 0) + 1;
+                        seating.SeatsAvailable = Math.Max(0, (seating.SeatsAvailable ?? 0) - 1);
+                        db.TblEventSeatings.Update(seating);
+                    }
+                }
+                else
+                {
+                    // --- 3) Nếu không có seating: fallback kiểm tra capacity qua property (reflection) hoặc đếm attendance hiện tại ---
+                    int? capacity = null;
+                    try
+                    {
+                        var eventType = evt?.GetType();
+                        string[] candidateNames = new[] { "Capacity", "SeatCapacity", "MaxSeats", "TotalSeats", "SeatingCapacity", "Seats" };
+                        foreach (var n in candidateNames)
+                        {
+                            var prop = eventType?.GetProperty(n);
+                            if (prop != null)
+                            {
+                                var v = prop.GetValue(evt);
+                                if (v != null && int.TryParse(v.ToString(), out var c) && c > 0)
+                                {
+                                    capacity = c;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    catch { /* ignore */ }
+
+                    if (capacity.HasValue)
+                    {
+                        var reservedCount = db.TblAttendances.Count(a => a.EventId == evt.Id);
+                        if (reservedCount >= capacity.Value)
+                        {
+                            // chuyển vào waitlist
+                            var wait = new TblEventWaitlist
+                            {
+                                UserId = reg.StudentId,
+                                EventId = reg.EventId,
+                                WaitlistTime = DateTime.Now,
+                                Status = 0
+                            };
+                            db.TblEventWaitlists.Add(wait);
+
+                            reg.Status = 3;
+                            db.TblRegistrations.Update(reg);
+
+                            db.SaveChanges();
+                            tran.Commit();
+
+                            return new RegistrationProcessResult
+                            {
+                                RegistrationId = reg.Id,
+                                WaitlistId = wait.Id,
+                                EventId = reg.EventId ?? 0,
+                                EventName = evt?.Title ?? "",
+                                EventDate = evt?.Date,
+                                EventTime = evt?.Time,
+                                StudentId = reg.StudentId ?? 0,
+                                StudentEmail = student?.Email ?? "",
+                                StudentName = student?.TblUserDetails?.FirstOrDefault()?.Fullname ?? student?.Email ?? "",
+                                IsWaitlisted = true,
+                                Message = "Sự kiện đã đầy (theo capacity). Đã chuyển vào danh sách chờ."
+                            };
+                        }
+                    }
+                    // nếu không có capacity hoặc còn chỗ -> tiếp tục tạo attendance
                 }
 
-                var attendance = db.TblAttendances
-                    .FirstOrDefault(a => a.EventId == reg.EventId && a.StudentId == reg.StudentId);
-
+                // --- Tạo attendance nếu chưa có ---
                 if (attendance == null)
                 {
                     attendance = new TblAttendance
@@ -166,10 +296,15 @@ namespace EventSphere.Models.Repositories
                         EventId = reg.EventId,
                         StudentId = reg.StudentId,
                         Attended = false,
-                        MarkedOn = DateTime.Now
+                        MarkedOn = null // chưa điểm danh
+                                        // nếu entity của bạn có CreatedOn/CreatedDate, có thể set thêm ở đây
                     };
                     db.TblAttendances.Add(attendance);
                 }
+
+                // Đảm bảo registration marked accepted = 1 (mặc dù đã update ở đầu, nhưng vẫn an toàn)
+                reg.Status = 1;
+                db.TblRegistrations.Update(reg);
 
                 db.SaveChanges();
                 tran.Commit();
@@ -179,20 +314,23 @@ namespace EventSphere.Models.Repositories
                     RegistrationId = reg.Id,
                     AttendanceId = attendance.Id,
                     EventId = reg.EventId ?? 0,
-                    EventName = reg.Event?.Title ?? "",
-                    EventDate = reg.Event?.Date,
-                    EventTime = reg.Event?.Time,
+                    EventName = evt?.Title ?? "",
+                    EventDate = evt?.Date,
+                    EventTime = evt?.Time,
                     StudentId = reg.StudentId ?? 0,
-                    StudentEmail = reg.Student?.Email ?? "",
-                    StudentName = reg.Student?.TblUserDetails?.FirstOrDefault()?.Fullname ?? reg.Student?.Email ?? ""
+                    StudentEmail = student?.Email ?? "",
+                    StudentName = student?.TblUserDetails?.FirstOrDefault()?.Fullname ?? student?.Email ?? "",
+                    IsWaitlisted = false,
+                    Message = "Đã duyệt và tạo attendance."
                 };
             }
             catch
             {
-                tran.Rollback();
+                try { tran.Rollback(); } catch { }
                 throw;
             }
         }
+
 
         public void DenyRegistration(int registrationId)
         {

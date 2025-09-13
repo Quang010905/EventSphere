@@ -12,7 +12,7 @@
     <!-- Custom fonts for this template-->
     <link href="@Url.Content("~/Admin")/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-          rel="stylesheet">
+    rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="@Url.Content("~/Admin")/css/sb-admin-2.min.css" rel="stylesheet">
@@ -36,71 +36,26 @@
                 <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
             </li>
 
-            <!-- Nav Item - Events -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "Events", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-calendar"></i>
-                    <span>Quản lý Event</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Media Gallery -->
-            <li class="nav-item">
-                 <a class="nav-link" href="@Url.Action("Index", "MediaGallery", new { area = "Admin" })">
-                     <i class="fas fa-fw fa-images"></i>
-                     <span>Quản lý Thư viện</span>
-                 </a>
-            </li>
-
-            <!-- Nav Item - Attendance -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "Attendance", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Attendance</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Feedback -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "Feedback", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-comments"></i>
-                    <span>Feedback</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Certificate -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "Certificate", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-certificate"></i>
-                    <span>Certificate</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Event Seating -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "EventSeating", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-th-large"></i>
-                    <span>Quản lý Chỗ ngồi</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Event Share Logs -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "EventShareLog", new { area = "Admin" })">
-                    <i class="fas fa-share-alt fa-fw"></i>
-                    <span>Event Share Logs</span>
-                </a>
-            </li>
             <li class="nav-item">
                 <a class="nav-link" href="@Url.Action("Index", "User", new { area = "Admin" })">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Quản lý User</span>
                 </a>
             </li>
-
-            <li>
-                <hr class="sidebar-divider d-none d-md-block" />
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "EventsAdmin", new { area = "Admin" })" title="Manage Events">
+                    <i class="fas fa-fw fa-calendar-alt"></i>
+                    <span>Quản lý Event</span>
+                </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "EventShareLog", new { area = "Admin" })" title="Event Share Logs">
+                    <i class="fas fa-fw fa-share-square"></i>
+                    <span>Event Share Logs</span>
+                </a>
+            </li>
+            <hr class="sidebar-divider d-none d-md-block" />
 
             <!-- Sidebar Toggler (Sidebar) -->
             <li class="text-center d-none d-md-inline">
@@ -108,9 +63,6 @@
             </li>
 
         </ul>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
@@ -123,14 +75,16 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
+                    @{
+                        var email = Context.Session.GetString("UEmail");
+                    }
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- User Info -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">abc</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@email</span>
                                 <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -140,7 +94,7 @@
                                     Profile
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="@Url.Action("Logout", "Admin")">
+                                <a class="dropdown-item" href="@Url.Action("Logout", "Client", new {area = "CLient"})">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -161,22 +115,57 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+            <footer>
+                <div class="ms-footer-bg ms-footer-overlay zindex-1 include__bg pt-120"
+                     data-background="@Url.Content("~/Client/assets/img/bg/sound-bg.png")">
+
+                    <!-- existing footer content -->
+                    ...
+
+                    <!-- logos: centered, responsive -->
+                    <div class="container">
+                        <div class="footer-logos d-flex justify-content-center align-items-center mt-4">
+                            <a href="~/" title="Home" class="me-3">
+                                <img src="@Url.Content("~/uploads/Logo1.png")" alt="Logo 1" class="img-fluid footer-logo" />
+                            </a>
+                            <a href="~/" title="Home" class="me-3">
+                                <img src="@Url.Content("~/uploads/Logo2.png")" alt="Logo 2" class="img-fluid footer-logo" />
+                            </a>
+                            <a href="~/" title="Home">
+                                <img src="@Url.Content("~/uploads/Logo3.png")" alt="Logo 3" class="img-fluid footer-logo" />
+                            </a>
+                        </div>
                     </div>
+
                 </div>
             </footer>
+
             <!-- End of Footer -->
 
         </div>
         <!-- End of Content Wrapper -->
 
     </div>
-    <!-- End of Page Wrapper -->
+    <style>
+        /* small styles for footer logos */
+        .footer-logos .footer-logo {
+            height: 40px;
+            max-height: 40px;
+            object-fit: contain;
+            display: inline-block;
+        }
 
-    <!-- Scroll to Top Button-->
+        /* spacing on small screens */
+        @@edia (max-width: 576px) {
+            .footer-logos .footer-logo
+
+        {
+            height: 32px;
+            max-height: 32px;
+        }
+
+        }
+    </style>
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>

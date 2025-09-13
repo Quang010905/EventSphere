@@ -1,0 +1,90 @@
+﻿@model IEnumerable<EventSphere.Repositories.EventWithSeatingDto>
+@{
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
+    ViewData["Title"] = "Event Seating - Events";
+    string currentFilter = ViewBag.Filter as string ?? "upcoming";
+    string currentSearch = ViewBag.Search as string ?? "";
+}
+
+<h2 class="mb-3">Event Seating</h2>
+
+<form method="get" class="row gy-2 gx-2 align-items-end mb-3">
+    <div class="col-auto">
+        <label class="form-label">Filter</label>
+        <select name="filter" class="form-select">
+            <option value="upcoming" @(currentFilter == "upcoming" ? "selected" : "")>Upcoming</option>
+            <option value="ongoing" @(currentFilter == "ongoing" ? "selected" : "")>Ongoing</option>
+            <option value="past" @(currentFilter == "past" ? "selected" : "")>Past</option>
+            <option value="all" @(currentFilter == "all" ? "selected" : "")>All</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Search</label>
+        <input type="text" name="search" value="@currentSearch" class="form-control" placeholder="Search by title, venue, category..." />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary">Apply</button>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index")">Reset</a>
+    </div>
+</form>
+
+<div class="mb-3">
+    <small class="text-muted">Click event card to view seating. <span class="fw-bold">Yellow</span> = past event.</small>
+</div>
+
+<style>
+    /* small local styles to space cards and make them look nice */
+    .es-card {
+        min-width: 220px;
+        max-width: 260px;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        text-decoration: none;
+        display: block;
+        color: inherit;
+    }
+
+        .es-card .meta {
+            font-size: .9rem;
+            color: #666;
+        }
+
+        .es-card .title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: .25rem;
+        }
+
+    .es-btn-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    /* highlight for past */
+    .es-past {
+        background: #fff3cd;
+        border: 1px solid #ffe8a1;
+    }
+
+    .es-upcoming {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+    }
+</style>
+
+<div class="es-btn-wrap">
+    @foreach (var e in Model)
+    {
+        var classes = e.IsPast ? "es-card es-past" : "es-card es-upcoming";
+        <a class="@classes" href="@Url.Action("Seating", new { id = e.EventId })" title="@e.Title">
+            <div class="title text-truncate">@e.Title</div>
+            <div class="meta">@e.Date.ToString("yyyy-MM-dd") @e.Time.ToString(@"hh\:mm")</div>
+            <div class="mt-2 small">
+                <span class="badge bg-secondary me-1">Seats: @e.TotalSeats</span>
+                <span class="badge bg-danger me-1">Booked: @e.SeatsBooked</span>
+                <span class="badge bg-success">Available: @e.SeatsAvailable</span>
+            </div>
+        </a>
+    }
+</div>
