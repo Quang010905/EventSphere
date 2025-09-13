@@ -12,5 +12,7 @@
         public TimeOnly? Time { get; set; }
         public string Image { get; set; } = "";
         public int status { get; set; } = 0;
+        public string OrganizerName { get; set; } = "";
+        public string OrganizerEmail { get; set; } = "";
     }
 }
