@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<EventSphere.Models.entities.TblMediaGallery>
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
     var eventId = ViewBag.EventId as int?;
 }
 
@@ -11,7 +11,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">Danh sách Media</h6>
-        <a class="btn btn-sm btn-success" href="@Url.Action("Create", "MediaGallery", new { area = "Admin", eventId = eventId })">
+        <a class="btn btn-sm btn-success" href="@Url.Action("Create", "MediaGallery", new { area = "Organizer", eventId = eventId })">
             Thêm Media
         </a>
     </div>
@@ -76,7 +76,7 @@
                                 <td>@item.UploadedByNavigation?.Email</td>
                                 <td>@item.UploadedOn?.ToString("dd/MM/yyyy")</td>
                                 <td>
-                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Admin", id=item.Id })">Sửa</a>
+                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Organizer", id=item.Id })">Sửa</a>
                                     <button class="btn btn-sm btn-danger delete-btn" data-id="@item.Id">Xóa</button>
                                 </td>
                             </tr>
@@ -112,7 +112,7 @@
                                 <td>@item.UploadedByNavigation?.Email</td>
                                 <td>@item.UploadedOn?.ToString("dd/MM/yyyy")</td>
                                 <td>
-                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Admin", id=item.Id })">Sửa</a>
+                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Organizer", id=item.Id })">Sửa</a>
                                     <button class="btn btn-sm btn-danger delete-btn" data-id="@item.Id">Xóa</button>
                                 </td>
                             </tr>
@@ -177,7 +177,7 @@
             $(document).on('click', '.delete-btn', function(){
                 if(!confirm("Bạn có chắc muốn xóa media này?")) return;
                 var id = $(this).data('id');
-                $.post('/Admin/MediaGallery/DeleteAjax', {id:id}, function(res){
+                $.post('/Organizer/MediaGallery/DeleteAjax', {id:id}, function(res){
                     if(res.success){
                         $('#row-' + id).fadeOut(300, function(){ $(this).remove(); });
                     } else alert("Xóa thất bại!");

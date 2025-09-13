@@ -1,6 +1,6 @@
 ﻿@model EventSphere.Models.entities.TblMediaGallery
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
 }
 
 <h3>Sửa Media</h3>
@@ -63,7 +63,7 @@
 
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-success">Lưu</button>
-        <a href="@Url.Action("Index", "MediaGallery", new { area = "Admin" })" class="btn btn-secondary">Hủy</a>
+        <a href="@Url.Action("Index", "MediaGallery", new { area = "Organizer" })" class="btn btn-secondary">Hủy</a>
     </div>
 </form>
 
@@ -112,7 +112,7 @@
 
                 var formData = new FormData(this);
                 $.ajax({
-                    url: '/Admin/MediaGallery/EditAjax',
+                    url: '/Organizer/MediaGallery/EditAjax',
                     type: 'POST',
                     data: formData,
                     contentType: false,
@@ -120,7 +120,7 @@
                     success: function(res){
                         if(res.success){
                             alert('Cập nhật thành công!');
-                            window.location.href = '/Admin/MediaGallery/Index';
+                            window.location.href = '/Organizer/MediaGallery/Index';
                         } else {
                             alert('Lỗi: ' + (res.message || ""));
                         }
