@@ -1,7 +1,7 @@
 ﻿@model EventSphere.Models.ViewModels.CertificatesIndexViewModel
 
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
     ViewData["Title"] = "Certificate Management";
 
     var total = Model.TotalCount;
@@ -11,7 +11,7 @@
 }
 
 <h2>Certificate Management</h2>
-<a class="btn btn-success mb-3" href="@Url.Action("Generate","Certificate",new { area="Admin"})">Generate New Certificate</a>
+<a class="btn btn-success mb-3" href="@Url.Action("Generate","Certificate",new { area="Organizer"})">Generate New Certificate</a>
 
 <!-- Filter form -->
 <form method="get" class="row mb-3" id="filterForm">
@@ -30,7 +30,7 @@
     </div>
     <div class="col-md-3">
         <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="@Url.Action("Index","Certificate", new { area="Admin"})" class="btn btn-secondary">Reset</a>
+        <a href="@Url.Action("Index","Certificate", new { area="Organizer"})" class="btn btn-secondary">Reset</a>
     </div>
 </form>
 
@@ -108,13 +108,13 @@
             const evSel = document.querySelector('#eventSelect');
             if (evSel) {
                 const selected = evSel.getAttribute('data-selected') || '';
-                fillSelect('@Url.Action("GetEvents", "Certificate", new { area = "Admin" })', evSel, selected);
+                fillSelect('@Url.Action("GetEvents", "Certificate", new { area = "Organizer" })', evSel, selected);
             }
 
             const stSel = document.querySelector('#studentSelect');
             if (stSel) {
                 const selected = stSel.getAttribute('data-selected') || '';
-                fillSelect('@Url.Action("GetStudents", "Certificate", new { area = "Admin" })', stSel, selected);
+                fillSelect('@Url.Action("GetStudents", "Certificate", new { area = "Organizer" })', stSel, selected);
             }
         });
     </script>
