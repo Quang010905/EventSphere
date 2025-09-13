@@ -69,15 +69,15 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
 
-app.MapControllerRoute(
-    name: "client_default",
-    pattern: "{controller=Home}/{action=Index}/{id?}",
-    defaults: new { area = "Client" });
-
 //app.MapControllerRoute(
 //    name: "client_default",
-//    pattern: "{controller=ORegistration}/{action=Index}/{id?}",
-//    defaults: new { area = "Organizer" });
+//    pattern: "{controller=Home}/{action=Index}/{id?}",
+//    defaults: new { area = "Client" });
+
+app.MapControllerRoute(
+    name: "client_default",
+    pattern: "{controller=ORegistration}/{action=Index}/{id?}",
+    defaults: new { area = "Organizer" });
 
 //app.MapControllerRoute(
 //    name: "admin_default",
