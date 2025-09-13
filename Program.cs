@@ -76,7 +76,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "client_default",
-    pattern: "{controller=ORegistration}/{action=Index}/{id?}",
+    pattern: "{controller=EventWaitlist}/{action=Index}/{id?}",
     defaults: new { area = "Organizer" });
 
 //app.MapControllerRoute(
