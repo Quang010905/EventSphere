@@ -11,17 +11,26 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">Danh sách sự kiện</h6>
 
-        <!-- Dropdown lọc trạng thái -->
-        <div>
-            <label class="mr-2">Trạng thái:</label>
-            <select id="statusFilter" class="custom-select custom-select-sm" style="width:auto; display:inline-block;">
-                <option value="">Tất cả</option>
-                <option value="Đã duyệt">Đã duyệt</option>
-                <option value="Chưa duyệt">Chưa duyệt</option>
-                <option value="Đã vô hiệu">Đã vô hiệu</option>
-            </select>
+        <div class="d-flex align-items-center gap-2">
+            <!-- Dropdown lọc trạng thái -->
+            <div class="mr-3">
+                <label class="mr-2">Trạng thái:</label>
+                <select id="statusFilter" class="custom-select custom-select-sm" style="width:auto; display:inline-block;">
+                    <option value="">Tất cả</option>
+                    <option value="Đã duyệt">Đã duyệt</option>
+                    <option value="Chưa duyệt">Chưa duyệt</option>
+                    <option value="Đã vô hiệu">Đã vô hiệu</option>
+                </select>
+            </div>
+
+            <!-- Nút thêm sự kiện -->
+            <a href="@Url.Action("Create", "Events", new { area = "Admin" })"
+               class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i> Thêm sự kiện
+            </a>
         </div>
     </div>
+
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
