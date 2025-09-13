@@ -18,5 +18,5 @@ public partial class TblRegistration
     public virtual TblEvent? Event { get; set; }
 
     public virtual TblUser? Student { get; set; }
-    public virtual TblUserDetail? UserDetail { get; set; }
+ 
 }

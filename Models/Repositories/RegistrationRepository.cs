@@ -30,6 +30,7 @@ namespace EventSphere.Models.Repositories
                        .Include(x => x.Student)    // load dữ liệu User trực tiếp
                        .Select(x => new RegistrationView
                        {
+                           Id = x.Id,
                            EventId = x.EventId ?? 0,
                            Status = x.Status ?? 0,
                            Venue = x.Event.Venue,
@@ -72,6 +73,42 @@ namespace EventSphere.Models.Repositories
                 throw;
             }
         }
+
+        public bool Delete(int eventId, int userId)
+        {
+            using (var db = new EventSphereContext())
+            {
+                var item = db.TblRegistrations
+                             .FirstOrDefault(r => r.EventId == eventId && r.StudentId == userId);
+
+                if (item != null)
+                {
+                    db.TblRegistrations.Remove(item);
+                    return db.SaveChanges() > 0;
+                }
+            }
+            return false;
+        }
+
+        public int? GetRegistrationStatus(int studentId, int eventId)
+        {
+            using (var db = new EventSphereContext())
+            {
+                var registration = db.TblRegistrations
+                                     .FirstOrDefault(r => r.StudentId == studentId && r.EventId == eventId);
+                if (registration != null)
+                {
+                    return registration.Status;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+
+
         public bool CheckRegistered(int stuId, int eventId)
         {
             var db = new EventSphereContext();
@@ -79,7 +116,7 @@ namespace EventSphere.Models.Repositories
                      .Any(r => r.StudentId == stuId && r.EventId == eventId);
         }
 
-        public List<RegistrationView> GetRegistrationByStuId(int id)
+        public List<RegistrationView> GetRegistrationByStuId(int? id)
         {
             var db = new EventSphereContext();
             var ls = new List<RegistrationView>();
@@ -87,6 +124,7 @@ namespace EventSphere.Models.Repositories
             {
                 ls = db.TblRegistrations.Where(x => x.StudentId == id).Include(x => x.Event).Select(x => new RegistrationView
                 {
+                    Id = x.Id,
                     EventId = x.EventId ??0,
                     Status = x.Status?? 0,
                     Venue = x.Event.Venue,
