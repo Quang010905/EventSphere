@@ -226,91 +226,80 @@
 
 
 <!-- ===== HERO ===== -->
-<section class="hero-advanced py-6 text-white">
-    <div class="hero-bg"></div>
-    <div class="container position-relative z-2 es-page-inner">
-        <div class="row align-items-center">
-            <div class="col-lg-7">
-                <h1 class="display-2 fw-bold mb-3">EventSphere</h1>
-                <p class="lead mb-3">Explore – Experience – Connect with outstanding school events</p>
-
-                <!-- FILTER / SEARCH FORM -->
-                <form method="get" action="@Url.Action("Index","Home", new { area = "Client" })" class="row g-2 align-items-center">
-                    <div class="col-12 col-md-5">
-                        <input type="search" name="q" value="@qQuery" class="form-control form-control-lg"
-                               placeholder="Keywords, titles, locations...">
-                    </div>
-
-                    <div class="col-12 col-md-3">
-                        <select name="department" class="form-select form-select-lg">
-                            <option value="">Tất cả khoa</option>
-                            @if (Model?.Departments != null)
-                            {
-                                foreach (var d in Model.Departments)
-                                {
-                                    <option value="@d.Key" @(departmentQuery == d.Key ? "selected" : "")>@d.Value</option>
-                                }
-                            }
-                        </select>
-                    </div>
-
-                    <div class="col-6 col-md-2">
-                        <input type="date" name="start" value="@startQuery" class="form-control form-control-lg" />
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <input type="date" name="end" value="@endQuery" class="form-control form-control-lg" />
-                    </div>
-
-                    <div class="col-12 col-md-3 mt-2">
-                        <select name="status" class="form-select">
-                            <option value="all" @(statusQuery == "all" ? "selected" : "")>All statuses</option>
-                            <option value="upcoming" @(statusQuery == "upcoming" ? "selected" : "")>Coming soon</option>
-                            <option value="ongoing" @(statusQuery == "ongoing" ? "selected" : "")>In progress</option>
-                            <option value="past" @(statusQuery == "past" ? "selected" : "")>Past</option>
-                        </select>
-                    </div>
-
-                    <div class="col-12 col-md-3 d-flex gap-2 mt-2">
-                        <button type="submit" class="btn btn-cta btn-lg w-100">Search</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="col-lg-5 d-none d-lg-block">
-                <div class="hero-card p-4 rounded-3 shadow-lg">
-                    <h5 class="mb-3">Upcoming Events</h5>
-                    <ul class="list-unstyled mb-0 small text-muted">
-                        @{
-
-                            var upcoming = (Model?.UpcomingEvents
-                            ?? Enumerable.Empty<EventSphere.Models.ModelViews.HomeViewModel.EventBriefDto>())
-                            .Where(ev => ev.Date.HasValue && ev.Date.Value >= today)
-                            .OrderBy(ev => ev.Date.Value)
-                            .Take(4);
-                        }
-                        @foreach (var e in upcoming)
-                        {
-                            var imgSmall = ResolveUpload(e.Image, "~/Client/images/default-event.jpg");
-                            var dateSmall = FormatDate(e.Date);
-
-                            <li class="d-flex align-items-center mb-3">
-                                <img src="@imgSmall" class="rounded me-3" style="width:64px;height:64px;object-fit:cover;" alt="@e.Title" />
-                                <div class="flex-grow-1">
-                                    <div class="fw-semibold text-primary">@e.Title</div>
-                                    <div class="text-muted">@dateSmall • @e.Venue</div>
-                                </div>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </div>
+<!-- ========== PHẦN HERO MỚI ========== -->
+<section class="page-title-area page-title-spacing p-relative zindex-1"
+         style="background-image: url('@Url.Content("~/Client/assets/img/bg/work-bg.jpg")');  
+           background-size: cover;
+           background-position: center;">
+    <div class="ms-overlay ms-overlay9 p-absolute zindex--1"
+         style="inset:0;background:rgba(0,0,0,0.45);"></div>
+    <div class="container text-center text-white py-5">
+        <h1 class="display-2 fw-bold mb-2">EventSphere</h1>
+        <p class="lead mb-0">Explore – Experience – Connect with outstanding school events</p>
     </div>
 </section>
 
+
+<!-- ========== FORM LỌC / SEARCH RA NGOÀI ========== -->
+<div class="container my-4">
+    <form method="get" action="@Url.Action("Index","Home", new { area = "Client" })"
+          class="row g-2 align-items-center">
+        <div class="col-12 col-md-5">
+            <input type="search" name="q" value="@qQuery" class="form-control form-control-lg"
+                   placeholder="Keywords, titles, locations...">
+        </div>
+
+        <div class="col-12 col-md-3">
+            <select name="department" class="form-select form-select-lg">
+                <option value="">Tất cả khoa</option>
+                @if (Model?.Departments != null)
+                {
+                    foreach (var d in Model.Departments)
+                    {
+                        <option value="@d.Key" @(departmentQuery == d.Key ? "selected" : "")>@d.Value</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="col-6 col-md-2">
+            <input type="date" name="start" value="@startQuery" class="form-control form-control-lg" />
+        </div>
+        <div class="col-6 col-md-2">
+            <input type="date" name="end" value="@endQuery" class="form-control form-control-lg" />
+        </div>
+
+        <div class="col-12 col-md-3 mt-2">
+            <select name="status" class="form-select">
+                <option value="all" @(statusQuery == "all" ? "selected" : "")>All statuses</option>
+                <option value="upcoming" @(statusQuery == "upcoming" ? "selected" : "")>Coming soon</option>
+                <option value="ongoing" @(statusQuery == "ongoing" ? "selected" : "")>In progress</option>
+                <option value="past" @(statusQuery == "past" ? "selected" : "")>Past</option>
+            </select>
+        </div>
+
+        <div class="col-12 col-md-3 d-flex gap-2 mt-2">
+            <button type="submit"
+                    style="
+                      width:100%;
+                      padding:0.75rem 1rem;
+                      font-size:1.1rem;
+                      font-weight:600;
+                      color:#fff;
+                      background-color:#0d6efd;
+                      border:none;
+                      border-radius:0.5rem;
+                      cursor:pointer;">
+              Search
+            </button>
+        </div>
+    </form>
+</div>
+
+
 <!-- ===== EVENTS ===== -->
 <section class="container my-5">
-    <h2 class="fw-bold mb-4">Event</h2>
+    <h2 style="font-weight:700; font-size:1.5rem; margin:0 0 .25rem; color:#ffffff; text-shadow: 0 4px 14px rgba(0,0,0,0.45);">Event</h2>
     <div class="row g-4">
         @foreach (var e in Model?.UpcomingEvents ?? Enumerable.Empty<EventSphere.Models.ModelViews.HomeViewModel.EventBriefDto>())
         {
@@ -429,9 +418,14 @@
     <div class="container es-page-inner">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="fw-bold display-6 mb-0">Image & Video Library</h2>
-                <p class="text-muted mb-0">Moments shared by the community</p>
+                <h2 style="font-weight:700; font-size:1.5rem; margin:0 0 .25rem; color:#ffffff; text-shadow: 0 4px 14px rgba(0,0,0,0.45);">
+                    Image & Video Library
+                </h2>
+                <p style="margin:0; color:rgba(255,255,255,0.85); font-size:0.95rem;">
+                    Moments shared by the community
+                </p>
             </div>
+
         </div>
 
         <div class="row g-3" id="mediaGrid">
