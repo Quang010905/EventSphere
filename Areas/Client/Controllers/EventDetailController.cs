@@ -75,5 +75,114 @@ namespace EventSphere.Areas.Client.Controllers
 
             return RedirectToAction("Index", "EventDetail", new { id = eventId });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendComment()
+        {
+            var eventId = Request.Form["EventId"];
+            var stuId = Request.Form["StuId"];
+            var comments = Request.Form["Comments"];
+            var ratingStr = Request.Form["Rating"];
+            var userId = HttpContext.Session.GetInt32("UId");
+
+            if (userId == null || userId == 0)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, redirect = Url.Action("Login", "Client", new { area = "Client" }) });
+                return RedirectToAction("Login", "Client", new { area = "Client" });
+            }
+
+            if (string.IsNullOrEmpty(comments) || string.IsNullOrEmpty(ratingStr) || ratingStr == "0")
+            {
+                var err = "Please provide both comments and a rating.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return BadRequest(new { success = false, message = err });
+                TempData["ErrorMessage"] = err;
+                return RedirectToAction("Index", "EventDetail", new { id = eventId });
+            }
+
+            var entity = new FeedbackView
+            {
+                EventId = int.Parse(eventId),
+                StudentId = int.Parse(stuId),
+                Comments = comments,
+                Rating = int.Parse(ratingStr),
+                Status = 0 // chờ duyệt
+            };
+
+            try
+            {
+                await CommentRepository.Instance.AddAsync(entity);
+                TempData["Message"] = "Your comment has been submitted and is awaiting moderation.!";
+                TempData["MessageType"] = "success";
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = true, message = TempData["Message"] });
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = ex.Message;
+                TempData["MessageType"] = "error";
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return BadRequest(new { success = false, message = ex.Message });
+            }
+
+            return RedirectToAction("Index", "EventDetail", new { id = eventId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteComment(int feedbackId)
+        {
+            var userId = HttpContext.Session.GetInt32("UId");
+            if (userId == null || userId == 0)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, redirect = Url.Action("Login", "Client", new { area = "Client" }) });
+                return RedirectToAction("Login", "Client", new { area = "Client" });
+            }
+
+            try
+            {
+                var deleted = await CommentRepository.Instance.DeleteAsync(feedbackId, userId.Value);
+                if (!deleted)
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                        return BadRequest(new { success = false, message = "No comments found." });
+                    TempData["ErrorMessage"] = "No comments found..";
+                    return RedirectToAction("Index", "EventDetail");
+                }
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = true, message = "Comment deleted successfully." });
+
+                TempData["SuccessMessage"] = "Comment deleted successfully.";
+            }
+            catch (UnauthorizedAccessException uex)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return StatusCode(403, new { success = false, message = uex.Message });
+                TempData["ErrorMessage"] = uex.Message;
+            }
+            catch (Exception ex)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return BadRequest(new { success = false, message = ex.Message });
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction("Index", "EventDetail");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetFeedbacks(int eventId)
+        {
+            var userId = HttpContext.Session.GetInt32("UId") ?? 0;
+            var list = await CommentRepository.Instance.GetFeedbacksAsync(eventId, userId);
+            // Trả về đúng IEnumerable<TblFeedback> để partial view chính xác kiểu model
+            return PartialView("_FeedbackList", list);
+        }
+
     }
 }

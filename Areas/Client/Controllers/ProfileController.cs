@@ -50,7 +50,7 @@ namespace EventSphere.Areas.Client.Controllers
             }
 
             // Gắn thông báo vào TempData
-            TempData["SuccessMessage"] = "Cập nhật hồ sơ thành công!";
+            TempData["SuccessMessage"] = "Profile update successful!";
 
             // Redirect về Index sau khi update thành công
             return RedirectToAction("Index", new { id = model.UserId });

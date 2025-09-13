@@ -1,7 +1,7 @@
 ﻿@model EventSphere.Models.ModelViews.ProfileViewModel
 
 @{
-    ViewData["Title"] = "Thông tin hồ sơ";
+    ViewData["Title"] = "Profile information";
     Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
 }
 
@@ -128,7 +128,7 @@
                         <!-- Truyền id đúng kiểu int; dùng ?? 0 để tránh null -->
                         <a href="@Url.Action("Edit", "Profile", new { area = "Client", id = Model?.User?.Id ?? 0 })"
                            class="btn btn-profile-edit">
-                            <i class="fa-solid fa-pen me-2"></i> Sửa hồ sơ
+                            <i class="fa-solid fa-pen me-2"></i>Edit profile
                         </a>
                     </div>
                 </div>

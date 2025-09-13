@@ -1,14 +1,17 @@
+@model EventSphere.Models.ModelViews.EventView
+
 @{
     Layout = "/Areas/Client/Views/Shared/_LayoutClient.cshtml";
     var stuId = Context.Session.GetInt32("UId");
     var eve = ViewBag.itemEvent as EventSphere.Models.ModelViews.EventView;
+    var initialRating = (int)(ViewBag.InitialRating ?? 0);
 }
 
 @if (eve != null)
 {
     <div class="ms-all-content ms-all-content-space">
         <main>
-            <!-- page title area start  -->
+            <!-- Page Title -->
             <section class="page-title-area page-title-spacing p-relative zindex-1"
                      data-background="assets/img/bg/work-bg.jpg">
                 <div class="ms-overlay ms-overlay9 p-absolute zindex--1"></div>
@@ -22,30 +25,65 @@
                     </div>
                 </div>
             </section>
-            <!-- page title area end  -->
-            <!-- Event Details Area Start Here  -->
+
+            <!-- Event Details -->
             <section class="ms-event-details-area pt-130 pb-70">
                 <div class="container">
                     <div class="row">
+                        <!-- LEFT -->
                         <div class="col-xl-8 col-lg-12">
                             <div class="ms-event-details-content mb-40">
                                 <div class="ms-event-dimg m-img d-inline-block fix ms-br-15 mb-30">
                                     <img src="@Url.Content("~/uploads/" + eve.Image)"
                                          alt="event image"
-                                         style="width:1296px; height:532px; object-fit:cover; border-radius:15px;" />
+                                         style="width:100%; height:532px; object-fit:cover; border-radius:15px;" />
                                 </div>
 
                                 <span class="ms-event-ddate d-inline-block mb-30">@eve.Date</span>
                                 <div class="ms-border2 pb-20 mb-30">
-                                    <h2 class="ms-event-dtitle">
-                                        @eve.Title
-                                    </h2>
+                                    <h2 class="ms-event-dtitle">@eve.Title</h2>
                                 </div>
-                                <p class="mb-25">
-                                    @eve.Description
-                                </p>
+                                <p class="mb-25">@eve.Description</p>
+
+                                <!-- Feedback Section -->
+                                <hr />
+                                <div class="ms-feedback-section">
+                                    <h4>
+                                        Reviews&amp;Comments
+                                    </h4>
+
+                                    <form id="commentForm" method="post" action="@Url.Action("SendComment", "EventDetail", new { area = "Client" })">
+                                        @Html.AntiForgeryToken()
+                                        <fieldset class="star-fieldset" role="radiogroup" aria-label="Evaluate">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <input type="radio" id="star-@i" name="Rating" class="star-radio" value="@i" @(initialRating == i ? "checked" : "") />
+                                                <label for="star@i" class="star-label" data-value="@i" aria-label="@i star">&#9733;</label>
+                                            }
+                                        </fieldset>
+
+
+                                        <div class="form-group mt-3">
+                                            <label for="Comments">Comment</label>
+                                            <textarea id="Comments" name="Comments" class="form-control" rows="4" maxlength="2000" required></textarea>
+                                        </div>
+                                        <input type="hidden" name="EventId" value="@eve.Id" />
+                                        <input type="hidden" name="StuId" value="@(stuId ?? 0)" />
+                                        <button type="submit" class="btn btn-primary mt-2" id="btnSubmit">Submit a comment</button>
+                                    </form>
+
+                                    <div class="mt-4">
+                                        <h5>Comments</h5>
+                                        <div id="feedback-list-wrap">
+                                            <div class="text-muted">Loading comments…</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Feedback Section -->
                             </div>
                         </div>
+
+                        <!-- RIGHT -->
                         <div class="col-xl-4 col-lg-8">
                             <div class="ms-event-sidebar mb-60">
                                 <h3 class="ms-event-sidebar-title">@eve.Title</h3>
@@ -77,64 +115,316 @@
                                         <span class="ms-event-stext">@eve.Venue</span>
                                     </div>
                                 </div>
+
                                 <div class="mt-4 d-flex flex-column gap-2">
                                     @if (TempData["ErrorMessage"] != null)
                                     {
-                                        <div class="alert alert-danger">
-                                            @TempData["ErrorMessage"]
-                                        </div>
+                                        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
                                     }
                                     else if (TempData["SuccessMessage"] != null)
                                     {
-                                        <div class="alert alert-success">
-                                            @TempData["SuccessMessage"]
-                                        </div>
+                                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
                                     }
 
-
-                                    @if (ViewBag.AlreadyRegistered == true)
-                                    {
-
-                                        <form action="@Url.Action("CancelRegistration", "EventDetail", new { area = "Client"})" method="post">
-                                            <input type="hidden" name="EventId" value="@eve.Id" />
-                                            <input type="hidden" name="StuId" value="@stuId" />
-                                            <button class="unfill__btn d-block w-100" type="submit"
-                                            @((ViewBag.RegistrationStatus == 1) ? "disabled=\"disabled\"" : "")>
-                                                Cancel Registration
-                                            </button>
-                                        </form>
+                                    @{
+                                        bool isExpired = true;
+                                        if (eve.Date.HasValue && eve.Time.HasValue)
+                                        {
+                                            var eventDateTime = eve.Date.Value.ToDateTime(eve.Time.Value);
+                                            isExpired = eventDateTime < DateTime.Now;
+                                        }
                                     }
-                                    else
-                                    {
-                                        <form action="@Url.Action("RegisterEvent", "EventDetail", new { area = "Client" })" method="post">
-                                            <input type="hidden" name="eventId" value="@eve.Id" />
-                                            <button class="unfill__btn d-block w-100" type="submit"
-                                            @((eve.Date < DateOnly.FromDateTime(DateTime.Now)) ? "disabled=\"disabled\"" : "")>
-                                                Register
-                                            </button>
 
+                                    <form action="@Url.Action("RegisterEvent", "EventDetail", new { area = "Client" })" method="post">
+                                        <input type="hidden" name="eventId" value="@eve.Id" />
+                                        <button class="unfill__btn d-block w-100" type="submit" @(isExpired ? "disabled" : "")>
+                                            Register
+                                        </button>
+                                    </form>
 
-                                        </form>
-                                    }
                                     <div class="ms-submit-btn mb-40">
                                         <a href="@Url.Action("Index", "Home")"
                                            class="unfill__btn d-block w-100 d-flex align-items-center justify-content-center">
                                             Back to Home
                                         </a>
                                     </div>
-
                                 </div>
-
                             </div>
                         </div>
 
-                    </div>
-                </div>
+                    </div> <!-- .row -->
+                </div> <!-- .container -->
             </section>
         </main>
     </div>
 }
 else
 {
-    <div class="alert alert-warning text-center">Không tìm thấy sự kiện.</div>
+    <div class="alert alert-warning text-center">No events found.</div>
 }
+
+@section Scripts {
+    <script>
+        (function () {
+            // server-rendered values (safe numeric rendering)
+            var eventId = @(eve?.Id ?? 0);
+            var getFeedbacksUrl = '@Url.Action("GetFeedbacks", "EventDetail", new { area = "Client" })';
+            var sendCommentUrl = '@Url.Action("SendComment", "EventDetail", new { area = "Client" })';
+            var deleteCommentUrl = '@Url.Action("DeleteComment", "EventDetail", new { area = "Client" })';
+            var initialRating = @initialRating;
+
+            function getAntiForgeryTokenFromPage() {
+                var el = document.querySelector('input[name="__RequestVerificationToken"]');
+                return el ? el.value : null;
+            }
+
+            function loadFeedbacks() {
+                var feedbackWrap = document.getElementById("feedback-list-wrap");
+                if (!feedbackWrap) return;
+                fetch(getFeedbacksUrl + '?eventId=' + eventId)
+                    .then(r => r.text())
+                    .then(html => feedbackWrap.innerHTML = html)
+                    .catch(() => feedbackWrap.innerHTML = '<div class="text-muted">Không thể tải bình luận.</div>');
+            }
+
+            function disableSubmitFor(btn, seconds) {
+                if (!btn) return;
+                btn.disabled = true;
+                var originalText = btn.innerText;
+                var remaining = seconds;
+                btn.innerText = originalText + ' (' + remaining + 's)';
+                var timer = setInterval(function () {
+                    remaining--;
+                    if (remaining <= 0) {
+                        clearInterval(timer);
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                    } else {
+                        btn.innerText = originalText + ' (' + remaining + 's)';
+                    }
+                }, 1000);
+            }
+
+            // Star UI helpers (left-to-right; inputs are 1..5)
+                   function updateStarVisual(selectedValue) {
+            var labels = document.querySelectorAll('.star-label');
+            labels.forEach(function (lbl) {
+                var v = parseInt(lbl.getAttribute('data-value'), 10);
+                if (!isNaN(v) && selectedValue >= v) {
+                    lbl.classList.add('selected');
+                } else {
+                    lbl.classList.remove('selected');
+                }
+            });
+        }
+            document.addEventListener("DOMContentLoaded", function () {
+                var feedbackWrap = document.getElementById("feedback-list-wrap");
+                var commentForm = document.getElementById("commentForm");
+                var btnSubmit = document.getElementById("btnSubmit");
+
+                loadFeedbacks();
+
+                // initialize star visuals from initialRating
+                if (initialRating && initialRating > 0) {
+                    updateStarVisual(initialRating);
+                    var radio = document.querySelector('.star-radio[value="' + initialRating + '"]');
+                    if (radio) radio.checked = true;
+                }
+
+                // handle hover highlight + click + keyboard on labels
+                document.querySelectorAll('.star-label').forEach(function (lbl) {
+                    lbl.addEventListener('mouseenter', function () {
+                        var v = parseInt(lbl.getAttribute('data-value'), 10);
+                        if (!isNaN(v)) updateStarVisual(v);
+                    });
+
+                    // click: select this star (supports click on label)
+                    lbl.addEventListener('click', function () {
+                        var v = parseInt(lbl.getAttribute('data-value'), 10);
+                        if (!isNaN(v)) {
+                            var radio = document.getElementById('star-' + v);
+                            if (radio) {
+                                radio.checked = true;
+                                var evt = new Event('change', { bubbles: true });
+                                radio.dispatchEvent(evt);
+                                updateStarVisual(v);
+                            }
+                        }
+                    });
+
+                    // keyboard accessibility
+                    lbl.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            lbl.click();
+                        }
+                    });
+                    lbl.setAttribute('tabindex', '0');
+                });
+
+                var fieldset = document.querySelector('.star-fieldset');
+                if (fieldset) {
+                    fieldset.addEventListener('mouseleave', function () {
+                        var checked = document.querySelector('.star-radio:checked');
+                        var val = checked ? parseInt(checked.value, 10) : 0;
+                        updateStarVisual(val);
+                    });
+                }
+
+                // when a rating is selected (via radio change), set visuals
+                document.addEventListener('change', function (e) {
+                    if (e.target && e.target.name === 'Rating') {
+                        var val = parseInt(e.target.value, 10) || 0;
+                        updateStarVisual(val);
+                    }
+                });
+
+                if (commentForm) {
+                    commentForm.addEventListener("submit", function (e) {
+                        e.preventDefault();
+                        if (!btnSubmit) return;
+                        btnSubmit.disabled = true;
+
+                        var formData = new FormData(commentForm);
+
+                        // attach antiforgery token header if present
+                        var token = getAntiForgeryTokenFromPage();
+                        var headers = { "X-Requested-With": "XMLHttpRequest" };
+                        if (token) headers['RequestVerificationToken'] = token;
+
+                        fetch(sendCommentUrl, {
+                            method: 'POST',
+                            body: formData,
+                            headers: headers
+                        })
+                            .then(async res => {
+                                if (res.status === 429) {
+                                    const data = await res.json();
+                                    alert(data.message || 'You have submitted too many comments. Please try again later.');
+                                    disableSubmitFor(btnSubmit, data.retryAfter || 300);
+                                    return;
+                                }
+                                if (!res.ok) {
+                                    const err = await res.json().catch(() => ({ message: 'Lỗi server' }));
+                                    throw new Error(err.message || 'Error sending comment');
+                                }
+                                return res.json();
+                            })
+                            .then(data => {
+                                if (!data) return;
+                                if (data.success) {
+                                    commentForm.reset();
+                                    updateStarVisual(0);
+                                    loadFeedbacks();
+                                    alert(data.message || 'Sent successfully');
+                                } else {
+                                            alert(data.message || 'unsuccessful');
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                alert(err.message || 'Có lỗi xảy ra');
+                            })
+                            .finally(() => {
+                                if (btnSubmit && btnSubmit.disabled && !btnSubmit.innerText.includes('(')) {
+                                    btnSubmit.disabled = false;
+                                }
+                            });
+                    });
+                }
+
+                document.addEventListener('submit', function (e) {
+                    var form = e.target;
+                    if (!form || !form.classList || !form.classList.contains('delete-comment-form')) return;
+                    e.preventDefault();
+
+                    if (!confirm('Are you sure you want to delete this comment?')) return;
+
+                    var formData = new FormData(form);
+                    var token = getAntiForgeryTokenFromPage();
+                    var headers = { "X-Requested-With": "XMLHttpRequest" };
+                    if (token) headers['RequestVerificationToken'] = token;
+
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: headers
+                    })
+                        .then(async res => {
+                            var contentType = res.headers.get('content-type') || '';
+                            if (!res.ok) {
+                                if (contentType.indexOf('application/json') !== -1) {
+                                    var err = await res.json().catch(()=>null);
+                                    throw new Error(err?.message || 'Lỗi server: ' + res.status);
+                                }
+                                throw new Error('Lỗi server: ' + res.status);
+                            }
+                            if (contentType.indexOf('application/json') !== -1) {
+                                return res.json();
+                            } else {
+                                return res.text().then(()=>({ success: true }));
+                            }
+                        })
+                        .then(function (data) {
+                            if (data && data.success) {
+                                var id = form.querySelector('input[name="feedbackId"]').value;
+                                var el = document.getElementById('comment-' + id);
+                                if (el) el.remove();
+                                else loadFeedbacks();
+                                alert(data.message || 'Comment deleted successfully.');
+                            } else {
+                                alert((data && data.message) || 'Comment cannot be deleted.');
+                            }
+                        })
+                        .catch(function (err) {
+                            console.error('Delete comment failed:', err);
+                            alert(err.message || 'An error occurred while deleting the comment.');
+                        });
+                });
+
+            }); // DOMContentLoaded
+
+            // helper used above
+            function getAntiForgeryTokenFromPage() {
+                var el = document.querySelector('input[name="__RequestVerificationToken"]');
+                return el ? el.value : null;
+            }
+
+        })();
+    </script>
+}
+
+<!-- Styles for stars: use JS to control .selected — do NOT rely on :checked ~ selector -->
+<style>
+    .star-fieldset {
+        display: inline-flex;
+        flex-direction: row;
+        gap: 6px;
+    }
+
+
+    .star-radio {
+        display: none;
+    }
+
+    .star-label {
+        font-size: 28px;
+        cursor: pointer;
+        opacity: 0.45;
+        user-select: none;
+        transition: color 0.12s ease-in, opacity 0.12s ease-in, transform 0.12s ease-in;
+        line-height: 1;
+    }
+
+        .star-label:hover {
+            opacity: 1;
+            color: #ffb400;
+            transform: translateY(-2px);
+        }
+
+        .star-label.selected {
+            opacity: 1;
+            color: #ffb400;
+            transform: translateY(-2px);
+        }
+</style>
