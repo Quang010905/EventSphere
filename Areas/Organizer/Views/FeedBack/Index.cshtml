@@ -2,7 +2,7 @@
 @model IEnumerable<EventSphere.Models.entities.TblFeedback>
 
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml"; // hoặc sửa theo layout bạn đang dùng
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml"; // hoặc sửa theo layout bạn đang dùng
     ViewData["Title"] = "Feedback Management";
 
     var total = ViewBag.TotalCount as int? ?? 0;
@@ -56,7 +56,7 @@
 
     <div class="col-auto">
         <button type="submit" class="btn btn-primary">Filter</button>
-        <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Feedback", new { area = "Admin" })">Reset</a>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Feedback", new { area = "Organizer" })">Reset</a>
     </div>
 </form>
 

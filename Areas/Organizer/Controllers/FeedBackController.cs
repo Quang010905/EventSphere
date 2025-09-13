@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventSphere.Areas.Admin.Controllers
+namespace EventSphere.Areas.Organizer.Controllers
 {
-    [Area("Admin")]
+    [Area("Organizer")]
     public class FeedbackController : Controller
     {
         private readonly FeedbackRepository _feedbackRepo;
