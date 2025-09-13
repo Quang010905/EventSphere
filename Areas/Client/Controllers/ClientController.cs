@@ -96,8 +96,6 @@ namespace EventSphere.Areas.Client.Controllers
                     }
                 };
                 UserRepository.Instance.Add(entity);
-
-                TempData["SuccessMessage"] = "Create Account success!";
             }
             catch (Exception)
             {
