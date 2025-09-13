@@ -33,7 +33,7 @@ namespace EventSphere.Areas.Client.Controllers
         {
             HttpContext.Session.Remove("UEmail");
             HttpContext.Session.Remove("UId");
-            return RedirectToAction("Index", "Client", new {area = "Client"});
+            return RedirectToAction("Index", "Home", new {area = "Client"});
         }
         public ActionResult SaveItem(IFormFile upFile)
         {

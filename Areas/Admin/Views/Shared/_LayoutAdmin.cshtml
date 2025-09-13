@@ -12,7 +12,7 @@
     <!-- Custom fonts for this template-->
     <link href="@Url.Content("~/Admin")/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-          rel="stylesheet">
+    rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="@Url.Content("~/Admin")/css/sb-admin-2.min.css" rel="stylesheet">
@@ -46,10 +46,10 @@
 
             <!-- Nav Item - Media Gallery -->
             <li class="nav-item">
-                 <a class="nav-link" href="@Url.Action("Index", "MediaGallery", new { area = "Admin" })">
-                     <i class="fas fa-fw fa-images"></i>
-                     <span>Quản lý Thư viện</span>
-                 </a>
+                <a class="nav-link" href="@Url.Action("Index", "MediaGallery", new { area = "Admin" })">
+                    <i class="fas fa-fw fa-images"></i>
+                    <span>Quản lý Thư viện</span>
+                </a>
             </li>
 
             <!-- Nav Item - Attendance -->
@@ -123,14 +123,16 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
+                    @{
+                        var email = Context.Session.GetString("UEmail");
+                    }
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- User Info -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">abc</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@email</span>
                                 <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -140,7 +142,7 @@
                                     Profile
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="@Url.Action("Logout", "Admin")">
+                                <a class="dropdown-item" href="@Url.Action("Logout", "Client", new {area = "CLient"})">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>

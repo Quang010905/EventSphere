@@ -1,6 +1,5 @@
 ﻿using EventSphere.Models.entities;
 using EventSphere.Models.Repositories;
-using EventSphere.Models.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
