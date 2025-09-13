@@ -19,19 +19,6 @@
                     <form id="filterForm" method="get" class="row g-2 align-items-end">
                         @Html.AntiForgeryToken()
                         <div class="col-auto">
-                            <label class="form-label">Event</label>
-                            <select name="eventId" class="form-select">
-                                <option value="">-- Tất cả --</option>
-                                @if (events != null)
-                                {
-                                    foreach (var e in events)
-                                    {
-                                        <option value="@e.Id" @(selEvent == e.Id ? "selected" : "")>@e.Title</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-                        <div class="col-auto">
                             <label class="form-label">Tìm kiếm</label>
                             <input type="text" name="q" value="@query" class="form-control" placeholder="Tên sinh viên hoặc email..." />
                         </div>

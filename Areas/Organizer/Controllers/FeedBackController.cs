@@ -21,8 +21,14 @@ namespace EventSphere.Areas.Organizer.Controllers
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10,
             int? eventId = null, int? studentId = null, int? rating = null, string? search = null)
         {
+            var orgernizerId = HttpContext.Session.GetInt32("UId");
+            if (orgernizerId == null)
+            {
+                // chưa login hoặc session hết hạn
+                return RedirectToAction("Login", "Account");
+            }
             // Prepare select lists
-            var events = await _context.TblEvents
+            var events = await _context.TblEvents.Where(e=> e.OrganizerId == orgernizerId)
                 .OrderBy(e => e.Title)
                 .Select(e => new { e.Id, e.Title })
                 .ToListAsync();
@@ -45,7 +51,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             ViewBag.Ratings = new SelectList(new[] { 5, 4, 3, 2, 1 }, selectedValue: rating);
 
             // Get paged data
-            var (data, totalCount) = await _feedbackRepo.GetPagedFeedbacksAsync(page, pageSize, eventId, studentId, rating, search);
+            var (data, totalCount) = await _feedbackRepo.GetPagedFeedbacksAsync(page, pageSize, eventId, studentId, rating, search, orgernizerId.Value);
 
             ViewBag.TotalCount = totalCount;
             ViewBag.Page = page;

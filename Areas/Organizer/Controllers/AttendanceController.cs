@@ -21,8 +21,11 @@ namespace EventSphere.Areas.Organizer.Controllers
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10,
             int? eventId = null, int? studentId = null, bool? attended = null, string? search = null)
         {
+            int? organizerId = HttpContext.Session.GetInt32("UId");
+            if (organizerId == null)
+                return RedirectToAction("Login", "Account");
             // Prepare select lists
-            var events = await _context.TblEvents
+            var events = await _context.TblEvents.Where(e => e.OrganizerId == organizerId)
                 .OrderBy(e => e.Title)
                 .Select(e => new { e.Id, e.Title })
                 .ToListAsync();
@@ -45,7 +48,7 @@ namespace EventSphere.Areas.Organizer.Controllers
 
             // Get paged filtered data from repository
             var (data, totalCount) = await _attendanceRepo.GetPagedAttendancesAsync(
-                page, pageSize, eventId, studentId, attended, search);
+                page, pageSize, eventId, studentId, attended, search, organizerId);
 
             ViewBag.TotalCount = totalCount;
             ViewBag.Page = page;

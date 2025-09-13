@@ -33,10 +33,20 @@ namespace EventSphere.Areas.Organizer.Controllers
             page = Math.Max(1, page);
             pageSize = Math.Max(5, pageSize);
 
-            var repo = EventWaitlistRepository.Instance;
-            var result = repo.GetPaged(page, pageSize, eventId, q);
+            // Lấy organizerId từ session
+            var organizerId = HttpContext.Session.GetInt32("UId");
+            if (!organizerId.HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
-            ViewBag.Events = repo.GetEventListForFilter();
+            var repo = EventWaitlistRepository.Instance;
+
+            // Truyền organizerId vào GetPaged
+            var result = repo.GetPaged(page, pageSize, organizerId.Value, eventId, q);
+
+            // Danh sách event của chính organizer để đổ dropdown filter
+            ViewBag.Events = repo.GetEventListForFilter(organizerId.Value);
             ViewBag.Query = q ?? "";
             ViewBag.EventId = eventId;
             ViewBag.Page = page;
