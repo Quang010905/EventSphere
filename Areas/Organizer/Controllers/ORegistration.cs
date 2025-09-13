@@ -37,24 +37,19 @@ namespace EventSphere.Areas.Organizer.Controllers
             try
             {
                 var result = RegistrationRepository.Instance.ApproveAndCreateAttendance(id);
-
                 if (string.IsNullOrWhiteSpace(result.StudentEmail))
-                {
                     return Json(new { success = true, message = "Đã duyệt nhưng không gửi mail vì sinh viên chưa có email." });
-                }
 
-                // 🔑 Lấy BaseUrl từ appsettings.json hoặc fallback
-                string baseUrl = _configuration["AppSettings:BaseUrl"];
-                if (string.IsNullOrEmpty(baseUrl))
-                {
-                    baseUrl = $"{Request.Scheme}://{Request.Host}";
-                }
+                // ✅ Luôn lấy BaseUrl từ appsettings.json – KHÔNG fallback về localhost
+                var baseUrl = _configuration["AppSettings:BaseUrl"];
+                if (string.IsNullOrWhiteSpace(baseUrl))
+                    throw new InvalidOperationException("BaseUrl chưa được cấu hình trong appsettings.json");
 
-                // ✅ URL QR để check-in
-                string qrUrl = $"{baseUrl}/Organizer/Scan/MarkAttendance" +
-                               $"?attendanceId={result.AttendanceId}&eventId={result.EventId}&studentId={result.StudentId}";
+                // URL công khai để điểm danh
+                var qrUrl = $"{baseUrl}/Organizer/Scan/MarkAttendance" +
+                            $"?attendanceId={result.AttendanceId}&eventId={result.EventId}&studentId={result.StudentId}";
 
-                // Tạo QR code từ URL
+                // Tạo QR code
                 byte[] qrBytes;
                 using (var qrGen = new QRCodeGenerator())
                 using (var qrData = qrGen.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
@@ -63,18 +58,18 @@ namespace EventSphere.Areas.Organizer.Controllers
                     qrBytes = pngQr.GetGraphic(20);
                 }
 
-                string studentName = string.IsNullOrWhiteSpace(result.StudentName) ? result.StudentEmail : result.StudentName;
-                string dateStr = result.EventDate?.ToString("yyyy-MM-dd") ?? "";
-                string timeStr = result.EventTime?.ToString() ?? "";
+                var studentName = string.IsNullOrWhiteSpace(result.StudentName) ? result.StudentEmail : result.StudentName;
+                var dateStr = result.EventDate?.ToString("yyyy-MM-dd") ?? "";
+                var timeStr = result.EventTime?.ToString() ?? "";
 
-                string subject = $"[EventSphere] QR tham dự - {result.EventName}";
-                string htmlBody =
+                var subject = $"[EventSphere] QR tham dự - {result.EventName}";
+                var htmlBody =
                     $"<p>Xin chào <strong>{System.Net.WebUtility.HtmlEncode(studentName)}</strong>,</p>" +
                     $"<p>Bạn đã được duyệt tham gia <strong>{System.Net.WebUtility.HtmlEncode(result.EventName)}</strong>.</p>" +
                     $"<p>Ngày: <strong>{dateStr}</strong><br/>Giờ: <strong>{timeStr}</strong></p>" +
-                    $"<p>👉 Vui lòng quét mã QR bên dưới để xác nhận tham dự:</p>" +
+                    $"<p>👉 Quét mã QR bên dưới để xác nhận tham dự:</p>" +
                     $"<p><img src=\"cid:qrImage\" alt=\"QR code\" /></p>" +
-                    $"<p>Nếu không quét được, bạn có thể mở trực tiếp link: <a href='{qrUrl}'>{qrUrl}</a></p>" +
+                    $"<p>Nếu không quét được, mở trực tiếp link: <a href='{qrUrl}'>{qrUrl}</a></p>" +
                     $"<p>Xin cảm ơn,<br/>Ban tổ chức</p>";
 
                 await _emailSender.SendEmailWithInlineImageAsync(
@@ -83,15 +78,10 @@ namespace EventSphere.Areas.Organizer.Controllers
 
                 return Json(new { success = true, message = "Đã duyệt và gửi mail." });
             }
-            catch (InvalidOperationException ex)
-            {
-                _logger?.LogWarning(ex, "Approve failed for id {Id}", id);
-                return Json(new { success = false, message = ex.Message });
-            }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "ApproveAndSend failed for id {Id}", id);
-                return Json(new { success = false, message = "Server error: " + ex.Message });
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
             }
         }
 
@@ -104,7 +94,7 @@ namespace EventSphere.Areas.Organizer.Controllers
                 RegistrationRepository.Instance.DenyRegistration(id);
                 return Json(new { success = true, message = "Đã từ chối đăng ký." });
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
             }
