@@ -34,6 +34,7 @@ builder.Services.AddScoped<EventSeatingRepository>();
 builder.Services.AddScoped<EventShareLogRepository>();
 builder.Services.AddScoped<UserRepositoryEf>();
 builder.Services.AddScoped<HomeRepository>();
+builder.Services.AddScoped<ProfileRepository>(); // giữ từ nhánh xongprofile
 
 var app = builder.Build();
 
@@ -42,6 +43,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -59,7 +61,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}",
     defaults: new { area = "Client" });
 
-app.MapControllerRoute(
+app.MapControllerRoute( // giữ từ nhánh main
     name: "organizer_default",
     pattern: "{controller=ORegistration}/{action=Index}/{id?}",
     defaults: new { area = "Organizer" });

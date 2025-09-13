@@ -2,6 +2,105 @@
     Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
     ViewData["Title"] = "Giới thiệu EventSphere";
 }
+<style>
+    body {
+        background: #121212;
+        color: #f1f1f1;
+    }
+
+    .gtco-heading h2,
+    .gtco-heading p {
+        color: #fff;
+    }
+
+    .feature-left .icon i {
+        color: #ffcc33; /* vàng nhấn */
+        font-size: 28px;
+    }
+
+    .feature-copy h3 {
+        color: #ffcc33;
+        font-weight: 600;
+    }
+
+    .feature-copy p {
+        color: #ddd;
+    }
+
+    /* Banner */
+    .gtco-cover h1,
+    .gtco-cover h2 {
+        color: #fff !important;
+        font-weight: 700;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    .gtco-cover .overlay {
+        background: rgba(0,0,0,0.65);
+    }
+
+    /* Team */
+    .gtco-staff {
+        background: #1c1c1c;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        text-align: center;
+    }
+
+        .gtco-staff img {
+            border-radius: 50%;
+            border: 3px solid #ffcc33;
+            margin-bottom: 15px;
+        }
+
+        .gtco-staff h3 {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .gtco-staff .role {
+            color: #ffcc33;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .gtco-staff p {
+            color: #ccc;
+        }
+
+    /* Subscribe form */
+    #gtco-subscribe {
+        background: #1c1c1c;
+        padding: 40px 0;
+        border-radius: 12px;
+        margin-top: 40px;
+    }
+
+        #gtco-subscribe input.form-control {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #fff;
+        }
+
+        #gtco-subscribe input::placeholder {
+            color: #aaa;
+        }
+
+        #gtco-subscribe .btn {
+            background: linear-gradient(180deg,#ffc107,#ff9800);
+            color: #1c1c1c;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+            #gtco-subscribe .btn:hover {
+                background: linear-gradient(180deg,#ffb300,#ff9100);
+                transform: translateY(-2px);
+            }
+</style>
 
 <div class="gtco-section">
 	<div class="gtco-container">
