@@ -74,8 +74,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}",
     defaults: new { area = "Client" });
 
-
-
 //app.MapControllerRoute(
 //    name: "client_default",
 //    pattern: "{controller=ORegistration}/{action=Index}/{id?}",
