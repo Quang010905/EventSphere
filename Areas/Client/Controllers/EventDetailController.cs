@@ -13,10 +13,18 @@ namespace EventSphere.Areas.Client.Controllers
             var item = EventRepository.Instance.FindById(id);
             ViewBag.itemEvent = item;
             var stuId = HttpContext.Session.GetInt32("UId");
-
             if (stuId != null && stuId > 0)
             {
-                // Kiểm tra xem student đã đăng ký event chưa
+                var status = RegistrationRepository.Instance.GetRegistrationStatus(stuId.Value, id);
+                ViewBag.RegistrationStatus = status;
+            }
+            else
+            {
+                ViewBag.RegistrationStatus = null;
+            }
+            if (stuId != null && stuId > 0)
+            {
+
                 bool alreadyRegistered = RegistrationRepository.Instance
                     .CheckRegistered(stuId.Value, id);
 
@@ -26,7 +34,6 @@ namespace EventSphere.Areas.Client.Controllers
             {
                 ViewBag.AlreadyRegistered = false;
             }
-
             return View();
         }
 
@@ -49,7 +56,24 @@ namespace EventSphere.Areas.Client.Controllers
             };
             RegistrationRepository.Instance.Add(item);
 
-            return RedirectToAction("Index", "Registration", new {id = stuId});
+            return RedirectToAction("Index", "Registration", new { id = stuId });
+        }
+
+        public ActionResult CancelRegistration()
+        {
+            var eventId = int.Parse(Request.Form["EventId"]);
+            var userId = int.Parse(Request.Form["StuId"]);
+            var res = RegistrationRepository.Instance.Delete(eventId, userId);
+            if (res)
+            {
+                TempData["SuccessMessage"] = "Cancel registration success!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Cancel registration fail!";
+            }
+
+            return RedirectToAction("Index", "EventDetail", new { id = eventId });
         }
     }
 }

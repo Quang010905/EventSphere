@@ -1050,63 +1050,78 @@ a:visited.ui-button,
 /*  05 - buttons css  */
 /* ------------------------------------------ */
 .unfill__btn {
-  font-size: 16px;
-  color: var(--clr-common-white);
-  font-weight: var(--bd-fw-medium);
-  background: var(--clr-gradient-3);
-  padding: 0px 32px;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: -ms-inline-flexbox;
-  align-items: center;
-  height: 60px;
-  -webkit-border-radius: 30px;
-  -moz-border-radius: 30px;
-  -o-border-radius: 30px;
-  -ms-border-radius: 30px;
-  border-radius: 30px;
-  -webkit-transition: all 0.3s ease-out 0s;
-  -moz-transition: all 0.3s ease-out 0s;
-  -ms-transition: all 0.3s ease-out 0s;
-  -o-transition: all 0.3s ease-out 0s;
-  transition: all 0.3s ease-out 0s;
-  gap: 10px;
-  position: relative;
-  z-index: 5;
-}
-.unfill__btn::before {
-  position: absolute;
-  content: "";
-  height: 100%;
-  width: 100%;
-  background: var(--clr-gradient-2);
-  top: 0;
-  inset-inline-start: 0;
-  z-index: -1;
-  opacity: 0;
-  visibility: hidden;
-  -webkit-transition: all 0.5s ease-out 0s;
-  -moz-transition: all 0.5s ease-out 0s;
-  -ms-transition: all 0.5s ease-out 0s;
-  -o-transition: all 0.5s ease-out 0s;
-  transition: all 0.5s ease-out 0s;
-  -webkit-border-radius: 30px;
-  -moz-border-radius: 30px;
-  -o-border-radius: 30px;
-  -ms-border-radius: 30px;
-  border-radius: 30px;
-}
-.unfill__btn:visited {
-  color: var(--clr-common-white);
-}
-.unfill__btn:hover {
-  color: var(--clr-common-white);
-}
-.unfill__btn:hover::before {
-  opacity: 1;
-  visibility: visible;
+    font-size: 16px;
+    color: var(--clr-common-white);
+    font-weight: var(--bd-fw-medium);
+    background: var(--clr-gradient-3);
+    padding: 0px 32px;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: -ms-inline-flexbox;
+    align-items: center;
+    height: 60px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -o-border-radius: 30px;
+    -ms-border-radius: 30px;
+    border-radius: 30px;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    gap: 10px;
+    position: relative;
+    z-index: 5;
 }
 
+    .unfill__btn::before {
+        position: absolute;
+        content: "";
+        height: 100%;
+        width: 100%;
+        background: var(--clr-gradient-2);
+        top: 0;
+        inset-inline-start: 0;
+        z-index: -1;
+        opacity: 0;
+        visibility: hidden;
+        -webkit-transition: all 0.5s ease-out 0s;
+        -moz-transition: all 0.5s ease-out 0s;
+        -ms-transition: all 0.5s ease-out 0s;
+        -o-transition: all 0.5s ease-out 0s;
+        transition: all 0.5s ease-out 0s;
+        -webkit-border-radius: 30px;
+        -moz-border-radius: 30px;
+        -o-border-radius: 30px;
+        -ms-border-radius: 30px;
+        border-radius: 30px;
+    }
+
+    .unfill__btn:disabled {
+        cursor: not-allowed;
+        opacity: 1;
+    }
+
+        .unfill__btn:disabled::before {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+
+
+    .unfill__btn:visited {
+        color: var(--clr-common-white);
+    }
+
+    .unfill__btn:hover {
+        color: var(--clr-common-white);
+    }
+
+        .unfill__btn:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
 .input__btn {
   font-size: 16px;
   color: var(--clr-common-white);

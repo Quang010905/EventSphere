@@ -13,6 +13,7 @@ namespace EventSphere.Models.Repositories
     {
         private static RegistrationRepository _instance;
         private RegistrationRepository() { }
+
         public static RegistrationRepository Instance
         {
             get
@@ -61,6 +62,28 @@ namespace EventSphere.Models.Repositories
             db.SaveChanges();
         }
 
+        public bool Delete(int eventId, int userId)
+        {
+            using var db = new EventSphereContext();
+            var item = db.TblRegistrations
+                         .FirstOrDefault(r => r.EventId == eventId && r.StudentId == userId);
+
+            if (item != null)
+            {
+                db.TblRegistrations.Remove(item);
+                return db.SaveChanges() > 0;
+            }
+            return false;
+        }
+
+        public int? GetRegistrationStatus(int studentId, int eventId)
+        {
+            using var db = new EventSphereContext();
+            var registration = db.TblRegistrations
+                                 .FirstOrDefault(r => r.StudentId == studentId && r.EventId == eventId);
+            return registration?.Status;
+        }
+
         public bool CheckRegistered(int stuId, int eventId)
         {
             using var db = new EventSphereContext();
@@ -89,7 +112,6 @@ namespace EventSphere.Models.Repositories
                          StudentName = x.Student.TblUserDetails.FirstOrDefault().Fullname ?? x.Student.Email
                      }).ToList();
         }
-
         public string NormalizeSearch(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return "";
@@ -107,7 +129,6 @@ namespace EventSphere.Models.Repositories
         public RegistrationProcessResult ApproveAndCreateAttendance(int registrationId)
         {
             using var db = new EventSphereContext();
-
             using var tran = db.Database.BeginTransaction();
             try
             {
@@ -115,9 +136,7 @@ namespace EventSphere.Models.Repositories
                     $"UPDATE dbo.tbl_registration SET _status = 1 WHERE _id = {registrationId} AND (_status IS NULL OR _status = 0)");
 
                 if (updated == 0)
-                {
                     throw new InvalidOperationException("Registration đã được xử lý trước đó hoặc không thể duyệt.");
-                }
 
                 var reg = db.TblRegistrations
                             .Include(r => r.Event)
@@ -128,9 +147,7 @@ namespace EventSphere.Models.Repositories
 
                 var seating = db.TblEventSeatings.FirstOrDefault(s => s.EventId == reg.EventId);
                 if (seating != null && (seating.SeatsAvailable ?? 0) <= 0)
-                {
                     throw new InvalidOperationException("Event is fully booked.");
-                }
 
                 if (seating != null)
                 {
@@ -204,18 +221,6 @@ namespace EventSphere.Models.Repositories
 
             db.SaveChanges();
             tran.Commit();
-        }
-
-        public void CancelRegistration(int id)
-        {
-            using var db = new EventSphereContext();
-            var reg = db.TblRegistrations.FirstOrDefault(x => x.Id == id);
-
-            if (reg != null)
-            {
-                reg.Status = 3; // 3 = Đã hủy
-                db.SaveChanges();
-            }
         }
     }
 }

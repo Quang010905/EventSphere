@@ -5,24 +5,47 @@
     Layout = "/Areas/Client/Views/Shared/_LayoutClient.cshtml";
     ViewData["Title"] = "OTP";
 }
-<div class="container mt-5" style="max-width: 400px; position: relative; z-index: 1000;">
-    <h2 class="text-center mb-4">Enter OTP</h2>
+<div class="ms-all-content ms-all-content-space">
+    <main>
+        <!-- page title area start  -->
+        <section class="page-title-area page-title-spacing p-relative zindex-1"
+                 data-background="@Url.Content("~/Client/assets/img/bg/work-bg.jpg")">
+            <div class="ms-overlay ms-overlay9 p-absolute zindex--1"></div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xxl-11">
+                        <h3 class="ms-page-title text-center">Enter your OTP</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- page title area end  -->
+        <!-- login Area Start Here  -->
+        <section class="ms-login-area pb-50 pt-130">
+            <div class="container">
+                <div class="ms-maxw-510 mx-auto">
+                    <div class="ms-login-wrap text-center ms-login-space ms-bg-2">
+                        <h3 class="ms-title4 mb-50">OTP</h3>
+                        @if (ViewBag.ErrorMessage != null)
+                        {
+                            <div class="alert alert-danger">
+                                @ViewBag.ErrorMessage
+                            </div>
+                        }
 
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <div class="alert alert-danger">
-            @ViewBag.ErrorMessage
-        </div>
-    }
-
-    <form method="post" action="@Url.Action("vOtp", "Client", new { area = "Client" })">
-        <div class="form-group mb-3">
-            <label for="otp">OTP Code</label>
-            <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP" required />
-        </div>
-
-        <input type="hidden" name="email" value="@ViewBag.Email" />
-
-        <button type="submit" class="btn btn-primary w-100">Verify</button>
-    </form>
+                        <form method="post" action="@Url.Action("vOtp", "Client", new { area = "Client" })">
+                            <div class="ms-input2-box mb-25">
+                                <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP" required />
+                            </div>
+                            <input type="hidden" name="email" value="@ViewBag.Email" />
+                            <div class="ms-submit-btn mb-40">
+                                <button class="unfill__btn d-block w-100" type="submit">Verify</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- login Area End Here  -->
+    </main>
 </div>
