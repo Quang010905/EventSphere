@@ -1,5 +1,6 @@
 ﻿using EventSphere.Models.entities;
 using EventSphere.Models.ModelViews;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,21 @@ namespace EventSphere.Models.Repositories
         /// <summary>
         /// Lấy danh sách waitlist phân trang, filter theo event và tìm kiếm tên/email.
         /// </summary>
-        public PagedWaitlistResult GetPaged(int pageIndex, int pageSize, int? eventId = null, string? keyword = null)
+        public PagedWaitlistResult GetPaged(
+     int pageIndex,
+     int pageSize,
+     int organizerId,            // 👈 thêm tham số này
+     int? eventId = null,
+     string? keyword = null)
         {
             using var db = new EventSphereContext();
 
             var q = db.TblEventWaitlists
                       .Include(w => w.Event)
                       .Include(w => w.User)
-                        .ThenInclude(u => u.TblUserDetails)
+                         .ThenInclude(u => u.TblUserDetails)
+                      // chỉ các waitlist của sự kiện do organizer này tạo
+                      .Where(w => w.Event.OrganizerId == organizerId)   // 👈 lọc quan trọng
                       .AsQueryable();
 
             if (eventId.HasValue && eventId.Value > 0)
@@ -33,15 +41,16 @@ namespace EventSphere.Models.Repositories
             {
                 var k = keyword.Trim().ToLowerInvariant();
                 q = q.Where(w =>
-                    (w.User != null && (w.User.Email.ToLower().Contains(k)
-                        || (w.User.TblUserDetails.Any() && w.User.TblUserDetails.FirstOrDefault().Fullname.ToLower().Contains(k))))
+                    (w.User != null &&
+                        (w.User.Email.ToLower().Contains(k) ||
+                         (w.User.TblUserDetails.Any() &&
+                          w.User.TblUserDetails.FirstOrDefault().Fullname.ToLower().Contains(k))))
                     || (w.Event != null && w.Event.Title.ToLower().Contains(k))
                 );
             }
 
             var total = q.Count();
 
-            // materialize to memory first so we can safely convert DateOnly -> DateTime
             var raw = q.OrderByDescending(w => w.WaitlistTime)
                        .Skip((pageIndex - 1) * pageSize)
                        .Take(pageSize)
@@ -50,20 +59,10 @@ namespace EventSphere.Models.Repositories
             var items = raw.Select(w =>
             {
                 DateTime? eventDateTime = null;
-                // w.Event?.Date may be DateOnly? in entity — convert to DateTime?
                 if (w.Event?.Date != null)
                 {
-                    try
-                    {
-                        // prefer DateOnly.ToDateTime if available
-                        eventDateTime = w.Event.Date.Value.ToDateTime(new TimeOnly(0, 0));
-                    }
-                    catch
-                    {
-                        // fallback: construct DateTime from components
-                        var d = w.Event.Date.Value;
-                        eventDateTime = new DateTime(d.Year, d.Month, d.Day);
-                    }
+                    var d = w.Event.Date.Value;
+                    eventDateTime = new DateTime(d.Year, d.Month, d.Day);
                 }
 
                 return new WaitlistItemView
@@ -93,16 +92,20 @@ namespace EventSphere.Models.Repositories
         /// <summary>
         /// Lấy danh sách events (id,title) để fill dropdown filter.
         /// </summary>
-        public List<(int Id, string Title)> GetEventListForFilter()
+        public List<SelectListItem> GetEventListForFilter(int organizerId)
         {
             using var db = new EventSphereContext();
             return db.TblEvents
+                     .Where(e => e.OrganizerId == organizerId)
                      .OrderBy(e => e.Title)
-                     .Select(e => new { e.Id, e.Title })
-                     .AsEnumerable()
-                     .Select(x => (x.Id, x.Title))
+                     .Select(e => new SelectListItem
+                     {
+                         Value = e.Id.ToString(),
+                         Text = e.Title
+                     })
                      .ToList();
         }
+
 
         /// <summary>
         /// Xác nhận waitlist: cố gắng chuyển thành attendance.

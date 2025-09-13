@@ -22,15 +22,22 @@ namespace EventSphere.Areas.Organizer.Controllers
         }
 
         // Index (kept for completeness)
-        public async Task<IActionResult> Index(int? eventId, int? studentId, string? keyword, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(
+            int? eventId, int? studentId, string? keyword,
+            int page = 1, int pageSize = 10)
         {
+            // Lấy id của organizer đang đăng nhập
+            int organizerId = HttpContext.Session.GetInt32("UId").Value;
+            // hoặc cách khác tùy bạn lưu claim
+
             var (data, total) = await _certRepo.GetPagedCertificatesAsync(
                 page, pageSize,
                 eventId: eventId,
                 studentId: studentId,
                 issuedFrom: null,
                 issuedTo: null,
-                keyword: string.IsNullOrWhiteSpace(keyword) ? null : keyword.Trim()
+                keyword: string.IsNullOrWhiteSpace(keyword) ? null : keyword.Trim(),
+                organizerId: organizerId       // truyền thêm
             );
 
             var vm = new CertificatesIndexViewModel
@@ -46,6 +53,7 @@ namespace EventSphere.Areas.Organizer.Controllers
 
             return View(vm);
         }
+
 
         // GET: Generate - trả View form
         [HttpGet]
@@ -136,7 +144,8 @@ namespace EventSphere.Areas.Organizer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEvents()
         {
-            var events = await _context.TblEvents
+            var organizerId = HttpContext.Session.GetInt32("UId");
+            var events = await _context.TblEvents.Where(e => e.OrganizerId == organizerId)
                 .OrderBy(e => e.Title)
                 .Select(e => new { id = e.Id, text = e.Title })
                 .ToListAsync();

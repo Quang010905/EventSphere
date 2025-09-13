@@ -25,7 +25,8 @@ namespace EventSphere.Areas.Organizer.Controllers
 
         public IActionResult Index()
         {
-            var list = RegistrationRepository.Instance.GetAll();
+            var organizerId = HttpContext.Session.GetInt32("UId");
+            var list = RegistrationRepository.Instance.GetByOrganizerId(organizerId.Value);
             ViewBag.listReg = list;
             return View();
         }

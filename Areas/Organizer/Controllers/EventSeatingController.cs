@@ -18,11 +18,21 @@ namespace EventSphere.Areas.Organizer.Controllers
         // filter: upcoming | ongoing | past | all
         public async Task<IActionResult> Index(string filter = "upcoming", string? search = null)
         {
-            var events = await _repo.GetEventsAsync(filter, search);
+            // 🔑 Lấy OrganizerId từ session
+            var organizerId = HttpContext.Session.GetInt32("UId");
+            if (organizerId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // ✅ Truyền organizerId vào repo
+            var events = await _repo.GetEventsAsync(organizerId.Value, filter, search);
+
             ViewBag.Filter = filter ?? "upcoming";
             ViewBag.Search = search;
             return View(events);
         }
+
 
         // view seating for one event
         public async Task<IActionResult> Seating(int id)

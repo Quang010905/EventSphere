@@ -17,4 +17,14 @@
         public virtual EventView Event { get; set; }
         public virtual UserView User{ get; set; }
     }
+    public class RegistrationGroupView
+    {
+        public int EventId { get; set; }
+        public string EventName { get; set; } = "";
+        public string EventImage { get; set; } = "";
+        public string Venue { get; set; } = "";
+
+        public List<RegistrationView> Registrations { get; set; } = new List<RegistrationView>();
+    }
+
 }

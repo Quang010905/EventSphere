@@ -20,8 +20,14 @@ namespace EventSphere.Areas.Organizer.Controllers
         // Danh sách sự kiện
         public async Task<IActionResult> Index()
         {
+            int? organizerId = HttpContext.Session.GetInt32("UId");
+            if (organizerId == null)
+            {
+                // chưa login hoặc session hết hạn
+                return RedirectToAction("Login", "Account");
+            }
             var events = await _context.TblEvents
-                .Include(e => e.Organizer)
+                .Include(e => e.Organizer).Where(e => e.OrganizerId == organizerId)
                 .OrderByDescending(e => e.Date)
                 .ToListAsync();
             return View(events);

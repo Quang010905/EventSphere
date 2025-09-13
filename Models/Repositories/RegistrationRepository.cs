@@ -24,13 +24,13 @@ namespace EventSphere.Models.Repositories
         }
 
         // Lấy toàn bộ đăng ký
-        public List<RegistrationView> GetAll()
+        public List<RegistrationView> GetByOrganizerId(int id)
         {
             using var db = new EventSphereContext();
             return db.TblRegistrations
                      .Include(x => x.Event)
                      .Include(x => x.Student)
-                        .ThenInclude(s => s.TblUserDetails)
+                        .ThenInclude(s => s.TblUserDetails).Where(x => x.Event.OrganizerId == id).OrderBy(x => x.RegisteredOn)
                      .Select(x => new RegistrationView
                      {
                          Id = x.Id,
@@ -47,6 +47,8 @@ namespace EventSphere.Models.Repositories
                          StudentName = x.Student.TblUserDetails.FirstOrDefault().Fullname ?? x.Student.Email
                      }).ToList();
         }
+
+        
 
         public void Add(RegistrationView entity)
         {
