@@ -21,7 +21,7 @@ namespace EventSphere.Areas.Admin.Controllers
         {
             var events = await _context.TblEvents
                 .Include(e => e.Organizer)
-                .Where(e => e.Status == 0 || e.Status == null) // chỉ lấy sự kiện chưa duyệt
+                .Where(e => e.Status == 0 || e.Status == null) 
                 .OrderByDescending(e => e.Date)
                 .ToListAsync();
 

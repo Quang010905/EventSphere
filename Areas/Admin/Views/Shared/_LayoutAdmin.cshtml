@@ -42,21 +42,19 @@
                     <span>Quản lý User</span>
                 </a>
             </li>
-            <li>
-                <a class="nav-link" href="@Url.Action("Index", "EventsAdmin", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-calendar"></i>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "EventsAdmin", new { area = "Admin" })" title="Manage Events">
+                    <i class="fas fa-fw fa-calendar-alt"></i>
                     <span>Quản lý Event</span>
                 </a>
             </li>
-            <li>
 
             <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "EventShareLog", new { area = "Admin" })">
-                    <i class="fas fa-share-alt fa-fw"></i>
+                <a class="nav-link" href="@Url.Action("Index", "EventShareLog", new { area = "Admin" })" title="Event Share Logs">
+                    <i class="fas fa-fw fa-share-square"></i>
                     <span>Event Share Logs</span>
                 </a>
             </li>
-
             <hr class="sidebar-divider d-none d-md-block" />
 
             <!-- Sidebar Toggler (Sidebar) -->
@@ -117,22 +115,57 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+            <footer>
+                <div class="ms-footer-bg ms-footer-overlay zindex-1 include__bg pt-120"
+                     data-background="@Url.Content("~/Client/assets/img/bg/sound-bg.png")">
+
+                    <!-- existing footer content -->
+                    ...
+
+                    <!-- logos: centered, responsive -->
+                    <div class="container">
+                        <div class="footer-logos d-flex justify-content-center align-items-center mt-4">
+                            <a href="~/" title="Home" class="me-3">
+                                <img src="@Url.Content("~/uploads/Logo1.png")" alt="Logo 1" class="img-fluid footer-logo" />
+                            </a>
+                            <a href="~/" title="Home" class="me-3">
+                                <img src="@Url.Content("~/uploads/Logo2.png")" alt="Logo 2" class="img-fluid footer-logo" />
+                            </a>
+                            <a href="~/" title="Home">
+                                <img src="@Url.Content("~/uploads/Logo3.png")" alt="Logo 3" class="img-fluid footer-logo" />
+                            </a>
+                        </div>
                     </div>
+
                 </div>
             </footer>
+
             <!-- End of Footer -->
 
         </div>
         <!-- End of Content Wrapper -->
 
     </div>
-    <!-- End of Page Wrapper -->
+    <style>
+        /* small styles for footer logos */
+        .footer-logos .footer-logo {
+            height: 40px;
+            max-height: 40px;
+            object-fit: contain;
+            display: inline-block;
+        }
 
-    <!-- Scroll to Top Button-->
+        /* spacing on small screens */
+        @@edia (max-width: 576px) {
+            .footer-logos .footer-logo
+
+        {
+            height: 32px;
+            max-height: 32px;
+        }
+
+        }
+    </style>
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>

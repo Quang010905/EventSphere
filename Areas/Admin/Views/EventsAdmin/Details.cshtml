@@ -3,14 +3,14 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2>Chi tiết sự kiện</h2>
+<h2>Event Details</h2>
 
 <div class="card shadow mb-4">
     <div class="card-body">
-        <p><b>Tiêu đề:</b> @Model.Title</p>
+        <p><b>Title:</b> @Model.Title</p>
 
         <p>
-            <b>Ngày & giờ:</b>
+            <b>Date &amp; Time:</b>
             @if (Model.Date != null && Model.Time != null)
             {
                 @Model.Date.Value.ToString("dd/MM/yyyy") @Model.Time.Value.ToString(@"hh\:mm")
@@ -21,46 +21,46 @@
             }
             else
             {
-                <span>Chưa có thông tin</span>
+                <span>No information available</span>
             }
         </p>
 
-        <p><b>Địa điểm:</b> @Model.Venue</p>
-        <p><b>Thể loại:</b> @Model.Category</p>
-        <p><b>Người tổ chức:</b> @Model.Organizer?.Email"</p>
-        <p><b>Mô tả:</b> @Model.Description</p>
+        <p><b>Venue:</b> @Model.Venue</p>
+        <p><b>Category:</b> @Model.Category</p>
+        <p><b>Organizer:</b> @Model.Organizer?.Email</p>
+        <p><b>Description:</b> @Model.Description</p>
 
         <p>
-            <b>Trạng thái:</b>
+            <b>Status:</b>
             @switch (Model.Status)
             {
                 case 1:
-                    <span class="badge bg-success">Đã duyệt</span>
+                    <span class="badge bg-success">Approved</span>
                     ;
                     break;
                 case 2:
-                    <span class="badge bg-danger">Đã vô hiệu</span>
+                    <span class="badge bg-danger">Disabled</span>
                     ;
                     break;
                 default:
-                    <span class="badge bg-warning">Chưa duyệt</span>
+                    <span class="badge bg-warning">Pending Approval</span>
                     ;
                     break;
             }
         </p>
 
         <p>
-            <b>Ảnh sự kiện:</b><br />
+            <b>Event Image:</b><br />
             @if (!string.IsNullOrEmpty(Model.Image))
             {
                 <img src="~/uploads/@Model.Image" alt="Event Image" width="300" />
             }
             else
             {
-                <span>Chưa có ảnh</span>
+                <span>No image available</span>
             }
         </p>
     </div>
 </div>
 
-<a href="@Url.Action("Index", "EventsAdmin", new { area = "Admin" })" class="btn btn-secondary">⬅ Quay lại</a>
+<a href="@Url.Action("Index", "EventsAdmin", new { area = "Admin" })" class="btn btn-secondary">⬅ Back</a>

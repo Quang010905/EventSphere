@@ -156,18 +156,18 @@
                         // open generated certificate
                         if (payload.url) {
                             window.open(payload.url, '_blank');
-                            showAlert('Tạo chứng chỉ thành công.', 'success', 3000);
+                            showAlert('Create certificate success.', 'success', 3000);
                         } else {
-                            showAlert('Tạo chứng chỉ thành công.', 'success', 3000);
+                            showAlert('Create certificate success.', 'success', 3000);
                         }
                     } else {
                         // server trả BadRequest hoặc error payload
-                        const msg = (payload && payload.message) ? payload.message : 'Lỗi khi tạo chứng chỉ.';
+                        const msg = (payload && payload.message) ? payload.message : 'Fail to create certificate.';
                         showAlert(msg, 'danger', 6000);
                     }
                 } catch (err) {
                     console.error(err);
-                    showAlert('Lỗi hệ thống khi gọi API: ' + (err.message || err), 'danger', 8000);
+                    showAlert('Fail to call API: ' + (err.message || err), 'danger', 8000);
                 }
             });
         });

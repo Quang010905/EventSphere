@@ -37,7 +37,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             var organizerId = HttpContext.Session.GetInt32("UId");
             if (!organizerId.HasValue)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "CLient", new { area = "Client" });
             }
 
             var repo = EventWaitlistRepository.Instance;
@@ -105,7 +105,7 @@ namespace EventSphere.Areas.Organizer.Controllers
                         {
                             var baseUrl = _configuration["AppSettings:BaseUrl"];
                             if (string.IsNullOrWhiteSpace(baseUrl))
-                                throw new InvalidOperationException("BaseUrl chưa được cấu hình trong appsettings.json");
+                                throw new InvalidOperationException("BaseUrl is not configured in appsettings.json");
 
                             var qrUrl = $"{baseUrl}/Organizer/Scan/MarkAttendance" +
                                         $"?attendanceId={attendance.Id}&eventId={attendance.EventId}&studentId={attendance.StudentId}";
@@ -129,23 +129,23 @@ namespace EventSphere.Areas.Organizer.Controllers
                                 $"<p>Xin cảm ơn,<br/>Ban tổ chức</p>";
 
                             await _emailSender.SendEmailWithInlineImageAsync(studentEmail, subject, htmlBody, qrBytes, "qrImage");
-                            return Json(new { success = true, message = "Xác nhận thành công và đã gửi mail." });
+                            return Json(new { success = true, message = "Confirmed successfully and email sent." });
                         }
                         else
                         {
-                            return Json(new { success = true, message = "Xác nhận thành công nhưng sinh viên không có email để gửi." });
+                            return Json(new { success = true, message = "Confirmation successful but student has no email to send." });
                         }
                     }
                     else
                     {
-                        return Json(new { success = true, message = "Xác nhận thành công nhưng không tìm thấy attendance để gửi mail." });
+                        return Json(new { success = true, message = "Confirmed successfully but no attendance found to send email." });
                     }
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error when sending email on waitlist confirm id {Id}", id);
                     // attendance đã được tạo; nhưng gửi mail lỗi
-                    return Json(new { success = true, message = "Xác nhận thành công nhưng lỗi khi gửi mail: " + ex.Message });
+                    return Json(new { success = true, message = "Confirmation successful but error when sending email: " + ex.Message });
                 }
             }
 

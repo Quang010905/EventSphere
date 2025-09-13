@@ -80,17 +80,17 @@
                 "ordering": true,
                 "searching": true,
                 "language": {
-                    "lengthMenu": "Hiển thị _MENU_ bản ghi",
-                    "zeroRecords": "Không tìm thấy kết quả",
+                    "lengthMenu": "Show _MENU_ Records",
+                    "zeroRecords": "can't find result",
                     "info": "Trang _PAGE_ / _PAGES_",
-                    "infoEmpty": "Không có dữ liệu",
-                    "infoFiltered": "(lọc từ _MAX_ bản ghi)",
-                    "search": "Tìm kiếm:",
+                    "infoEmpty": "No data",
+                    "infoFiltered": "(filter _MAX_ record)",
+                    "search": "Search:",
                     "paginate": {
-                        "first": "Đầu",
-                        "last": "Cuối",
-                        "next": "Sau",
-                        "previous": "Trước"
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
                     }
                 }
             });
@@ -110,7 +110,7 @@
 
                 const token = $('input[name="__RequestVerificationToken"]').val();
                 if (!token) {
-                    alert('Không tìm thấy __RequestVerificationToken.');
+                    alert('Can not find __RequestVerificationToken.');
                     return;
                 }
 
@@ -118,7 +118,7 @@
                 $btn.prop('disabled', true);
                 $deny.prop('disabled', true);
                 const origHtml = $btn.html();
-                $btn.html('<span class="spinner-border spinner-border-sm"></span> Đang xử lý');
+                $btn.html('<span class="spinner-border spinner-border-sm"></span> Loading');
 
                 $.ajax({
                     url: '/Organizer/ORegistration/ApproveAndSend',
@@ -129,12 +129,12 @@
                     },
                     success: function (res) {
                         if (res && res.success) {
-                            alert(res.message || 'Thao tác thành công.');
+                            alert(res.message || 'Success.');
                             // cập nhật row
                             $row.find('.col-status').html('<span class="text-success">Accepted</span>');
                             $row.find('.col-action').html('<button class="btn btn-secondary btn-sm" disabled>Accepted</button>');
                         } else {
-                            alert(res?.message || 'Không thể hoàn tất thao tác.');
+                            alert(res?.message || 'Fail.');
                             $btn.prop('disabled', false);
                             $deny.prop('disabled', false);
                             $btn.data('sending', false);
@@ -142,7 +142,7 @@
                         }
                     },
                     error: function (xhr) {
-                        alert('Lỗi server: ' + (xhr.responseText || 'Unknown error'));
+                        alert('Server Error: ' + (xhr.responseText || 'Unknown error'));
                         $btn.prop('disabled', false);
                         $deny.prop('disabled', false);
                         $btn.data('sending', false);
@@ -153,7 +153,7 @@
 
             $(document).off('click', '.btn-deny').on('click', '.btn-deny', function (e) {
                 e.preventDefault();
-                if (!confirm('Bạn có chắc chắn muốn từ chối?')) return;
+                if (!confirm('Are you sure to reject')) return;
 
                 const $btn = $(this);
                 const id = $btn.data('id');
@@ -164,7 +164,7 @@
 
                 const token = $('input[name="__RequestVerificationToken"]').val();
                 if (!token) {
-                    alert('Không tìm thấy __RequestVerificationToken.');
+                    alert('Cannot find __RequestVerificationToken.');
                     return;
                 }
 
@@ -185,9 +185,9 @@
                         if (res && res.success) {
                             $row.find('.col-status').html('<span class="text-danger">Denied</span>');
                             $row.find('.col-action').html('<button class="btn btn-secondary btn-sm" disabled>Denied</button>');
-                            alert(res.message || 'Đã từ chối.');
+                            alert(res.message || 'Rejected.');
                         } else {
-                            alert(res?.message || 'Không thể từ chối.');
+                            alert(res?.message || 'Can not reject.');
                             $btn.prop('disabled', false);
                             $accept.prop('disabled', false);
                             $btn.data('sending', false);
@@ -195,7 +195,7 @@
                         }
                     },
                     error: function (xhr) {
-                        alert('Lỗi server: ' + (xhr.responseText || 'Unknown error'));
+                        alert('Server Error: ' + (xhr.responseText || 'Unknown error'));
                         $btn.prop('disabled', false);
                         $accept.prop('disabled', false);
                         $btn.data('sending', false);

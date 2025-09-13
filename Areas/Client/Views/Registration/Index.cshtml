@@ -27,11 +27,11 @@
         <label class="me-2 fw-bold">Lọc theo trạng thái:</label>
         <select name="status" class="form-select form-select-sm w-auto d-inline-block"
                 onchange="this.form.submit()">
-            <option value="" @(ViewBag.StatusFilter == null ? "selected" : "")>Tất cả</option>
+            <option value="" @(ViewBag.StatusFilter == null ? "selected" : "")>All </option>
             <option value="0" @(ViewBag.StatusFilter == 0 ? "selected" : "")>Pending</option>
             <option value="1" @(ViewBag.StatusFilter == 1 ? "selected" : "")>Accepted</option>
             <option value="2" @(ViewBag.StatusFilter == 2 ? "selected" : "")>Denied</option>
-            <option value="3" @(ViewBag.StatusFilter == 3 ? "selected" : "")>Đã hủy</option>
+            <option value="3" @(ViewBag.StatusFilter == 3 ? "selected" : "")>Canceled</option>
         </select>
     </form>
 </div>
@@ -60,11 +60,10 @@
                                 @item.EventName
                             </h5>
                             <p class="text-muted mb-2">
-                                <i class="bi bi-calendar-event me-1"></i> Ngày: @item.EventDate?.ToString("dd/MM/yyyy")
-                                <span> • <i class="bi bi-clock"></i> Giờ: @item.EventTime</span>
-                            </p>
+                                <i class="bi bi-calendar-event me-1"></i> Date: @item.EventDate?.ToString("dd/MM/yyyy")
+                                <span> • <i class="bi bi-clock"></i> Time: @item.EventTime</span>
                             <p class="text-muted mb-3">
-                                <i class="bi bi-geo-alt me-1"></i> Địa điểm: @item.Venue
+                                <i class="bi bi-geo-alt me-1"></i> Venue: @item.Venue
                             </p>
 
                             <!-- Trạng thái -->
@@ -83,25 +82,25 @@
                                 }
                                 else if (item.Status == 3)
                                 {
-                                    <span class="badge bg-secondary">Đã hủy</span>
+                                    <span class="badge bg-secondary">Canceled</span>
                                 }
                             </p>
 
-                            <!-- Nút hành động -->
+
                             <div class="d-flex justify-content-between mt-auto">
                                 <a href="@Url.Action("Index", "EventDetail", new { id = item.EventId, area = "Client" })"
                                    class="btn btn-sm btn-primary">
-                                    Chi tiết
+                                    Detail
                                 </a>
 
-                                @if (item.Status != 3) // chưa hủy thì mới cho hủy
+                                @if (item.Status != 3) 
                                 {
                                     <form asp-action="Cancel" asp-controller="Registration" method="post" class="d-inline">
                                         <input type="hidden" name="stuId" value="@item.StudentId" />
                                         <input type="hidden" name="eventId" value="@item.EventId" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Bạn có chắc muốn hủy đăng ký không?');">
-                                            Hủy đăng ký
+                                                onclick="return confirm('Are you sure you want to unsubscribe?');">
+                                            Unsubscribe
                                         </button>
                                     </form>
                                 }

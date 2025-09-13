@@ -67,11 +67,9 @@
     int totalItems = Model?.TotalItems ?? 0;
     int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-    // Biến phục vụ so sánh
     var today = DateOnly.FromDateTime(DateTime.Today);
     var nowTime = TimeOnly.FromDateTime(DateTime.Now);
 }
-<!-- ====== LOCAL STYLES FOR THIS PAGE (GÁN VÀO <style> TRONG FILE Index) ====== -->
 <style>
     /* ===== Event cards ===== */
     .event-card {
@@ -115,12 +113,12 @@
         opacity: 0.6;
     }
 
-    /* Button chi tiết */
+
     .event-card .btn-sm {
         min-width: 86px;
     }
 
-    /* ===== Media gallery ===== */
+
     #mediaGrid {
         display: flex;
         flex-wrap: wrap;
@@ -131,7 +129,7 @@
     .media-item {
         padding-left: 8px;
         padding-right: 8px;
-        margin-bottom: 16px; /* khoảng cách dọc giữa các hàng */
+        margin-bottom: 16px; 
     }
 
     /* thumb */
@@ -147,12 +145,11 @@
         .gallery-thumb img,
         .gallery-thumb video {
             width: 100%;
-            height: 220px; /* chiều cao cố định cho gallery */
+            height: 220px; 
             object-fit: cover;
             display: block;
         }
 
-    /* Khi màn hình nhỏ, giảm chiều cao để tránh tràn */
     @@media (max-width: 767.98px) {
         .event-card .card-img {
             height: 160px;
@@ -173,7 +170,6 @@
         }
     }
 
-    /* Đảm bảo các cột bootstrap không bị overflow và ảnh luôn nằm trong container */
     .row.g-3 > .media-item {
         width: 50%;
     }
@@ -190,12 +186,12 @@
         }
     }
 
-    /* loại bỏ khoảng trắng không mong muốn giữa grid và footer */
+
     .bg-soft {
         padding-bottom: 2.5rem;
     }
 
-    /* style nhỏ khác */
+
     .es-page-inner {
         max-width: 1100px;
         margin: 0 auto;
@@ -210,7 +206,7 @@
 
     .pagination .page-link {
         background-color: #ffffff !important;
-        color: #0d6efd !important; /* xanh Bootstrap */
+        color: #0d6efd !important; 
         border: 1px solid #dee2e6 !important;
     }
 
@@ -228,31 +224,6 @@
     }
 </style>
 
-<!-- ===== BANNER ===== -->
-<section class="bg-primary text-white py-2">
-    <div class="container es-page-inner d-flex align-items-center justify-content-between">
-        <div class="d-flex gap-3 align-items-center">
-            <i class="bi bi-bell-fill fs-5"></i>
-            <div class="marquee-notice">
-                @if (Model?.SiteAnnouncements?.Any() ?? false)
-                {
-                    foreach (var a in Model.SiteAnnouncements.Take(5))
-                    {
-                        <span class="me-4">@a.Title — @a.ShortText</span>
-                    }
-                }
-                else
-                {
-                    <span>Chào mừng đến với EventSphere — khám phá sự kiện nổi bật của trường!</span>
-                }
-            </div>
-        </div>
-        <div>
-            <a href="@Url.Action("Sitemap","Home")" class="text-white text-decoration-underline me-3">Sơ đồ trang</a>
-            <a href="@Url.Action("Index","Media")" class="text-white">Xem thư viện</a>
-        </div>
-    </div>
-</section>
 
 <!-- ===== HERO ===== -->
 <section class="hero-advanced py-6 text-white">
@@ -261,13 +232,13 @@
         <div class="row align-items-center">
             <div class="col-lg-7">
                 <h1 class="display-2 fw-bold mb-3">EventSphere</h1>
-                <p class="lead mb-3">Khám phá – Trải nghiệm – Kết nối các sự kiện nổi bật của trường</p>
+                <p class="lead mb-3">Explore – Experience – Connect with outstanding school events</p>
 
                 <!-- FILTER / SEARCH FORM -->
                 <form method="get" action="@Url.Action("Index","Home", new { area = "Client" })" class="row g-2 align-items-center">
                     <div class="col-12 col-md-5">
                         <input type="search" name="q" value="@qQuery" class="form-control form-control-lg"
-                               placeholder="Từ khóa, tiêu đề, địa điểm...">
+                               placeholder="Keywords, titles, locations...">
                     </div>
 
                     <div class="col-12 col-md-3">
@@ -292,22 +263,22 @@
 
                     <div class="col-12 col-md-3 mt-2">
                         <select name="status" class="form-select">
-                            <option value="all" @(statusQuery == "all" ? "selected" : "")>Tất cả trạng thái</option>
-                            <option value="upcoming" @(statusQuery == "upcoming" ? "selected" : "")>Sắp diễn ra</option>
-                            <option value="ongoing" @(statusQuery == "ongoing" ? "selected" : "")>Đang diễn ra</option>
-                            <option value="past" @(statusQuery == "past" ? "selected" : "")>Đã qua</option>
+                            <option value="all" @(statusQuery == "all" ? "selected" : "")>All statuses</option>
+                            <option value="upcoming" @(statusQuery == "upcoming" ? "selected" : "")>Coming soon</option>
+                            <option value="ongoing" @(statusQuery == "ongoing" ? "selected" : "")>In progress</option>
+                            <option value="past" @(statusQuery == "past" ? "selected" : "")>Past</option>
                         </select>
                     </div>
 
                     <div class="col-12 col-md-3 d-flex gap-2 mt-2">
-                        <button type="submit" class="btn btn-cta btn-lg w-100">Tìm</button>
+                        <button type="submit" class="btn btn-cta btn-lg w-100">Search</button>
                     </div>
                 </form>
             </div>
 
             <div class="col-lg-5 d-none d-lg-block">
                 <div class="hero-card p-4 rounded-3 shadow-lg">
-                    <h5 class="mb-3">Sự kiện sắp tới</h5>
+                    <h5 class="mb-3">Upcoming Events</h5>
                     <ul class="list-unstyled mb-0 small text-muted">
                         @{
 
@@ -339,7 +310,7 @@
 
 <!-- ===== EVENTS ===== -->
 <section class="container my-5">
-    <h2 class="fw-bold mb-4">Sự kiện</h2>
+    <h2 class="fw-bold mb-4">Event</h2>
     <div class="row g-4">
         @foreach (var e in Model?.UpcomingEvents ?? Enumerable.Empty<EventSphere.Models.ModelViews.HomeViewModel.EventBriefDto>())
         {
@@ -379,40 +350,40 @@
                             <div>
                                 @if (isPast)
                                 {
-                                    <span class="seat-badge bg-secondary text-white small">Sự kiện đã qua</span>
+                                    <span class="seat-badge bg-secondary text-white small">Past events</span>
                                 }
                                 else if (!approved)
                                 {
-                                    <span class="seat-badge bg-secondary text-white small">Chưa duyệt</span>
+                                    <span class="seat-badge bg-secondary text-white small">Not approved</span>
                                 }
                                 else if (isFull)
                                 {
-                                    <span class="seat-badge bg-danger text-white small">Hết chỗ</span>
+                                    <span class="seat-badge bg-danger text-white small">Full</span>
                                 }
                                 else if (seatsLeft.HasValue)
                                 {
                                     if (seatsLeft.Value > 10)
                                     {
-                                        <span class="seat-badge bg-success text-white small">Còn @seatsLeft.Value chỗ</span>
+                                        <span class="seat-badge bg-success text-white small"> @seatsLeft.Value seat</span>
                                     }
                                     else if (seatsLeft.Value > 0)
                                     {
-                                        <span class="seat-badge bg-warning text-dark small">Còn @seatsLeft.Value chỗ</span>
+                                        <span class="seat-badge bg-warning text-dark small"> @seatsLeft.Value seat</span>
                                     }
                                     else
                                     {
-                                        <span class="seat-badge bg-danger text-white small">Hết chỗ</span>
+                                        <span class="seat-badge bg-danger text-white small">Full</span>
                                     }
                                 }
                                 else
                                 {
-                                    <span class="seat-badge bg-success text-white small">Còn chỗ</span>
+                                    <span class="seat-badge bg-success text-white small">Available</span>
                                 }
                             </div>
                             <div>
                                 <a href="@Url.Action("Index", "EventDetail", new{id = e.EventId, area = "Client"})"
                                    class="btn btn-sm btn-primary mt-3">
-                                    Chi tiết
+                                    Detail
                                 </a>
                             </div>
                         </div>
@@ -458,11 +429,8 @@
     <div class="container es-page-inner">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="fw-bold display-6 mb-0">Thư viện hình ảnh & video</h2>
-                <p class="text-muted mb-0">Khoảnh khắc được cộng đồng chia sẻ</p>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="@Url.Action("Index","Media")" class="btn btn-sm btn-primary">Xem toàn bộ</a>
+                <h2 class="fw-bold display-6 mb-0">Image & Video Library</h2>
+                <p class="text-muted mb-0">Moments shared by the community</p>
             </div>
         </div>
 

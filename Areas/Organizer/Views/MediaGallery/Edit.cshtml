@@ -3,7 +3,7 @@
     Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
 }
 
-<h3>Sửa Media</h3>
+<h3>Edit Media</h3>
 
 <form id="editMediaForm" enctype="multipart/form-data">
     <input type="hidden" name="Id" value="@Model.Id" />
@@ -19,7 +19,7 @@
     </div>
 
     <div class="mb-3">
-        <label>Người upload:</label>
+        <label>Uploader:</label>
         <select name="UploadedBy" class="form-select" required>
             @foreach (var u in ViewBag.Users)
             {
@@ -31,7 +31,7 @@
     <div class="mb-3">
         <label>File Type:</label>
         <select name="FileType" class="form-select" required>
-            <option value="1" @(Model.FileType == 1 ? "selected" : "")>Ảnh</option>
+            <option value="1" @(Model.FileType == 1 ? "selected" : "")>Image</option>
             <option value="2" @(Model.FileType == 2 ? "selected" : "")>Video</option>
         </select>
     </div>
@@ -62,8 +62,8 @@
     </div>
 
     <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-success">Lưu</button>
-        <a href="@Url.Action("Index", "MediaGallery", new { area = "Organizer" })" class="btn btn-secondary">Hủy</a>
+        <button type="submit" class="btn btn-success">Save</button>
+        <a href="@Url.Action("Index", "MediaGallery", new { area = "Organizer" })" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
 
@@ -73,17 +73,17 @@
         $(function(){
             var fileInput = $('#editMediaForm input[name="file"]')[0];
             var fileTypeSelect = $('#editMediaForm select[name="FileType"]');
-            var originalFileType = fileTypeSelect.val(); // lưu FileType ban đầu
+            var originalFileType = fileTypeSelect.val(); 
 
             function validateFileInput(fileInput, fileType) {
                 if(fileInput.files.length === 0){
-                    // Không có file mới, kiểm tra file cũ
+               
                     var existingFileType = originalFileType;
                     if(fileType !== existingFileType){
-                        alert('Bạn đã đổi File Type, phải chọn file mới!');
+                        alert('You changed File Type, must select new file!');
                         return false;
                     }
-                    return true; // file cũ vẫn hợp lệ
+                    return true; 
                 }
 
                 var file = fileInput.files[0];
@@ -91,12 +91,12 @@
                 var allowedVideo = ['video/mp4','video/quicktime','video/x-msvideo'];
 
                 if(fileType == '1' && !allowedImage.includes(file.type)) {
-                    alert('File phải là ảnh hợp lệ (.jpg, .png, .gif)!');
+                    alert('File must be a valid image (.jpg, .png, .gif)!');
                     fileInput.value = '';
                     return false;
                 }
                 if(fileType == '2' && !allowedVideo.includes(file.type)) {
-                    alert('File phải là video hợp lệ (.mp4, .mov, .avi)!');
+                    alert('File must be a valid video (.mp4, .mov, .avi)!');
                     fileInput.value = '';
                     return false;
                 }
@@ -119,16 +119,16 @@
                     processData: false,
                     success: function(res){
                         if(res.success){
-                            alert('Cập nhật thành công!');
+                            alert('Update success!');
                             window.location.href = '/Organizer/MediaGallery/Index';
                         } else {
-                            alert('Lỗi: ' + (res.message || ""));
+                            alert('Error: ' + (res.message || ""));
                         }
                     }
                 });
             });
 
-            // Kiểm tra ngay khi đổi File Type nếu đã chọn file
+   
             fileTypeSelect.change(function(){
                 var fileType = $(this).val();
                 if(fileInput.files.length > 0){

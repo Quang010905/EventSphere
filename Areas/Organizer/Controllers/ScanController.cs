@@ -26,7 +26,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             var vm = new ScanResultViewModel
             {
                 Success = success,
-                Message = message ?? (success ? "Thành công" : "Thất bại"),
+                Message = message ?? (success ? "Success" : "Failed"),
                 CertificateUrl = certificateUrl
             };
 

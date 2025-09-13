@@ -4,29 +4,27 @@
 }
 
 @section headerContent {
-    <h1 class="h3 mb-0 text-gray-800">Quản lý sự kiện</h1>
+    <h1 class="h3 mb-0 text-gray-800">Manage Event</h1>
 }
 
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-primary">Danh sách sự kiện</h6>
+        <h6 class="m-0 font-weight-bold text-primary">List event</h6>
 
         <div class="d-flex align-items-center gap-2">
-            <!-- Dropdown lọc trạng thái -->
             <div class="mr-3">
-                <label class="mr-2">Trạng thái:</label>
+                <label class="mr-2">Status:</label>
                 <select id="statusFilter" class="custom-select custom-select-sm" style="width:auto; display:inline-block;">
-                    <option value="">Tất cả</option>
-                    <option value="Đã duyệt">Đã duyệt</option>
-                    <option value="Chưa duyệt">Chưa duyệt</option>
-                    <option value="Đã vô hiệu">Đã vô hiệu</option>
+                    <option value="">All</option>
+                    <option value="Đã duyệt">Accepted</option>
+                    <option value="Chưa duyệt">Pending</option>
+                    <option value="Đã vô hiệu">Denied</option>
                 </select>
             </div>
 
-            <!-- Nút thêm sự kiện -->
             <a href="@Url.Action("Create", "Events", new { area = "Organizer" })"
                class="btn btn-sm btn-primary">
-                <i class="fas fa-plus"></i> Thêm sự kiện
+                <i class="fas fa-plus"></i> Create event
             </a>
         </div>
     </div>
@@ -36,11 +34,11 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Tiêu đề</th>
-                        <th>Ngày & Giờ</th>
-                        <th>Địa điểm</th>
-                        <th>Trạng thái</th>
-                        <th>Hành động</th>
+                        <th>Title</th>
+                        <th>Date & Time</th>
+                        <th>Venue</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,41 +58,41 @@
                                 }
                                 else
                                 {
-                                    <span>Chưa có ngày</span>
+                                    <span>No date</span>
                                 }
                             </td>
                             <td>@item.Venue</td>
                             <td>
                                 @if (item.Status == 1)
                                 {
-                                    <span class="badge bg-success">Đã duyệt</span>
+                                    <span class="badge bg-success">Accepted</span>
                                 }
                                 else if (item.Status == 0 || item.Status == null)
                                 {
-                                    <span class="badge bg-warning">Chưa duyệt</span>
+                                    <span class="badge bg-warning">Pending</span>
                                 }
                                 else if (item.Status == 2)
                                 {
-                                    <span class="badge bg-danger">Đã vô hiệu</span>
+                                    <span class="badge bg-danger">Denied</span>
                                 }
                             </td>
                             <td>
                                 <a href="@Url.Action("Details", "Events", new { area = "Organizer", id = item.Id })"
-                                   class="btn btn-sm btn-info" title="Xem chi tiết">
+                                   class="btn btn-sm btn-info" title="See Detail">
                                     <i class="fas fa-eye"></i>
                                 </a>
 
                                 @if (item.Status == 0 || item.Status == null)
                                 {
                                     <a href="@Url.Action("Edit", "Events", new { area = "Organizer", id = item.Id })"
-                                       class="btn btn-sm btn-warning" title="Sửa sự kiện">
+                                       class="btn btn-sm btn-warning" title="Update event">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 }
 
                                 <a href="@Url.Action("Index", "MediaGallery", new { area = "Organizer", eventId = item.Id })"
-                                   class="btn btn-sm btn-primary" title="Xem ảnh/video">
-                                    <i class="fas fa-photo-video"></i> Thư viện
+                                   class="btn btn-sm btn-primary" title="Image/Video">
+                                    <i class="fas fa-photo-video"></i> Library
                                 </a>
                             </td>
                         </tr>
@@ -115,29 +113,29 @@
             var table = $('#dataTable').DataTable({
                 "language": {
                     "search": "🔍 Tìm kiếm:",
-                    "lengthMenu": "Số sự kiện hiển thị: _MENU_",
-                    "info": "Hiển thị _START_ đến _END_ của sự kiện",
-                    "infoEmpty": "Không có dữ liệu",
-                    "zeroRecords": "Không tìm thấy kết quả",
+                    "lengthMenu": "Events: _MENU_",
+                    "info": "Show _START_ to _END_ of event",
+                    "infoEmpty": "No data",
+                    "zeroRecords": "Can not find result",
                     "paginate": {
-                        "first": "Đầu",
-                        "last": "Cuối",
-                        "next": "Sau",
-                        "previous": "Trước"
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Previous"
                     }
                 },
                 "pageLength": 10,
-                "lengthMenu": [[1, 10, 25, 50, -1], [1, 10, 25, 50, "Tất cả"]],
+                "lengthMenu": [[1, 10, 25, 50, -1], [1, 10, 25, 50, "All"]],
                 "ordering": true,
                 "autoWidth": false
             });
 
-            // Tìm kiếm không dấu
+          
             $('#dataTable_filter input').off().on('keyup', function () {
                 table.search(removeDiacritics(this.value.toLowerCase())).draw();
             });
 
-            // Lọc theo trạng thái
+    
             $('#statusFilter').on('change', function () {
                 var val = $(this).val();
                 table.column(3).search(val).draw();

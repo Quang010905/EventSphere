@@ -55,11 +55,14 @@
                         </a>
                         <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="@Url.Action("Index", "ORegistration")">Manage Registration</a>
-
+                                <i class="fas fa-clipboard-check"></i>
+                                <a class="nav-link" href="@Url.Action("Index", "ORegistration", new { area = "Organizer" })">
+                                    <i class="fas fa-fw fa-calendar"></i>
+                                    <span>Manage Registration</span>
+                                </a>
                                 <a class="nav-link" href="@Url.Action("Index", "Events", new { area = "Organizer" })">
                                     <i class="fas fa-fw fa-calendar"></i>
-                                    <span>Quản lý Event</span>
+                                    <span>Manage Event</span>
                                 </a>
                               
                                 <a class="nav-link" href="@Url.Action("Index", "Attendance", new { area = "Organizer" })">
@@ -74,12 +77,12 @@
 
                                 <a class="nav-link" href="@Url.Action("Index", "EventSeating", new { area = "Organizer" })">
                                     <i class="fas fa-fw fa-th-large"></i>
-                                    <span>Quản lý Chỗ ngồi</span>
+                                    <span>Manage Seat</span>
                                 </a>
 
                                 <a class="nav-link" href="@Url.Action("Index", "MediaGallery", new { area = "Organizer" })">
                                     <i class="fas fa-fw fa-images"></i>
-                                    <span>Quản lý Thư viện</span>
+                                    <span>Manage image + video</span>
                                 </a>
 
 								<a class="nav-link" href="@Url.Action("Index", "Feedback", new { area = "Organizer" })">
@@ -87,7 +90,7 @@
                                     <span>Feedback</span>
                                 </a>
                                 <a class="nav-link" href="@Url.Action("Index", "EventWaitlist", new { area = "Organizer" })">
-                                    <i class="fas fa-fw fa-comments"></i>
+                                    <i class="fa fa-user"></i>
                                     <span>Manage Waitlist</span>
                                 </a>
                         </div>
@@ -95,12 +98,19 @@
                 </div>
             </nav>
         </div>
-        <div id="layoutSidenav_content">    
+        <div id="layoutSidenav_content">
             @RenderBody()
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
+                        <div class="d-flex align-items-center">
+                            <img src="@Url.Content("~/uploads/Logo1.png")" alt="Logo 1" class="img-fluid me-3" style="height:36px;" />
+                            <img src="@Url.Content("~/uploads/Logo2.png")" alt="Logo 2" class="img-fluid me-3" style="height:36px;" />
+                            <img src="@Url.Content("~/uploads/Logo3.png")" alt="Logo 3" class="img-fluid" style="height:36px;" />
+                        </div>
+
                         <div class="text-muted">Copyright &copy; Your Website 2023</div>
+
                         <div>
                             <a href="#">Privacy Policy</a>
                             &middot;
@@ -110,6 +120,7 @@
                 </div>
             </footer>
         </div>
+
     </div>
 
     <!-- jQuery cần được nạp trước -->
