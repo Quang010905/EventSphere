@@ -17,14 +17,13 @@ namespace EventSphere.Areas.Organizer.Controllers
             _context = context;
         }
 
-        // Danh sách sự kiện
         public async Task<IActionResult> Index()
         {
             int? organizerId = HttpContext.Session.GetInt32("UId");
             if (organizerId == null)
             {
                 // chưa login hoặc session hết hạn
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "CLient", new { area = "Client" });
             }
             var events = await _context.TblEvents
                 .Include(e => e.Organizer).Where(e => e.OrganizerId == organizerId)
@@ -33,31 +32,31 @@ namespace EventSphere.Areas.Organizer.Controllers
             return View(events);
         }
 
-        // Duyệt sự kiện
+ 
         [HttpPost]
         public async Task<IActionResult> Approve(int id)
         {
             var ev = await _context.TblEvents.FindAsync(id);
             if (ev == null) return Json(new { success = false });
 
-            ev.Status = 1; // Đã duyệt
+            ev.Status = 1; 
             await _context.SaveChangesAsync();
             return Json(new { success = true });
         }
 
-        // Vô hiệu sự kiện
+
         [HttpPost]
         public async Task<IActionResult> Disable(int id)
         {
             var ev = await _context.TblEvents.FindAsync(id);
             if (ev == null) return Json(new { success = false });
 
-            ev.Status = 2; // Đã vô hiệu
+            ev.Status = 2; 
             await _context.SaveChangesAsync();
             return Json(new { success = true });
         }
 
-        // Chi tiết sự kiện
+
         public async Task<IActionResult> Details(int id)
         {
             var ev = await _context.TblEvents
@@ -69,7 +68,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             return View(ev);
         }
 
-        // GET: Edit
+
         public async Task<IActionResult> Edit(int id)
         {
             var ev = await _context.TblEvents
@@ -78,10 +77,10 @@ namespace EventSphere.Areas.Organizer.Controllers
 
             if (ev == null) return NotFound();
 
-            // Chỉ cho sửa nếu status = 0
+
             if (ev.Status == 1 || ev.Status == 2)
             {
-                TempData["ErrorMessage"] = "Sự kiện đã duyệt hoặc bị vô hiệu, không thể chỉnh sửa!";
+                TempData["ErrorMessage"] = "Event approved or disabled, cannot be edited";
                 return RedirectToAction("Index");
             }
 
@@ -98,21 +97,21 @@ namespace EventSphere.Areas.Organizer.Controllers
         public async Task<IActionResult> EditAjax([FromForm] EditEventDto dto, IFormFile? imageFile)
         {
             var ev = await _context.TblEvents.FindAsync(dto.Id);
-            if (ev == null) return Json(new { success = false, message = "Không tìm thấy sự kiện" });
+            if (ev == null) return Json(new { success = false, message = "No events found" });
 
             if (ev.Status == 1 || ev.Status == 2)
-                return Json(new { success = false, message = "Sự kiện đã duyệt hoặc bị vô hiệu, không thể chỉnh sửa!" });
+                return Json(new { success = false, message = "Event approved or disabled, cannot be edited!" });
 
             // Normalize & validate title
             var title = dto.Title?.Trim();
             if (string.IsNullOrEmpty(title))
-                return Json(new { success = false, message = "Tiêu đề không được bỏ trống!" });
+                return Json(new { success = false, message = "Title cannot be empty!" });
 
             var titleLower = title.ToLower();
             var exists = await _context.TblEvents
                 .AnyAsync(e => e.Id != dto.Id && e.Title != null && e.Title.ToLower() == titleLower);
             if (exists)
-                return Json(new { success = false, message = "Tiêu đề đã tồn tại, vui lòng chọn tiêu đề khác." });
+                return Json(new { success = false, message = "Title already exists, please choose another title." });
 
             // Cập nhật dữ liệu
             ev.Title = title;
@@ -135,7 +134,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             {
                 var eventDateTime = ev.Date.Value.ToDateTime(ev.Time.Value);
                 if (eventDateTime <= DateTime.Now)
-                    return Json(new { success = false, message = "Ngày giờ phải lớn hơn hiện tại!" });
+                    return Json(new { success = false, message = "Date and time must be greater than current!" });
             }
 
             // Xử lý ảnh
@@ -161,7 +160,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             }
             catch (DbUpdateException)
             {
-                return Json(new { success = false, message = "Lưu thất bại do trùng tiêu đề (ràng buộc DB). Vui lòng thử tiêu đề khác." });
+                return Json(new { success = false, message = "Save failed due to duplicate title (DB constraint). Please try another title.." });
             }
 
             return Json(new { success = true });
@@ -185,21 +184,21 @@ namespace EventSphere.Areas.Organizer.Controllers
             // Normalize title
             var title = dto.Title?.Trim();
             if (string.IsNullOrEmpty(title))
-                return Json(new { success = false, message = "Tiêu đề không được bỏ trống!" });
+                return Json(new { success = false, message = "Title cannot be empty!" });
 
             // Kiểm tra trùng (không phân biệt hoa thường)
             var titleLower = title.ToLower();
             var exists = await _context.TblEvents
                 .AnyAsync(e => e.Title != null && e.Title.ToLower() == titleLower);
             if (exists)
-                return Json(new { success = false, message = "Tiêu đề đã tồn tại, vui lòng chọn tiêu đề khác." });
+                return Json(new { success = false, message = "Title already exists, please choose another title." });
 
             // Validate ngày giờ phải ở tương lai (nếu có)
             if (dto.Date.HasValue && dto.Time.HasValue)
             {
                 var eventDateTime = dto.Date.Value.ToDateTime(dto.Time.Value);
                 if (eventDateTime <= DateTime.Now)
-                    return Json(new { success = false, message = "Ngày giờ phải lớn hơn hiện tại!" });
+                    return Json(new { success = false, message = "Date and time must be greater than current!" });
             }
 
             var ev = new TblEvent
@@ -239,7 +238,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             catch (DbUpdateException)
             {
                 // Nếu có ràng buộc DB unique (race condition), bắt và trả lỗi thân thiện
-                return Json(new { success = false, message = "Lưu thất bại do trùng tiêu đề (ràng buộc DB). Vui lòng thử tiêu đề khác." });
+                return Json(new { success = false, message = "Save failed due to duplicate title (DB constraint). Please try another title." });
             }
 
             return Json(new { success = true });

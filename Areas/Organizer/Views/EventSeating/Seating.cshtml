@@ -100,7 +100,7 @@
 <div id="seatContainer">
     @if (Model.TotalSeats <= 0)
     {
-        <div class="alert alert-info">Chưa có chỗ ngồi nào được thiết lập cho sự kiện này.</div>
+        <div class="alert alert-info">No Seat.</div>
     }
     else
     {
@@ -133,7 +133,7 @@
                 const token = tokenInput ? tokenInput.value : null;
 
                 if (!token) {
-                    alert('Không tìm thấy antiforgery token.');
+                    alert('Can not find antiforgery token.');
                     return;
                 }
 
@@ -162,13 +162,13 @@
                         // simpler approach: reload page so server returns fresh seating
                         location.reload();
                     } else {
-                        alert(data?.message ?? 'Không thể thêm chỗ. Kiểm tra console/server logs.');
+                        alert(data?.message ?? 'Can not add seat. Check console/server logs.');
                         this.disabled = false;
                         this.textContent = 'Add seat (+1)';
                     }
                 } catch (err) {
                     console.error(err);
-                    alert('Lỗi khi gọi server: ' + err.message);
+                    alert('Error to call server: ' + err.message);
                     this.disabled = false;
                     this.textContent = 'Add seat (+1)';
                 }

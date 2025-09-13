@@ -5,21 +5,21 @@
 }
 
 @section headerContent {
-    <h1 class="h3 mb-0 text-gray-800">Thư viện Media</h1>
+    <h1 class="h3 mb-0 text-gray-800">Library Media</h1>
 }
 
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-primary">Danh sách Media</h6>
+        <h6 class="m-0 font-weight-bold text-primary">List Media</h6>
         <a class="btn btn-sm btn-success" href="@Url.Action("Create", "MediaGallery", new { area = "Organizer", eventId = eventId })">
-            Thêm Media
+            Create Media
         </a>
     </div>
     <div class="card-header py-3">
         <div class="mt-2">
-            <label>Lọc theo năm:</label>
+            <label>Filter by year:</label>
             <select id="yearFilter" class="form-control w-auto d-inline-block">
-                <option value="">Tất cả</option>
+                <option value="">All</option>
                 @foreach (var y in Model.Where(m => m.UploadedOn.HasValue)
                 .Select(m => m.UploadedOn.Value.Year)
                 .Distinct()
@@ -29,9 +29,9 @@
                 }
             </select>
 
-            <label class="ml-3">Lọc theo danh mục:</label>
+            <label class="ml-3">Filter by category:</label>
             <select id="categoryFilter" class="form-control w-auto d-inline-block">
-                <option value="">Tất cả</option>
+                <option value="">All</option>
                 @foreach (var cat in Model.Where(m => m.Event != null)
                 .Select(m => m.Event!.Category!)
                 .Distinct())
@@ -45,7 +45,7 @@
     <div class="card-body">
         <ul class="nav nav-tabs" id="mediaTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="images-tab" data-toggle="tab" href="#images" role="tab">Ảnh</a>
+                <a class="nav-link active" id="images-tab" data-toggle="tab" href="#images" role="tab">Image</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="videos-tab" data-toggle="tab" href="#videos" role="tab">Video</a>
@@ -58,12 +58,12 @@
                 <table class="table table-bordered" id="imagesTable" width="100%">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Ảnh</th>
+                            <th>Image</th>
                             <th>Caption</th>
                             <th>Event</th>
-                            <th>Người upload</th>
-                            <th>Ngày tải lên</th>
-                            <th>Hành động</th>
+                            <th>Uploader</th>
+                            <th>Date upload image</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,8 +76,8 @@
                                 <td>@item.UploadedByNavigation?.Email</td>
                                 <td>@item.UploadedOn?.ToString("dd/MM/yyyy")</td>
                                 <td>
-                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Organizer", id=item.Id })">Sửa</a>
-                                    <button class="btn btn-sm btn-danger delete-btn" data-id="@item.Id">Xóa</button>
+                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Organizer", id=item.Id })">Update</a>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="@item.Id">Delete</button>
                                 </td>
                             </tr>
                         }
@@ -90,12 +90,12 @@
                 <table class="table table-bordered" id="videosTable" width="100%">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Video</th>
+                            <th>Image</th>
                             <th>Caption</th>
                             <th>Event</th>
-                            <th>Người upload</th>
-                            <th>Ngày tải lên</th>
-                            <th>Hành động</th>
+                            <th>Uploader</th>
+                            <th>Date upload image</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,8 +112,8 @@
                                 <td>@item.UploadedByNavigation?.Email</td>
                                 <td>@item.UploadedOn?.ToString("dd/MM/yyyy")</td>
                                 <td>
-                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Organizer", id=item.Id })">Sửa</a>
-                                    <button class="btn btn-sm btn-danger delete-btn" data-id="@item.Id">Xóa</button>
+                                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", "MediaGallery", new { area="Organizer", id=item.Id })">Update</a>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="@item.Id">Delete</button>
                                 </td>
                             </tr>
                         }
@@ -130,13 +130,13 @@
             var imagesTable = $('#imagesTable').DataTable({
                 "pageLength": 5,
                 "lengthMenu": [[5,25,50,-1],[5,25,50,"Tất cả"]],
-                "language": {"search":"🔍 Tìm kiếm:", "lengthMenu":"Hiển thị _MENU_ media"}
+                "language": {"search":"🔍 Search:", "lengthMenu":"Show _MENU_ media"}
             });
 
             var videosTable = $('#videosTable').DataTable({
                 "pageLength": 5,
                 "lengthMenu": [[5,25,50,-1],[5,25,50,"Tất cả"]],
-                "language": {"search":"🔍 Tìm kiếm:", "lengthMenu":"Hiển thị _MENU_ media"}
+                "language": {"search":"🔍 Search:", "lengthMenu":"Show _MENU_ media"}
             });
 
             // Lọc bảng
@@ -175,12 +175,12 @@
 
             // Xóa Media
             $(document).on('click', '.delete-btn', function(){
-                if(!confirm("Bạn có chắc muốn xóa media này?")) return;
+                if(!confirm("Are you sure to delete this media?")) return;
                 var id = $(this).data('id');
                 $.post('/Organizer/MediaGallery/DeleteAjax', {id:id}, function(res){
                     if(res.success){
                         $('#row-' + id).fadeOut(300, function(){ $(this).remove(); });
-                    } else alert("Xóa thất bại!");
+                    } else alert("Delete fail!");
                 });
             });
         });

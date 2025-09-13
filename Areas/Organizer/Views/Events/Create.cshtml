@@ -2,32 +2,32 @@
     Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
 }
 
-<h2 class="mb-4">Thêm sự kiện</h2>
+<h2 class="mb-4">Create event</h2>
 
 <div class="mb-3">
-    <label class="form-label">Tiêu đề</label>
+    <label class="form-label">Title</label>
     <input type="text" id="Title" class="form-control" />
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Mô tả</label>
+    <label class="form-label">Description</label>
     <textarea id="Description" class="form-control" rows="4"></textarea>
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Địa điểm</label>
+    <label class="form-label">Venue</label>
     <input type="text" id="Venue" class="form-control" />
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Thể loại</label>
+    <label class="form-label">Category</label>
     <input type="text" id="Category" class="form-control" />
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Người tổ chức</label>
+    <label class="form-label">Organizer</label>
     <select id="OrganizerId" class="form-select">
-        <option value="">-- Chọn người tổ chức --</option>
+        <option value="">-- Select Organizer --</option>
         @foreach (var u in ViewBag.Organizers)
         {
             <option value="@u.Id">@u.Email</option>
@@ -36,23 +36,23 @@
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Ngày diễn ra</label>
+    <label class="form-label">Date</label>
     <input type="date" id="Date" class="form-control" />
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Giờ diễn ra</label>
+    <label class="form-label">Time</label>
     <input type="time" id="Time" class="form-control" />
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Ảnh</label>
+    <label class="form-label">Image</label>
     <input type="file" id="ImageFile" class="form-control" />
 </div>
 
 <div class="d-flex gap-2">
-    <button type="button" class="btn btn-primary" onclick="saveEvent()">Thêm sự kiện</button>
-    <a href="@Url.Action("Index", "Events", new { area = "Organizer" })" class="btn btn-secondary">Hủy</a>
+    <button type="button" class="btn btn-primary" onclick="saveEvent()">Create event</button>
+    <a href="@Url.Action("Index", "Events", new { area = "Organizer" })" class="btn btn-secondary">Cancel</a>
 </div>
 
 <script>
@@ -76,10 +76,10 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert("Thêm sự kiện thành công!");
+                    alert("Create event success!");
                     window.location.href = '@Url.Action("Index", "Events", new { area = "Organizer" })';
                 } else {
-                    alert("Lỗi: " + data.message);
+                    alert("Error: " + data.message);
                 }
             })
             .catch(err => console.error(err));

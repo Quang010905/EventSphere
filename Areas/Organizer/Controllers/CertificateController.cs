@@ -67,10 +67,10 @@ namespace EventSphere.Areas.Organizer.Controllers
         public async Task<IActionResult> Generate([FromBody] CertificateGenerateViewModel? model)
         {
             if (model == null)
-                return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ." });
+                return BadRequest(new { success = false, message = "Invalid data." });
 
             if (!model.EventId.HasValue || !model.StudentId.HasValue)
-                return BadRequest(new { success = false, message = "Thiếu Event hoặc Student." });
+                return BadRequest(new { success = false, message = "Not enough data." });
 
             // Tìm record certificate đã tồn tại (tbl_certificate)
             var cert = await _context.TblCertificates
@@ -79,13 +79,13 @@ namespace EventSphere.Areas.Organizer.Controllers
             if (cert == null)
             {
                 // Theo yêu cầu của bạn, nếu chưa có row trong tbl_certificate thì KHÔNG thêm mới tại đây
-                return BadRequest(new { success = false, message = "Chưa có bản ghi chứng chỉ cho cặp Event/Student trong hệ thống. (Sẽ được thêm khi người dùng điểm danh.)" });
+                return BadRequest(new { success = false, message = "There is no certificate record for the Event/Student pair in the system. (Will be added when the user checks in.)" });
             }
 
             // Nếu đã có certificate_url => báo cho admin
             if (!string.IsNullOrWhiteSpace(cert.CertificateUrl))
             {
-                return BadRequest(new { success = false, message = "Học viên này đã có chứng chỉ cho sự kiện đã chọn rồi." });
+                return BadRequest(new { success = false, message = "This student already has a certificate for the selected event." });
             }
 
             // Lấy thông tin event + student
@@ -97,7 +97,7 @@ namespace EventSphere.Areas.Organizer.Controllers
                 .FirstOrDefaultAsync(e => e.Id == model.EventId.Value);
 
             if (student == null || eventEntity == null)
-                return BadRequest(new { success = false, message = "Không tìm thấy Event hoặc Student." });
+                return BadRequest(new { success = false, message = "No Event or Student found." });
 
             var studentName = student.TblUserDetails
                                 .OrderBy(d => d.Id)
@@ -116,7 +116,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = "Lỗi khi tạo PDF: " + ex.Message });
+                return BadRequest(new { success = false, message = "Error creating PDF: " + ex.Message });
             }
 
             // Lưu file vào wwwroot/certificates
@@ -140,7 +140,6 @@ namespace EventSphere.Areas.Organizer.Controllers
         }
 
         
-        // AJAX: Get events list for select2
         [HttpGet]
         public async Task<IActionResult> GetEvents()
         {
@@ -159,7 +158,6 @@ namespace EventSphere.Areas.Organizer.Controllers
         {
             var query = _context.TblUsers.AsQueryable();
 
-            // filter to students if your system uses Role==1 for students; if not, remove .Where
             query = query.Where(u => u.Role == 1);
 
             if (!string.IsNullOrWhiteSpace(q))
@@ -183,7 +181,6 @@ namespace EventSphere.Areas.Organizer.Controllers
             return Json(list);
         }
 
-        // AJAX: Get single student name by id (used to prefill)
         [HttpGet]
         public async Task<IActionResult> GetStudentById(int id)
         {

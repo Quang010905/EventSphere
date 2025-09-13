@@ -22,7 +22,7 @@ namespace EventSphere.Areas.Organizer.Controllers
             var organizerId = HttpContext.Session.GetInt32("UId");
             if (organizerId == null)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "CLient", new { area = "Client" });
             }
 
             // ✅ Truyền organizerId vào repo

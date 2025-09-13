@@ -23,7 +23,7 @@ namespace EventSphere.Areas.Organizer.Controllers
         {
             int? organizerId = HttpContext.Session.GetInt32("UId");
             if (organizerId == null)
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "CLient", new { area = "Client" });
             // Prepare select lists
             var events = await _context.TblEvents.Where(e => e.OrganizerId == organizerId)
                 .OrderBy(e => e.Title)

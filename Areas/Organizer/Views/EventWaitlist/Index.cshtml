@@ -12,20 +12,20 @@
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
-            <h1 class="mt-4">Quản lý Waitlist</h1>
+            <h1 class="mt-4">Manage Waitlist</h1>
 
             <div class="card mb-3">
                 <div class="card-body">
                     <form id="filterForm" method="get" class="row g-2 align-items-end">
                         @Html.AntiForgeryToken()
                         <div class="col-auto">
-                            <label class="form-label">Tìm kiếm</label>
-                            <input type="text" name="q" value="@query" class="form-control" placeholder="Tên sinh viên hoặc email..." />
+                            <label class="form-label">Search</label>
+                            <input type="text" name="q" value="@query" class="form-control" placeholder="Student name or email..." />
                         </div>
                         <div class="col-auto">
                             <label class="form-label">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary">Lọc</button>
-                            <a href="@Url.Action("Index")" class="btn btn-secondary">Xóa</a>
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">Delete</a>
                         </div>
                     </form>
                 </div>
@@ -33,7 +33,7 @@
 
             <div class="card mb-4">
                 <div class="card-header">
-                    Danh sách chờ (<strong>@total</strong>)
+                   Waitlist (<strong>@total</strong>)
                 </div>
                 <div class="card-body">
                     <table class="table table-striped table-bordered">
@@ -41,12 +41,12 @@
                             <tr>
                                 <th>#</th>
                                 <th>Event</th>
-                                <th>Ngày</th>
-                                <th>Sinh viên</th>
+                                <th>Date</th>
+                                <th>Student</th>
                                 <th>Email</th>
-                                <th>Thời gian thêm</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,8 +70,8 @@
                                                      )
                                         </td>
                                         <td>
-                                            <button class="btn btn-success btn-sm btn-confirm" data-id="@item.Id">Xác nhận</button>
-                                            <button class="btn btn-danger btn-sm btn-delete" data-id="@item.Id">Xóa</button>
+                                            <button class="btn btn-success btn-sm btn-confirm" data-id="@item.Id">Accept</button>
+                                            <button class="btn btn-danger btn-sm btn-delete" data-id="@item.Id">Delete</button>
                                         </td>
                                     </tr>
                                     idx++;
@@ -80,7 +80,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="8" class="text-center">Không có kết quả.</td>
+                                    <td colspan="8" class="text-center">No result.</td>
                                 </tr>
                             }
                         </tbody>
@@ -129,7 +129,7 @@
                 e.preventDefault();
                 var $btn = $(this);
                 var id = $btn.data('id');
-                if (!confirm('Xác nhận cho sinh viên này tham gia sự kiện?')) return;
+                if (!confirm('Are you sure to confirm student join this event?')) return;
                 $btn.prop('disabled', true).text('Đang xử lý...');
                 $.ajax({
                     url: '@Url.Action("Confirm")',
@@ -137,19 +137,19 @@
                     data: { id: id, __RequestVerificationToken: token() },
                     success: function (res) {
                         if (res && res.success) {
-                            alert(res.message || 'Đã xác nhận.');
+                            alert(res.message || 'Accepted.');
                             location.reload();
                         } else {
                             // trường hợp event full hoặc lỗi
-                            alert(res?.message || 'Không thể xác nhận: server trả lỗi.');
-                            $btn.prop('disabled', false).text('Xác nhận');
+                            alert(res?.message || 'Can not accept: server send error.');
+                            $btn.prop('disabled', false).text('Accept');
                         }
                     },
                     error: function (xhr) {
                         var msg = 'Server error';
                         try { if (xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message; else if (xhr && xhr.responseText) msg = xhr.responseText; } catch (e) {}
-                        alert('Lỗi: ' + msg);
-                        $btn.prop('disabled', false).text('Xác nhận');
+                        alert('Error: ' + msg);
+                        $btn.prop('disabled', false).text('Accept');
                     }
                 });
             });
@@ -158,7 +158,7 @@
                 e.preventDefault();
                 var $btn = $(this);
                 var id = $btn.data('id');
-                if (!confirm('Bạn có chắc muốn xóa khỏi danh sách chờ?')) return;
+                if (!confirm('Are you sure to delete student?')) return;
                 $btn.prop('disabled', true).text('Đang xóa...');
                 $.ajax({
                     url: '@Url.Action("Delete")',
@@ -166,18 +166,18 @@
                     data: { id: id, __RequestVerificationToken: token() },
                     success: function (res) {
                         if (res && res.success) {
-                            alert(res.message || 'Đã xóa.');
+                            alert(res.message || 'Deleted.');
                             location.reload();
                         } else {
-                            alert(res?.message || 'Không thể xóa.');
-                            $btn.prop('disabled', false).text('Xóa');
+                            alert(res?.message || 'Can not delete.');
+                            $btn.prop('disabled', false).text('Delete');
                         }
                     },
                     error: function (xhr) {
                         var msg = 'Server error';
                         try { if (xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message; else if (xhr && xhr.responseText) msg = xhr.responseText; } catch (e) {}
-                        alert('Lỗi: ' + msg);
-                        $btn.prop('disabled', false).text('Xóa');
+                        alert('Error: ' + msg);
+                        $btn.prop('disabled', false).text('Delete');
                     }
                 });
             });

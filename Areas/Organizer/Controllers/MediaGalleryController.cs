@@ -107,7 +107,7 @@ namespace EventSphere.Areas.Organizer.Controllers
         public async Task<IActionResult> EditAjax([FromForm] EditMediaDto dto, IFormFile? file)
         {
             var media = await _context.TblMediaGalleries.FindAsync(dto.Id);
-            if (media == null) return Json(new { success = false, message = "Không tìm thấy media" });
+            if (media == null) return Json(new { success = false, message = "Can not find media" });
 
             media.EventId = dto.EventId;
             media.FileType = dto.FileType;
