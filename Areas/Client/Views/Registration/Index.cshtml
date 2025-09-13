@@ -1,114 +1,121 @@
 ﻿@{
-    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+	Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
 }
 
 <!-- Hiển thị thông báo -->
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["Success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+	<div class="alert alert-success alert-dismissible fade show" role="alert">
+		@TempData["Success"]
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
 }
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["Error"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+	<div class="alert alert-danger alert-dismissible fade show" role="alert">
+		@TempData["Error"]
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
 }
 
+<section class="page-title-area page-title-spacing p-relative zindex-1"
+		 style="background-image: url('@Url.Content("~/Client/assets/img/bg/work-bg.jpg")');
+           background-size: cover;
+           background-position: center;">
+	<div class="ms-overlay ms-overlay9 p-absolute zindex--1"
+		 style="inset:0;background:rgba(0,0,0,0.45);"></div>
+	<div class="container text-center text-white py-5">
+		<h1 class="display-2 fw-bold mb-2">EventSphere</h1>
+		<p class="lead mb-0">Your Registration</p>
+	</div>
+</section>
 <h5 style="visibility: hidden;">Event Detail</h5>
-
-
-<div class="mb-3">
-    <form method="get" asp-action="Index" asp-controller="Registration" class="form-inline">
-        <input type="hidden" name="id" value="@ViewBag.StudentId" />
-        <label class="me-2 fw-bold">Lọc theo trạng thái:</label>
-        <select name="status" class="form-select form-select-sm w-auto d-inline-block"
-                onchange="this.form.submit()">
-            <option value="" @(ViewBag.StatusFilter == null ? "selected" : "")>All </option>
-            <option value="0" @(ViewBag.StatusFilter == 0 ? "selected" : "")>Pending</option>
-            <option value="1" @(ViewBag.StatusFilter == 1 ? "selected" : "")>Accepted</option>
-            <option value="2" @(ViewBag.StatusFilter == 2 ? "selected" : "")>Denied</option>
-            <option value="3" @(ViewBag.StatusFilter == 3 ? "selected" : "")>Canceled</option>
-        </select>
-    </form>
+<div style="margin-bottom:40px; text-align:left;">
+	<a href="@Url.Action("Index", "Home")"
+	   style="
+           display:inline-block;
+           padding:6px 12px;      
+           font-size:0.8rem;     
+           color:#fff;           
+           background-color:#0d6efd; 
+           text-decoration:none;  
+           border-radius:4px;     
+	   ">
+		Back to Home
+	</a>
 </div>
-
-
-
 
 @if (ViewBag.itemReg != null)
 {
-    var ls = (List<EventSphere.Models.ModelViews.RegistrationView>)ViewBag.itemReg;
-    if (ls != null && ls.Count > 0)
-    {
-        <div class="row g-4">
-            @foreach (var item in ls)
-            {
-                <div class="col-12 col-md-6 col-lg-4">
-                    <article class="card h-100 border-0 shadow-sm rounded-3">
-                        <div class="overflow-hidden rounded-top">
-                            <img src="@Url.Content("~/uploads/" + item.EventImage)"
-                                 class="w-100"
-                                 style="height:200px; object-fit:cover;"
-                                 alt="@item.EventName" />
-                        </div>
-                        <div class="card-body d-flex flex-column p-3">
-                            <h5 class="card-title mb-1 text-truncate" title="@item.EventName">
-                                @item.EventName
-                            </h5>
-                            <p class="text-muted mb-2">
-                                <i class="bi bi-calendar-event me-1"></i> Date: @item.EventDate?.ToString("dd/MM/yyyy")
-                                <span> • <i class="bi bi-clock"></i> Time: @item.EventTime</span>
-                            <p class="text-muted mb-3">
-                                <i class="bi bi-geo-alt me-1"></i> Venue: @item.Venue
-                            </p>
+	var ls = (List<EventSphere.Models.ModelViews.RegistrationView>)ViewBag.itemReg;
+	if (ls != null && ls.Count > 0)
+	{
+		<div class="row g-4">
+			@foreach (var item in ls)
+			{
+				<div class="col-12 col-md-6 col-lg-4">
+					<article class="card h-100 border-0 shadow-sm rounded-3">
+						<div class="overflow-hidden rounded-top">
+							<img src="@Url.Content("~/uploads/" + item.EventImage)"
+								 class="w-100"
+								 style="height:200px; object-fit:cover;"
+								 alt="@item.EventName" />
+						</div>
+						<div class="card-body d-flex flex-column p-3">
+							<h5 class="card-title mb-1 text-truncate" title="@item.EventName">
+								@item.EventName
+							</h5>
+							<p class="text-muted mb-2">
+								<i class="bi bi-calendar-event me-1"></i> Date: @item.EventDate?.ToString("dd/MM/yyyy")
+								<span> • <i class="bi bi-clock"></i> Time: @item.EventTime</span>
+							<p class="text-muted mb-3">
+								<i class="bi bi-geo-alt me-1"></i> Venue: @item.Venue
+							</p>
 
-                            <!-- Trạng thái -->
-                            <p class="fw-bold mb-3">
-                                @if (item.Status == 0)
-                                {
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                }
-                                else if (item.Status == 1)
-                                {
-                                    <span class="badge bg-success">Accepted</span>
-                                }
-                                else if (item.Status == 2)
-                                {
-                                    <span class="badge bg-danger">Denied</span>
-                                }
-                                else if (item.Status == 3)
-                                {
-                                    <span class="badge bg-secondary">Canceled</span>
-                                }
-                            </p>
+							<!-- Trạng thái -->
+							<p class="fw-bold mb-3">
+									@if (item.Status == 0)
+									{
+									<span class="badge bg-warning text-dark">Pending</span>
+									}
+									else if (item.Status == 1)
+									{
+									<span class="badge bg-success">Accepted</span>
+									}
+									else if (item.Status == 2)
+									{
+									<span class="badge bg-danger">Denied</span>
+									}
+									else if (item.Status == 3)
+									{
+									<span class="badge bg-secondary">Canceled</span>
+									}
+							</p>
 
 
-                            <div class="d-flex justify-content-between mt-auto">
-                                <a href="@Url.Action("Index", "EventDetail", new { id = item.EventId, area = "Client" })"
-                                   class="btn btn-sm btn-primary">
-                                    Detail
-                                </a>
+							<div class="d-flex justify-content-between mt-auto">
+								<a href="@Url.Action("Index", "EventDetail", new { id = item.EventId, area = "Client" })"
+								   class="btn btn-sm btn-primary">
+									Detail
+								</a>
 
-                                @if (item.Status != 3) 
-                                {
-                                    <form asp-action="Cancel" asp-controller="Registration" method="post" class="d-inline">
-                                        <input type="hidden" name="stuId" value="@item.StudentId" />
-                                        <input type="hidden" name="eventId" value="@item.EventId" />
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Are you sure you want to unsubscribe?');">
-                                            Unsubscribe
-                                        </button>
-                                    </form>
-                                }
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            }
-        </div>
-    }
+									@if (item.Status != 3)
+									{
+									<form asp-action="Cancel" asp-controller="Registration" method="post" class="d-inline">
+										<input type="hidden" name="stuId" value="@item.StudentId" />
+										<input type="hidden" name="eventId" value="@item.EventId" />
+										<button type="submit" class="btn btn-sm btn-outline-danger"
+												onclick="return confirm('Are you sure you want to unsubscribe?');">
+											Unsubscribe
+										</button>
+									</form>
+									}
+							</div>
+						</div>
+					</article>
+				</div>
+			}
+		</div>
+		<br />
+	}
 }
