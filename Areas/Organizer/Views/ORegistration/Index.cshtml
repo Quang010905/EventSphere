@@ -63,12 +63,43 @@
         </div>
     </main>
 </div>
+
 @section Scripts {
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- DataTables -->
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
     <script>
+        // Khởi tạo DataTables
+        $(document).ready(function () {
+            $('#datatablesSimple').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [5, 10, 25, 50],
+                "ordering": true,
+                "searching": true,
+                "language": {
+                    "lengthMenu": "Hiển thị _MENU_ bản ghi",
+                    "zeroRecords": "Không tìm thấy kết quả",
+                    "info": "Trang _PAGE_ / _PAGES_",
+                    "infoEmpty": "Không có dữ liệu",
+                    "infoFiltered": "(lọc từ _MAX_ bản ghi)",
+                    "search": "Tìm kiếm:",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Sau",
+                        "previous": "Trước"
+                    }
+                }
+            });
+        });
+
+        // Accept / Deny AJAX
         (function () {
-            // đảm bảo không bind handler nhiều lần
             $(document).off('click', '.btn-accept').on('click', '.btn-accept', function (e) {
                 e.preventDefault();
 
@@ -77,85 +108,51 @@
                 const $row = $btn.closest('tr');
                 const $deny = $row.find('.btn-deny');
 
-                // nếu đang gửi request thì ignore
                 if ($btn.data('sending')) return;
 
-                // lấy token antiforgery (phải có @Html.AntiForgeryToken() đâu đó trên page)
                 const token = $('input[name="__RequestVerificationToken"]').val();
                 if (!token) {
-                    alert('Không tìm thấy __RequestVerificationToken trên trang. Vui lòng đảm bảo đã render @Html.AntiForgeryToken().');
+                    alert('Không tìm thấy __RequestVerificationToken.');
                     return;
                 }
 
-                // disable và show loading
                 $btn.data('sending', true);
                 $btn.prop('disabled', true);
                 $deny.prop('disabled', true);
-
-                // optional: show spinner trong button
                 const origHtml = $btn.html();
-                $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý');
+                $btn.html('<span class="spinner-border spinner-border-sm"></span> Đang xử lý');
 
-                // gửi POST với data form (đảm bảo server dễ lấy token)
                 $.ajax({
-                    url: '/Organizer/ORegistration/ApproveAndSend', // POST endpoint
+                    url: '/Organizer/ORegistration/ApproveAndSend',
                     type: 'POST',
                     data: {
                         id: id,
                         __RequestVerificationToken: token
                     },
-                            success: function (res) {
-            if (res && res.success) {
-                // Hiện thông báo; alert() ở đây là blocking — code phía dưới sẽ chạy sau khi user bấm OK
-                alert(res.message || 'Thao tác thành công.');
-
-                // 1) Nếu đang dùng DataTable (ajax) thì reload table (giữ paging)
-                try {
-                    if (window.jQuery && $.fn.dataTable) {
-                        var table = $('#datatablesSimple').DataTable ? $('#datatablesSimple').DataTable() : null;
-                        if (table && typeof table.ajax !== 'undefined' && typeof table.ajax.reload === 'function') {
-                            table.ajax.reload(null, false); // giữ trang hiện tại
-                            return; // đã reload xong, thoát handler
+                    success: function (res) {
+                        if (res && res.success) {
+                            alert(res.message || 'Thao tác thành công.');
+                            // cập nhật row
+                            $row.find('.col-status').html('<span class="text-success">Accepted</span>');
+                            $row.find('.col-action').html('<button class="btn btn-secondary btn-sm" disabled>Accepted</button>');
+                        } else {
+                            alert(res?.message || 'Không thể hoàn tất thao tác.');
+                            $btn.prop('disabled', false);
+                            $deny.prop('disabled', false);
+                            $btn.data('sending', false);
+                            $btn.html(origHtml);
                         }
-                    }
-                } catch (e) {
-                    console.warn('DataTable reload error', e);
-                }
-
-                // 2) Nếu không có DataTable: đơn giản reload cả trang để đồng bộ (bạn có thể thay bằng cập nhật DOM 1 row nếu muốn)
-                location.reload();
-            } else {
-                alert(res?.message || 'Không thể hoàn tất thao tác: server trả lỗi.');
-                // bật lại nút để admin có thể thử lại
-                $btn.prop('disabled', false);
-                $deny.prop('disabled', false);
-                $btn.data('sending', false);
-                $btn.html(origHtml);
-
-                try { if (window.jQuery && $.fn.dataTable) { var t = $('#datatablesSimple').DataTable ? $('#datatablesSimple').DataTable() : null; if (t && t.ajax) t.ajax.reload(null, false); } } catch (e) { }
-            }
-        },
-                    error: function (xhr, status, err) {
-                        // debug: show status and server response
-                        var msg = 'Server error';
-                        try {
-                            if (xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-                            else if (xhr && xhr.responseText) msg = xhr.responseText;
-                        } catch (e) { }
-
-                        alert('Lỗi khi gửi yêu cầu: ' + msg);
+                    },
+                    error: function (xhr) {
+                        alert('Lỗi server: ' + (xhr.responseText || 'Unknown error'));
                         $btn.prop('disabled', false);
                         $deny.prop('disabled', false);
                         $btn.data('sending', false);
                         $btn.html(origHtml);
-
-                        // nếu muốn, reload page làm fallback:
-                        // location.reload();
                     }
                 });
             });
 
-            // Deny - tương tự
             $(document).off('click', '.btn-deny').on('click', '.btn-deny', function (e) {
                 e.preventDefault();
                 if (!confirm('Bạn có chắc chắn muốn từ chối?')) return;
@@ -169,7 +166,7 @@
 
                 const token = $('input[name="__RequestVerificationToken"]').val();
                 if (!token) {
-                    alert('Không tìm thấy __RequestVerificationToken trên trang.');
+                    alert('Không tìm thấy __RequestVerificationToken.');
                     return;
                 }
 
@@ -177,7 +174,7 @@
                 $btn.prop('disabled', true);
                 $accept.prop('disabled', true);
                 const origHtml = $btn.html();
-                $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý');
+                $btn.html('<span class="spinner-border spinner-border-sm"></span> Đang xử lý');
 
                 $.ajax({
                     url: '/Organizer/ORegistration/Deny',
@@ -188,35 +185,19 @@
                     },
                     success: function (res) {
                         if (res && res.success) {
-                            try {
-                                if (window.jQuery && $.fn.dataTable) {
-                                    var table = $('#datatablesSimple').DataTable ? $('#datatablesSimple').DataTable() : null;
-                                    if (table && typeof table.ajax !== 'undefined' && typeof table.ajax.reload === 'function') {
-                                        table.ajax.reload(null, false);
-                                        return;
-                                    }
-                                }
-                            } catch (e) { console.warn(e); }
-
                             $row.find('.col-status').html('<span class="text-danger">Denied</span>');
                             $row.find('.col-action').html('<button class="btn btn-secondary btn-sm" disabled>Denied</button>');
                             alert(res.message || 'Đã từ chối.');
                         } else {
-                            alert(res?.message || 'Không thể từ chối: server trả lỗi.');
+                            alert(res?.message || 'Không thể từ chối.');
                             $btn.prop('disabled', false);
                             $accept.prop('disabled', false);
                             $btn.data('sending', false);
                             $btn.html(origHtml);
-                            try { if (window.jQuery && $.fn.dataTable) { var t = $('#datatablesSimple').DataTable ? $('#datatablesSimple').DataTable() : null; if (t && t.ajax) t.ajax.reload(null, false); } } catch (e) { }
                         }
                     },
                     error: function (xhr) {
-                        var msg = 'Server error';
-                        try {
-                            if (xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-                            else if (xhr && xhr.responseText) msg = xhr.responseText;
-                        } catch (e) { }
-                        alert('Lỗi khi gửi yêu cầu: ' + msg);
+                        alert('Lỗi server: ' + (xhr.responseText || 'Unknown error'));
                         $btn.prop('disabled', false);
                         $accept.prop('disabled', false);
                         $btn.data('sending', false);
@@ -224,8 +205,6 @@
                     }
                 });
             });
-
         })();
     </script>
 }
-
