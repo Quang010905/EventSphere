@@ -8,9 +8,9 @@ using System.IO;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace EventSphere.Areas.Admin.Controllers
+namespace EventSphere.Areas.Organizer.Controllers
 {
-    [Area("Admin")]
+    [Area("Organizer")]
     public class MediaGalleryController : Controller
     {
         private readonly EventSphereContext _context;
