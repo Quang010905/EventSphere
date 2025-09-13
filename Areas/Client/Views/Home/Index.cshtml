@@ -207,6 +207,25 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+
+    .pagination .page-link {
+        background-color: #ffffff !important;
+        color: #0d6efd !important; /* xanh Bootstrap */
+        border: 1px solid #dee2e6 !important;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd !important;
+        color: #fff !important;
+        border-color: #0d6efd !important;
+    }
+
+    .pagination {
+        background: rgba(255,255,255,0.9);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
 </style>
 
 <!-- ===== BANNER ===== -->
@@ -408,7 +427,7 @@
 @if (totalPages > 1)
 {
     <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination pagination-lg justify-content-center bg-light p-3 rounded shadow-sm">
             <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
                 <a class="page-link" href="@Url.Action("Index","Home", new { area="Client", q = qQuery, department = departmentQuery, status = statusQuery, start = startQuery, end = endQuery, page = currentPage - 1, pageSize = pageSize })" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>

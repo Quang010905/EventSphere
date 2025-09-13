@@ -1,6 +1,6 @@
 ﻿@model EventSphere.Models.entities.TblEvent
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
 }
 
 <h2 class="mb-4">Sửa sự kiện</h2>
@@ -76,7 +76,7 @@
 
 <div class="d-flex gap-2">
     <button type="button" class="btn btn-primary" onclick="saveEvent()">Lưu thay đổi</button>
-    <a href="@Url.Action("Index", "Events", new { area = "Admin" })" class="btn btn-secondary">Hủy</a>
+    <a href="@Url.Action("Index", "Events", new { area = "Organizer" })" class="btn btn-secondary">Hủy</a>
 </div>
 
 <script>
@@ -95,7 +95,7 @@
         var imageFile = document.getElementById("ImageFile").files[0];
         if (imageFile) formData.append("imageFile", imageFile);
 
-        fetch('@Url.Action("EditAjax", "Events", new { area = "Admin" })', {
+        fetch('@Url.Action("EditAjax", "Events", new { area = "Organizer" })', {
             method: 'POST',
             body: formData
         })
@@ -103,7 +103,7 @@
             .then(data => {
                 if (data.success) {
                     alert("Cập nhật thành công!");
-                    window.location.href = '@Url.Action("Index", "Events", new { area = "Admin" })';
+                    window.location.href = '@Url.Action("Index", "Events", new { area = "Organizer" })';
                 } else {
                     alert("Lỗi: " + data.message);
                 }
