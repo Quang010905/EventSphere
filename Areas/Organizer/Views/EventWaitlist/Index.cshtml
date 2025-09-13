@@ -1,0 +1,199 @@
+﻿@model EventSphere.Models.ModelViews.PagedWaitlistResult
+@{
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
+    var events = ViewBag.Events as List<(int Id, string Title)>;
+    int page = ViewBag.Page ?? 1;
+    int pageSize = ViewBag.PageSize ?? 15;
+    int total = ViewBag.Total ?? Model.TotalCount;
+    string query = ViewBag.Query ?? "";
+    int? selEvent = ViewBag.EventId as int?;
+}
+
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Quản lý Waitlist</h1>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form id="filterForm" method="get" class="row g-2 align-items-end">
+                        @Html.AntiForgeryToken()
+                        <div class="col-auto">
+                            <label class="form-label">Event</label>
+                            <select name="eventId" class="form-select">
+                                <option value="">-- Tất cả --</option>
+                                @if (events != null)
+                                {
+                                    foreach (var e in events)
+                                    {
+                                        <option value="@e.Id" @(selEvent == e.Id ? "selected" : "")>@e.Title</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label">Tìm kiếm</label>
+                            <input type="text" name="q" value="@query" class="form-control" placeholder="Tên sinh viên hoặc email..." />
+                        </div>
+                        <div class="col-auto">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary">Lọc</button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">Xóa</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    Danh sách chờ (<strong>@total</strong>)
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Event</th>
+                                <th>Ngày</th>
+                                <th>Sinh viên</th>
+                                <th>Email</th>
+                                <th>Thời gian thêm</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Items != null && Model.Items.Count > 0)
+                            {
+                                int idx = (page - 1) * pageSize + 1;
+                                foreach (var item in Model.Items)
+                                {
+                                    <tr data-id="@item.Id">
+                                        <td>@idx</td>
+                                        <td>@item.EventName</td>
+                                        <td>@(item.EventDate.HasValue ? item.EventDate.Value.ToString("yyyy-MM-dd") : "-")</td>
+                                        <td>@item.StudentName</td>
+                                        <td>@item.StudentEmail</td>
+                                        <td>@(item.WaitlistTime?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                                        <td>
+                                            @Html.Raw(
+                                                     item.Status == 1 ? "<span class=\"badge bg-success\">Confirmed</span>" :
+                                                     item.Status == 2 ? "<span class=\"badge bg-danger\">Removed</span>" :
+                                                     "<span class=\"badge bg-secondary\">Waiting</span>"
+                                                     )
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-success btn-sm btn-confirm" data-id="@item.Id">Xác nhận</button>
+                                            <button class="btn btn-danger btn-sm btn-delete" data-id="@item.Id">Xóa</button>
+                                        </td>
+                                    </tr>
+                                    idx++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center">Không có kết quả.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <nav>
+                        <ul class="pagination">
+                            @{
+                                int totalPages = (int)Math.Ceiling(total / (double)pageSize);
+                                int current = page;
+                                int start = Math.Max(1, current - 3);
+                                int end = Math.Min(totalPages, current + 3);
+                            }
+                            <li class="page-item @(current==1? "disabled":"")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = 1, pageSize = pageSize, eventId = selEvent, q = query })">«</a>
+                            </li>
+                            @for (int p = start; p <= end; p++)
+                            {
+                                <li class="page-item @(p==current ? "active":"")">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = p, pageSize = pageSize, eventId = selEvent, q = query })">@p</a>
+                                </li>
+                            }
+                            <li class="page-item @(current==totalPages? "disabled":"")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = totalPages, pageSize = pageSize, eventId = selEvent, q = query })">»</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        (function () {
+            // lấy token anti-forgery
+            function token() {
+                return $('input[name="__RequestVerificationToken"]').val();
+            }
+
+            $(document).off('click', '.btn-confirm').on('click', '.btn-confirm', function (e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var id = $btn.data('id');
+                if (!confirm('Xác nhận cho sinh viên này tham gia sự kiện?')) return;
+                $btn.prop('disabled', true).text('Đang xử lý...');
+                $.ajax({
+                    url: '@Url.Action("Confirm")',
+                    type: 'POST',
+                    data: { id: id, __RequestVerificationToken: token() },
+                    success: function (res) {
+                        if (res && res.success) {
+                            alert(res.message || 'Đã xác nhận.');
+                            location.reload();
+                        } else {
+                            // trường hợp event full hoặc lỗi
+                            alert(res?.message || 'Không thể xác nhận: server trả lỗi.');
+                            $btn.prop('disabled', false).text('Xác nhận');
+                        }
+                    },
+                    error: function (xhr) {
+                        var msg = 'Server error';
+                        try { if (xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message; else if (xhr && xhr.responseText) msg = xhr.responseText; } catch (e) {}
+                        alert('Lỗi: ' + msg);
+                        $btn.prop('disabled', false).text('Xác nhận');
+                    }
+                });
+            });
+
+            $(document).off('click', '.btn-delete').on('click', '.btn-delete', function (e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var id = $btn.data('id');
+                if (!confirm('Bạn có chắc muốn xóa khỏi danh sách chờ?')) return;
+                $btn.prop('disabled', true).text('Đang xóa...');
+                $.ajax({
+                    url: '@Url.Action("Delete")',
+                    type: 'POST',
+                    data: { id: id, __RequestVerificationToken: token() },
+                    success: function (res) {
+                        if (res && res.success) {
+                            alert(res.message || 'Đã xóa.');
+                            location.reload();
+                        } else {
+                            alert(res?.message || 'Không thể xóa.');
+                            $btn.prop('disabled', false).text('Xóa');
+                        }
+                    },
+                    error: function (xhr) {
+                        var msg = 'Server error';
+                        try { if (xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message; else if (xhr && xhr.responseText) msg = xhr.responseText; } catch (e) {}
+                        alert('Lỗi: ' + msg);
+                        $btn.prop('disabled', false).text('Xóa');
+                    }
+                });
+            });
+        })();
+    </script>
+}
