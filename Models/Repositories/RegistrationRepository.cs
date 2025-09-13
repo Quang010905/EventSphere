@@ -44,7 +44,7 @@ namespace EventSphere.Models.Repositories
                          EventTime = x.Event.Time ?? default,
                          RegisterOn = x.RegisteredOn ?? DateTime.Now,
                          StudentEmail = x.Student.Email,
-                         StudentName = x.Student.TblUserDetails.FirstOrDefault()?.Fullname ?? x.Student.Email
+                         StudentName = x.Student.TblUserDetails.FirstOrDefault().Fullname ?? x.Student.Email
                      }).ToList();
         }
 
@@ -90,7 +90,7 @@ namespace EventSphere.Models.Repositories
             return db.TblRegistrations.Any(r => r.StudentId == stuId && r.EventId == eventId);
         }
 
-        public List<RegistrationView> GetRegistrationByStuId(int? id)
+        public List<RegistrationView> GetRegistrationByStuId(int id)
         {
             using var db = new EventSphereContext();
             return db.TblRegistrations
@@ -109,10 +109,9 @@ namespace EventSphere.Models.Repositories
                          EventTime = x.Event.Time ?? default,
                          RegisterOn = x.RegisteredOn ?? DateTime.Now,
                          StudentEmail = x.Student.Email,
-                         StudentName = x.Student.TblUserDetails.FirstOrDefault()?.Fullname ?? x.Student.Email
+                         StudentName = x.Student.TblUserDetails.FirstOrDefault().Fullname ?? x.Student.Email
                      }).ToList();
         }
-
         public string NormalizeSearch(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return "";

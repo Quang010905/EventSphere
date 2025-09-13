@@ -21,23 +21,5 @@ namespace EventSphere.Areas.Client.Controllers
 
             return View();
         }
-
-
-        [HttpPost]
-        public IActionResult Cancel(int id)
-        {
-            var stuId = HttpContext.Session.GetInt32("UId");
-            if (id == 0)
-            {
-                TempData["Error"] = "Không tìm thấy thông tin đăng ký!";
-                return RedirectToAction("Index", new { id = id });
-            }
-
-            RegistrationRepository.Instance.CancelRegistration(id);
-            TempData["Success"] = "Bạn đã hủy đăng ký thành công!";
-            return RedirectToAction("Index", new { id = stuId });
-        }
-
-
     }
 }
