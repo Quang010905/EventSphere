@@ -16,6 +16,8 @@ public partial class TblFeedback
     public string? Comments { get; set; }
 
     public DateTime? SubmittedOn { get; set; }
+    public int Status { get; set; }
+
 
     public virtual TblEvent? Event { get; set; }
 

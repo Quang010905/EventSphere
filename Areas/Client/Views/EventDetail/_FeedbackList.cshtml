@@ -1,0 +1,158 @@
+﻿@model IEnumerable<EventSphere.Models.entities.TblFeedback>
+
+@{
+    var userId = Context.Session.GetInt32("UId") ?? 0;
+}
+
+@* Nếu bạn muốn token nằm trên page để JS dùng chung, bạn có thể giữ một token ở đây.
+   Tuy nhiên mỗi form dưới cũng có @Html.AntiForgeryToken() -> fallback an toàn. *@
+@Html.AntiForgeryToken()
+
+@if (Model == null || !Model.Any())
+{
+    <div class="text-muted">
+        No comments yet.
+    </div>
+}
+else
+{
+    foreach (var f in Model)
+    {
+        <div class="card mb-3" id="comment-@f.Id">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>
+                            @(
+                                                f.Student?.TblUserDetails?.FirstOrDefault()?.Fullname
+                                                ?? "Người dùng"
+                                                )
+                    @* Hiển thị (Chờ duyệt) nếu bình luận chưa được duyệt và là của chính chủ *@
+                    @if ((f.Status != 1) && ((f.StudentId ?? 0) == userId))
+                            {
+                                <small class="text-warning"> (Waiting for approval)</small>
+                            }
+                        </strong>
+                        <small class="text-muted"> • @f.SubmittedOn?.ToString("g")</small>
+                    </div>
+
+                    <div>
+                        <span title="@($"{f.Rating ?? 0} sao")">
+                            @{
+                                var r = f.Rating ?? 0;
+                            }
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= r)
+                                {
+                                    <text>&#9733;</text> @* ★ *@
+                                }
+                                else
+                                {
+                                    <text>&#9734;</text> @* ☆ *@
+                                }
+                            }
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-2">
+                    @Html.Raw(System.Net.WebUtility.HtmlEncode(f.Comments ?? "").Replace("\n", "<br />"))
+                </div>
+
+                <div class="mt-2">
+                    @* Hiện nút Xóa chỉ khi user đang đăng nhập và là chủ bình luận *@
+                    @if (userId != 0 && (f.StudentId ?? 0) == userId)
+                    {
+                        <form asp-action="DeleteComment"
+                              asp-controller="EventDetail"
+                              asp-area="Client"
+                              method="post"
+                              class="delete-comment-form d-inline"
+                              style="display:inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="feedbackId" value="@f.Id" />
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-danger btn-delete-comment"
+                                    data-id="@f.Id"
+                                    onclick="return confirm('Are you sure you want to delete this comment??');">
+
+                                Erase
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            // Intercept submit of forms with class .delete-comment-form to do AJAX delete
+            document.addEventListener('submit', function (e) {
+                var form = e.target;
+                if (!form.classList || !form.classList.contains('delete-comment-form')) return; // not our form
+
+                // if user cancelled confirm (existing inline confirm), browser won't reach here because return false prevented submit.
+                e.preventDefault();
+
+                if (!confirm('Bạn có chắc muốn xóa bình luận này?')) {
+                    return;
+                }
+
+                var formData = new FormData(form);
+
+                // Try to read the antiforgery token input in this form
+                var tokenEl = form.querySelector('input[name="__RequestVerificationToken"]');
+                var token = tokenEl ? tokenEl.value : null;
+
+                var headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                if (token) headers['RequestVerificationToken'] = token;
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: headers
+                })
+                .then(async function (res) {
+                    // If server returns non-json error, try to show message
+                    var contentType = res.headers.get('content-type') || '';
+                    if (!res.ok) {
+                        if (contentType.indexOf('application/json') !== -1) {
+                            var err = await res.json().catch(()=>null);
+                            throw new Error(err?.message || 'Lỗi server: ' + res.status);
+                        }
+                        throw new Error('Lỗi server: ' + res.status);
+                    }
+                    if (contentType.indexOf('application/json') !== -1) {
+                        return res.json();
+                    } else {
+                        // nếu controller trả PartialView (hiếm), reload
+                        return res.text().then(() => ({ success: true }));
+                    }
+                })
+                .then(function (data) {
+                    if (data && data.success) {
+                        var id = form.querySelector('input[name="feedbackId"]').value;
+                        var el = document.getElementById('comment-' + id);
+                        if (el) el.remove();
+                        else {
+                            // fallback: reload comments area hoặc reload trang
+                            location.reload();
+                        }
+                        // bạn có thể thay alert bằng toast
+                        alert(data.message || 'Comment deleted successfully.');
+                    } else {
+                                alert((data && data.message) || 'Cannot delete commentn.');
+                    }
+                })
+                .catch(function (err) {
+                    console.error('Delete comment failed:', err);
+                    alert(err.message || 'An error occurred while deleting the comment.');
+                });
+            });
+        })();
+    </script>
+}

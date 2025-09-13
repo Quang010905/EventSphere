@@ -141,16 +141,17 @@
                                 <input type="password" name="OldPassword" class="form-control form-control-dark" />
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">New Password</label>
+                                <label class="form-label">New password</label>
                                 <input type="password" name="NewPassword" class="form-control form-control-dark" />
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">Confirm Password</label>
+                                <label class="form-label">Confirm password</label>
                                 <input type="password" name="ConfirmPassword" class="form-control form-control-dark" />
                             </div>
 
                             <div class="col-12 d-flex justify-content-between mt-3">
-                                <a href="@Url.Action("Index", "Profile", new { area = "Client", id = Model.UserId })" class="btn btn-cancel">⬅ Come back</a>
+
+                                <a href="@Url.Action("Index", "Profile", new { area = "Client", id = Model.UserId })" class="btn btn-cancel">⬅Come back</a>
                                 <button type="submit" class="btn btn-save">💾 Save changes</button>
                             </div>
                         </div>

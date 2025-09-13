@@ -255,6 +255,9 @@ public partial class EventSphereContext : DbContext
             entity.HasOne(d => d.Student).WithMany(p => p.TblFeedbacks)
                 .HasForeignKey(d => d.StudentId)
                 .HasConstraintName("FK__tbl_feedb___stud__5535A963");
+            entity.Property(e => e.Status)
+    .HasColumnName("_status");
+
         });
 
         modelBuilder.Entity<TblMediaGallery>(entity =>
