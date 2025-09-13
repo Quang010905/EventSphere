@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using EventSphere.Service.Email;
 using QRCoder;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Threading.Tasks;
 
 namespace EventSphere.Areas.Organizer.Controllers
 {
@@ -13,11 +14,13 @@ namespace EventSphere.Areas.Organizer.Controllers
     {
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ORegistration> _logger;
+        private readonly IConfiguration _configuration;
 
-        public ORegistration(IEmailSender emailSender, ILogger<ORegistration> logger)
+        public ORegistration(IEmailSender emailSender, ILogger<ORegistration> logger, IConfiguration configuration)
         {
             _emailSender = emailSender;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -40,11 +43,21 @@ namespace EventSphere.Areas.Organizer.Controllers
                     return Json(new { success = true, message = "Đã duyệt nhưng không gửi mail vì sinh viên chưa có email." });
                 }
 
-                string payload = $"AttendanceId:{result.AttendanceId};EventId:{result.EventId};StudentId:{result.StudentId}";
+                // 🔑 Lấy BaseUrl từ appsettings.json hoặc fallback
+                string baseUrl = _configuration["AppSettings:BaseUrl"];
+                if (string.IsNullOrEmpty(baseUrl))
+                {
+                    baseUrl = $"{Request.Scheme}://{Request.Host}";
+                }
 
+                // ✅ URL QR để check-in
+                string qrUrl = $"{baseUrl}/Organizer/Scan/MarkAttendance" +
+                               $"?attendanceId={result.AttendanceId}&eventId={result.EventId}&studentId={result.StudentId}";
+
+                // Tạo QR code từ URL
                 byte[] qrBytes;
                 using (var qrGen = new QRCodeGenerator())
-                using (var qrData = qrGen.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q))
+                using (var qrData = qrGen.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
                 {
                     var pngQr = new PngByteQRCode(qrData);
                     qrBytes = pngQr.GetGraphic(20);
@@ -59,17 +72,19 @@ namespace EventSphere.Areas.Organizer.Controllers
                     $"<p>Xin chào <strong>{System.Net.WebUtility.HtmlEncode(studentName)}</strong>,</p>" +
                     $"<p>Bạn đã được duyệt tham gia <strong>{System.Net.WebUtility.HtmlEncode(result.EventName)}</strong>.</p>" +
                     $"<p>Ngày: <strong>{dateStr}</strong><br/>Giờ: <strong>{timeStr}</strong></p>" +
-                    $"<p>Vui lòng mang mã QR bên dưới đến sự kiện để quản lý quét điểm danh:</p>" +
+                    $"<p>👉 Vui lòng quét mã QR bên dưới để xác nhận tham dự:</p>" +
                     $"<p><img src=\"cid:qrImage\" alt=\"QR code\" /></p>" +
+                    $"<p>Nếu không quét được, bạn có thể mở trực tiếp link: <a href='{qrUrl}'>{qrUrl}</a></p>" +
                     $"<p>Xin cảm ơn,<br/>Ban tổ chức</p>";
 
-                await _emailSender.SendEmailWithInlineImageAsync(result.StudentEmail, subject, htmlBody, qrBytes, "qrImage");
+                await _emailSender.SendEmailWithInlineImageAsync(
+                    result.StudentEmail, subject, htmlBody, qrBytes, "qrImage"
+                );
 
                 return Json(new { success = true, message = "Đã duyệt và gửi mail." });
             }
             catch (InvalidOperationException ex)
             {
-                // Trường hợp đã duyệt trước đó hoặc không thể approve
                 _logger?.LogWarning(ex, "Approve failed for id {Id}", id);
                 return Json(new { success = false, message = ex.Message });
             }
@@ -79,7 +94,6 @@ namespace EventSphere.Areas.Organizer.Controllers
                 return Json(new { success = false, message = "Server error: " + ex.Message });
             }
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

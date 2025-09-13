@@ -34,6 +34,8 @@ builder.Services.AddScoped<EventSeatingRepository>();
 builder.Services.AddScoped<EventShareLogRepository>();
 builder.Services.AddScoped<UserRepositoryEf>();
 builder.Services.AddScoped<HomeRepository>();
+builder.Services.AddScoped<AttendanceRepository>();
+
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
@@ -46,7 +48,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseStaticFiles();
-app.UseHttpsRedirection();
+// giữ redirect chỉ khi không phải môi trường Development
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();  
+}
+
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
@@ -62,14 +69,14 @@ app.MapControllerRoute(
 //    pattern: "{controller=Home}/{action=Index}/{id?}",
 //    defaults: new { area = "Client" });
 
-app.MapControllerRoute(
-    name: "client_default",
-    pattern: "{controller=ORegistration}/{action=Index}/{id?}",
-    defaults: new { area = "Organizer" });
-
 //app.MapControllerRoute(
-//    name: "admin_default",
-//    pattern: "{controller=Attendance}/{action=Index}/{id?}",
-//    defaults: new { area = "Admin" });
+//    name: "client_default",
+//    pattern: "{controller=ORegistration}/{action=Index}/{id?}",
+//    defaults: new { area = "Organizer" });
+
+app.MapControllerRoute(
+    name: "admin_default",
+    pattern: "{controller=Attendance}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" });
 
 app.Run();
