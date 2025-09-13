@@ -1,171 +1,227 @@
-﻿using EventSphere.Models.entities;
+using EventSphere.Models.entities;
 using EventSphere.Models.ModelViews;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Runtime.Intrinsics.Arm;
+using System.Linq;
 using System.Text;
 
 namespace EventSphere.Models.Repositories
 {
     public class RegistrationRepository
     {
-        private static RegistrationRepository _instance = null;
+        private static RegistrationRepository _instance;
         private RegistrationRepository() { }
+
         public static RegistrationRepository Instance
         {
             get
             {
-                _instance = _instance ?? new RegistrationRepository();
+                _instance ??= new RegistrationRepository();
                 return _instance;
             }
         }
+
+        // Lấy toàn bộ đăng ký
         public List<RegistrationView> GetAll()
         {
-            var db = new EventSphereContext();
-            var ls = new List<RegistrationView>();
-            try
-            {
-                ls = db.TblRegistrations
-                       .Include(x => x.Event)   // load dữ liệu Event
-                       .Include(x => x.Student)    // load dữ liệu User trực tiếp
-                       .Select(x => new RegistrationView
-                       {
-                           Id = x.Id,
-                           EventId = x.EventId ?? 0,
-                           Status = x.Status ?? 0,
-                           Venue = x.Event.Venue,
-                           EventImage = x.Event.Image,
-                           EventName = x.Event.Title,
-                           EventDate = x.Event.Date,
-                           EventTime = (TimeOnly)x.Event.Time,
-                           StudentEmail = x.Student.Email  // email trực tiếp từ User
-                       })
-                       .ToList();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return ls;
+            using var db = new EventSphereContext();
+            return db.TblRegistrations
+                     .Include(x => x.Event)
+                     .Include(x => x.Student)
+                        .ThenInclude(s => s.TblUserDetails)
+                     .Select(x => new RegistrationView
+                     {
+                         Id = x.Id,
+                         EventId = x.EventId ?? 0,
+                         StudentId = x.StudentId ?? 0,
+                         Status = x.Status ?? 0,
+                         Venue = x.Event.Venue,
+                         EventImage = x.Event.Image,
+                         EventName = x.Event.Title,
+                         EventDate = x.Event.Date,
+                         EventTime = x.Event.Time ?? default,
+                         RegisterOn = x.RegisteredOn ?? DateTime.Now,
+                         StudentEmail = x.Student.Email,
+                         StudentName = x.Student.TblUserDetails.FirstOrDefault()?.Fullname ?? x.Student.Email
+                     }).ToList();
         }
-
-
-
 
         public void Add(RegistrationView entity)
         {
-            var db = new EventSphereContext();
-            try
+            using var db = new EventSphereContext();
+            var item = new TblRegistration
             {
-                var item = new TblRegistration
-                {
-                    StudentId = entity.StudentId,
-                    EventId = entity.EventId,
-                    RegisteredOn = DateTime.Now,
-                    Status = 0,
-                };
-                db.TblRegistrations.Add(item);
-                db.SaveChanges();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+                StudentId = entity.StudentId,
+                EventId = entity.EventId,
+                RegisteredOn = DateTime.Now,
+                Status = 0
+            };
+            db.TblRegistrations.Add(item);
+            db.SaveChanges();
         }
 
         public bool Delete(int eventId, int userId)
         {
-            using (var db = new EventSphereContext())
-            {
-                var item = db.TblRegistrations
-                             .FirstOrDefault(r => r.EventId == eventId && r.StudentId == userId);
+            using var db = new EventSphereContext();
+            var item = db.TblRegistrations
+                         .FirstOrDefault(r => r.EventId == eventId && r.StudentId == userId);
 
-                if (item != null)
-                {
-                    db.TblRegistrations.Remove(item);
-                    return db.SaveChanges() > 0;
-                }
+            if (item != null)
+            {
+                db.TblRegistrations.Remove(item);
+                return db.SaveChanges() > 0;
             }
             return false;
         }
 
         public int? GetRegistrationStatus(int studentId, int eventId)
         {
-            using (var db = new EventSphereContext())
-            {
-                var registration = db.TblRegistrations
-                                     .FirstOrDefault(r => r.StudentId == studentId && r.EventId == eventId);
-                if (registration != null)
-                {
-                    return registration.Status;
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            using var db = new EventSphereContext();
+            var registration = db.TblRegistrations
+                                 .FirstOrDefault(r => r.StudentId == studentId && r.EventId == eventId);
+            return registration?.Status;
         }
-
-
 
         public bool CheckRegistered(int stuId, int eventId)
         {
-            var db = new EventSphereContext();
-            return db.TblRegistrations
-                     .Any(r => r.StudentId == stuId && r.EventId == eventId);
+            using var db = new EventSphereContext();
+            return db.TblRegistrations.Any(r => r.StudentId == stuId && r.EventId == eventId);
         }
 
         public List<RegistrationView> GetRegistrationByStuId(int? id)
         {
-            var db = new EventSphereContext();
-            var ls = new List<RegistrationView>();
-            try
-            {
-                ls = db.TblRegistrations.Where(x => x.StudentId == id).Include(x => x.Event).Select(x => new RegistrationView
-                {
-                    Id = x.Id,
-                    EventId = x.EventId ??0,
-                    Status = x.Status?? 0,
-                    Venue = x.Event.Venue,
-                    EventImage = x.Event.Image,
-                    EventName = x.Event.Title,
-                    EventDate = x.Event.Date,
-                    EventTime = (TimeOnly)x.Event.Time,
-                }).ToList();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            return ls;
+            using var db = new EventSphereContext();
+            return db.TblRegistrations
+                     .Where(x => x.StudentId == id)
+                     .Include(x => x.Event)
+                     .Include(x => x.Student)
+                        .ThenInclude(s => s.TblUserDetails)
+                     .Select(x => new RegistrationView
+                     {
+                         EventId = x.EventId ?? 0,
+                         Status = x.Status ?? 0,
+                         Venue = x.Event.Venue,
+                         EventImage = x.Event.Image,
+                         EventName = x.Event.Title,
+                         EventDate = x.Event.Date,
+                         EventTime = x.Event.Time ?? default,
+                         RegisterOn = x.RegisteredOn ?? DateTime.Now,
+                         StudentEmail = x.Student.Email,
+                         StudentName = x.Student.TblUserDetails.FirstOrDefault()?.Fullname ?? x.Student.Email
+                     }).ToList();
         }
+
         public string NormalizeSearch(string input)
         {
-            if (string.IsNullOrWhiteSpace(input))
-                return "";
-
-
+            if (string.IsNullOrWhiteSpace(input)) return "";
             string lower = input.ToLowerInvariant();
-
-            // 2. Dùng FormD để tách dấu ra khỏi chữ
             string normalized = lower.Normalize(NormalizationForm.FormD);
-
-            // 3. Loại bỏ các ký tự dấu (non-spacing mark)
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (char c in normalized)
             {
-                UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(c);
-                if (uc != UnicodeCategory.NonSpacingMark)
-                {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
                     sb.Append(c);
+            }
+            return new string(sb.ToString().Where(c => !char.IsWhiteSpace(c)).ToArray());
+        }
+
+        public RegistrationProcessResult ApproveAndCreateAttendance(int registrationId)
+        {
+            using var db = new EventSphereContext();
+            using var tran = db.Database.BeginTransaction();
+            try
+            {
+                int updated = db.Database.ExecuteSqlInterpolated(
+                    $"UPDATE dbo.tbl_registration SET _status = 1 WHERE _id = {registrationId} AND (_status IS NULL OR _status = 0)");
+
+                if (updated == 0)
+                    throw new InvalidOperationException("Registration đã được xử lý trước đó hoặc không thể duyệt.");
+
+                var reg = db.TblRegistrations
+                            .Include(r => r.Event)
+                            .Include(r => r.Student)
+                            .FirstOrDefault(r => r.Id == registrationId);
+
+                if (reg == null) throw new InvalidOperationException("Registration not found after update.");
+
+                var seating = db.TblEventSeatings.FirstOrDefault(s => s.EventId == reg.EventId);
+                if (seating != null && (seating.SeatsAvailable ?? 0) <= 0)
+                    throw new InvalidOperationException("Event is fully booked.");
+
+                if (seating != null)
+                {
+                    seating.SeatsBooked = (seating.SeatsBooked ?? 0) + 1;
+                    seating.SeatsAvailable = Math.Max(0, (seating.SeatsAvailable ?? 0) - 1);
+                    db.TblEventSeatings.Update(seating);
                 }
+
+                var attendance = db.TblAttendances
+                    .FirstOrDefault(a => a.EventId == reg.EventId && a.StudentId == reg.StudentId);
+
+                if (attendance == null)
+                {
+                    attendance = new TblAttendance
+                    {
+                        EventId = reg.EventId,
+                        StudentId = reg.StudentId,
+                        Attended = false,
+                        MarkedOn = DateTime.Now
+                    };
+                    db.TblAttendances.Add(attendance);
+                }
+
+                db.SaveChanges();
+                tran.Commit();
+
+                return new RegistrationProcessResult
+                {
+                    RegistrationId = reg.Id,
+                    AttendanceId = attendance.Id,
+                    EventId = reg.EventId ?? 0,
+                    EventName = reg.Event?.Title ?? "",
+                    EventDate = reg.Event?.Date,
+                    EventTime = reg.Event?.Time,
+                    StudentId = reg.StudentId ?? 0,
+                    StudentEmail = reg.Student?.Email ?? "",
+                    StudentName = reg.Student?.TblUserDetails?.FirstOrDefault()?.Fullname ?? reg.Student?.Email ?? ""
+                };
+            }
+            catch
+            {
+                tran.Rollback();
+                throw;
+            }
+        }
+
+        public void DenyRegistration(int registrationId)
+        {
+            using var db = new EventSphereContext();
+            using var tran = db.Database.BeginTransaction();
+            var reg = db.TblRegistrations.FirstOrDefault(r => r.Id == registrationId);
+            if (reg == null) throw new InvalidOperationException("Registration not found.");
+
+            int currentStatus = reg.Status ?? 0;
+            if (currentStatus == 2)
+                throw new InvalidOperationException("Registration already denied.");
+
+            reg.Status = 2;
+            db.TblRegistrations.Update(reg);
+
+            var seating = db.TblEventSeatings.FirstOrDefault(s => s.EventId == reg.EventId);
+            if (seating != null && currentStatus == 1)
+            {
+                seating.SeatsBooked = Math.Max(0, (seating.SeatsBooked ?? 0) - 1);
+                seating.SeatsAvailable = (seating.SeatsAvailable ?? 0) + 1;
+                db.TblEventSeatings.Update(seating);
             }
 
-            return new string(sb.ToString()
-                .Where(c => !char.IsWhiteSpace(c))
-                .ToArray());
+            var attendance = db.TblAttendances.FirstOrDefault(a => a.EventId == reg.EventId && a.StudentId == reg.StudentId);
+            if (attendance != null) db.TblAttendances.Remove(attendance);
+
+            db.SaveChanges();
+            tran.Commit();
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EventSphere.Areas.Organizer.Controllers
 {
+    //Dashboard
     [Area("Organizer")]
     public class OrganizerController : Controller
     {

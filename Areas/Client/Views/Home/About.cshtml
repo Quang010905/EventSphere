@@ -1,0 +1,273 @@
+﻿@{
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+    ViewData["Title"] = "Giới thiệu EventSphere";
+}
+<style>
+    body {
+        background: #121212;
+        color: #f1f1f1;
+    }
+
+    .gtco-heading h2,
+    .gtco-heading p {
+        color: #fff;
+    }
+
+    .feature-left .icon i {
+        color: #ffcc33; /* vàng nhấn */
+        font-size: 28px;
+    }
+
+    .feature-copy h3 {
+        color: #ffcc33;
+        font-weight: 600;
+    }
+
+    .feature-copy p {
+        color: #ddd;
+    }
+
+    /* Banner */
+    .gtco-cover h1,
+    .gtco-cover h2 {
+        color: #fff !important;
+        font-weight: 700;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    .gtco-cover .overlay {
+        background: rgba(0,0,0,0.65);
+    }
+
+    /* Team */
+    .gtco-staff {
+        background: #1c1c1c;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        text-align: center;
+    }
+
+        .gtco-staff img {
+            border-radius: 50%;
+            border: 3px solid #ffcc33;
+            margin-bottom: 15px;
+        }
+
+        .gtco-staff h3 {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .gtco-staff .role {
+            color: #ffcc33;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .gtco-staff p {
+            color: #ccc;
+        }
+
+    /* Subscribe form */
+    #gtco-subscribe {
+        background: #1c1c1c;
+        padding: 40px 0;
+        border-radius: 12px;
+        margin-top: 40px;
+    }
+
+        #gtco-subscribe input.form-control {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #fff;
+        }
+
+        #gtco-subscribe input::placeholder {
+            color: #aaa;
+        }
+
+        #gtco-subscribe .btn {
+            background: linear-gradient(180deg,#ffc107,#ff9800);
+            color: #1c1c1c;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+            #gtco-subscribe .btn:hover {
+                background: linear-gradient(180deg,#ffb300,#ff9100);
+                transform: translateY(-2px);
+            }
+</style>
+
+<div class="gtco-section">
+	<div class="gtco-container">
+		<div class="row animate-box">
+			<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+				<h2>EventSphere</h2>
+				<p>Experience seamless event management, receive valuable feedback, earn certificates, and explore our rich media library for all your events.</p>
+			</div>
+		</div>
+
+		<div class="row animate-box">
+			<div class="col-md-6">
+				<div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+					<span class="icon">
+						<i class="icon-check"></i>
+					</span>
+					<div class="feature-copy">
+						<h3>Events</h3>
+						<p>Join and manage a variety of events, from workshops and seminars to community meetups.</p>
+					</div>
+				</div>
+
+				<div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+					<span class="icon">
+						<i class="icon-check"></i>
+					</span>
+					<div class="feature-copy">
+						<h3>Feedback</h3>
+						<p>Send and receive feedback directly from participants to improve event quality and services.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+					<span class="icon">
+						<i class="icon-check"></i>
+					</span>
+					<div class="feature-copy">
+						<h3>Certificates</h3>
+						<p>Receive certificates for attending courses or events to recognize your skills and achievements.</p>
+					</div>
+				</div>
+
+				<div class="feature-left animate-box" data-animate-effect="fadeInLeft">
+					<span class="icon">
+						<i class="icon-check"></i>
+					</span>
+					<div class="feature-copy">
+						<h3>Media Library</h3>
+						<p>Access a collection of photos, videos, and documents from past events for keeping and sharing.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Banner -->
+<div class="gtco-cover gtco-cover-sm" style="background-image:url(images/img_bg_3.jpg);">
+    <div class="overlay"></div>
+    <div class="gtco-container">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0 text-center">
+                <div class="display-t">
+                    <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                        <h1>Chào mừng đến với EventSphere</h1>
+                        <h2>Quản lý sự kiện, nhận phản hồi, cấp chứng chỉ và khám phá thư viện media của bạn</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team Section -->
+<div id="gtco-team" class="gtco-section">
+    <div class="gtco-container">
+        <div class="row animate-box">
+            <div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+                <h2>Đội ngũ EventSphere</h2>
+                <p>Gặp gỡ đội ngũ sáng tạo và tận tâm, luôn nỗ lực để mang đến trải nghiệm sự kiện liền mạch, hấp dẫn.</p>
+            </div>
+        </div>
+
+        <div class="row row-pb-md">
+            <div class="col-md-4 animate-box" data-animate-effect="fadeIn">
+                <div class="gtco-staff">
+                    <img src="images/person_1.jpg" alt="Thiết kế UI/UX">
+                    <h3>Jean Smith</h3>
+                    <strong class="role">Thiết kế UI/UX</strong>
+                    <p>Thiết kế giao diện trực quan, dễ sử dụng, giúp trải nghiệm sự kiện mượt mà cho mọi người.</p>
+                    <ul class="gtco-social-icons">
+                        <li><a href="#"><i class="icon-facebook"></i></a></li>
+                        <li><a href="#"><i class="icon-twitter"></i></a></li>
+                        <li><a href="#"><i class="icon-dribbble"></i></a></li>
+                        <li><a href="#"><i class="icon-github"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-4 animate-box" data-animate-effect="fadeIn">
+                <div class="gtco-staff">
+                    <img src="images/person_2.jpg" alt="Lập trình Front-end">
+                    <h3>Hush Raven</h3>
+                    <strong class="role">Lập trình Front-end</strong>
+                    <p>Xây dựng giao diện web và mobile phản hồi nhanh, thân thiện với người dùng, đồng bộ với các tính năng EventSphere.</p>
+                    <ul class="gtco-social-icons">
+                        <li><a href="#"><i class="icon-facebook"></i></a></li>
+                        <li><a href="#"><i class="icon-twitter"></i></a></li>
+                        <li><a href="#"><i class="icon-dribbble"></i></a></li>
+                        <li><a href="#"><i class="icon-github"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-4 animate-box" data-animate-effect="fadeIn">
+                <div class="gtco-staff">
+                    <img src="images/person_3.jpg" alt="Lập trình Back-end">
+                    <h3>Alex King</h3>
+                    <strong class="role">Lập trình Back-end</strong>
+                    <p>Đảm bảo hoạt động server ổn định, quản lý cơ sở dữ liệu và API cho tất cả các tính năng: Sự kiện, Phản hồi, Chứng chỉ và Media.</p>
+                    <ul class="gtco-social-icons">
+                        <li><a href="#"><i class="icon-facebook"></i></a></li>
+                        <li><a href="#"><i class="icon-twitter"></i></a></li>
+                        <li><a href="#"><i class="icon-dribbble"></i></a></li>
+                        <li><a href="#"><i class="icon-github"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Subscribe Section -->
+<div id="gtco-subscribe">
+    <div class="gtco-container">
+        <div class="row animate-box">
+            <div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+                <h2>Đăng ký nhận tin</h2>
+                <p>Luôn cập nhật thông tin sự kiện mới, phản hồi, chứng chỉ và media mới nhất từ EventSphere.</p>
+            </div>
+        </div>
+        <div class="row animate-box">
+            <div class="col-md-12">
+                <form class="form-inline">
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label for="email" class="sr-only">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Email của bạn">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label for="name" class="sr-only">Họ tên</label>
+                            <input type="text" class="form-control" id="name" placeholder="Họ tên của bạn">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <button type="submit" class="btn btn-default btn-block">Đăng ký</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
