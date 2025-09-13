@@ -81,6 +81,7 @@ app.MapControllerRoute(
 
 //     pattern: "{controller=EventWaitlist}/{action=Index}/{id?}",
 
+
     defaults: new { area = "Organizer" });
 
 //app.MapControllerRoute(
