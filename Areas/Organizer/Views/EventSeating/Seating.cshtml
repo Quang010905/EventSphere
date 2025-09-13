@@ -1,6 +1,6 @@
 ﻿@model EventSphere.Repositories.EventWithSeatingDto
 @{
-    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
     ViewData["Title"] = "Seating for " + Model.Title;
 }
 
@@ -146,7 +146,7 @@
                 this.textContent = 'Adding...';
 
                 try {
-                    const resp = await fetch('@Url.Action("AddSeat", "EventSeating", new { area = "Admin" })', {
+                    const resp = await fetch('@Url.Action("AddSeat", "EventSeating", new { area = "Organizer" })', {
                         method: 'POST',
                         body: fd,
                         credentials: 'same-origin'

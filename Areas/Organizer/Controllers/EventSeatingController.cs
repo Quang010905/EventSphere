@@ -1,10 +1,10 @@
-﻿// Areas/Admin/Controllers/EventSeatingController.cs
+﻿
 using EventSphere.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventSphere.Areas.Admin.Controllers
+namespace EventSphere.Areas.Organizer.Controllers
 {
-    [Area("Admin")]
+    [Area("Organizer")]
     public class EventSeatingController : Controller
     {
         private readonly EventSeatingRepository _repo;
