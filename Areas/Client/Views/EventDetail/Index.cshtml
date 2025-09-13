@@ -91,16 +91,27 @@
                                         </div>
                                     }
 
+                                    @{
+                                        bool isExpired = false;
+
+                                        if (eve.Date.HasValue && eve.Time.HasValue)
+                                        {
+                                            var eventDateTime = eve.Date.Value.ToDateTime(eve.Time.Value);
+                                            isExpired = eventDateTime < DateTime.Now;
+                                        }
+                                        else
+                                        {
+                                            // nếu thiếu ngày/giờ thì coi như đã hết hạn
+                                            isExpired = true;
+                                        }
+                                    }
 
                                     @if (ViewBag.AlreadyRegistered == true)
                                     {
-
-                                        <form action="@Url.Action("CancelRegistration", "EventDetail", new { area = "Client"})" method="post">
-                                            <input type="hidden" name="EventId" value="@eve.Id" />
-                                            <input type="hidden" name="StuId" value="@stuId" />
-                                            <button class="unfill__btn d-block w-100" type="submit"
-                                            @((ViewBag.RegistrationStatus == 1) ? "disabled=\"disabled\"" : "")>
-                                                Cancel Registration
+                                        <form action="@Url.Action("RegisterEvent", "EventDetail", new { area = "Client" })" method="post">
+                                            <input type="hidden" name="eventId" value="@eve.Id" />
+                                            <button class="unfill__btn d-block w-100" type="submit" @(isExpired ? "disabled=\"disabled\"" : "")>
+                                                Register
                                             </button>
                                         </form>
                                     }
@@ -108,14 +119,12 @@
                                     {
                                         <form action="@Url.Action("RegisterEvent", "EventDetail", new { area = "Client" })" method="post">
                                             <input type="hidden" name="eventId" value="@eve.Id" />
-                                            <button class="unfill__btn d-block w-100" type="submit"
-                                            @((eve.Date < DateOnly.FromDateTime(DateTime.Now)) ? "disabled=\"disabled\"" : "")>
+                                            <button class="unfill__btn d-block w-100" type="submit" @(isExpired ? "disabled=\"disabled\"" : "")>
                                                 Register
                                             </button>
-
-
                                         </form>
                                     }
+
                                     <div class="ms-submit-btn mb-40">
                                         <a href="@Url.Action("Index", "Home")"
                                            class="unfill__btn d-block w-100 d-flex align-items-center justify-content-center">
