@@ -57,8 +57,13 @@
                         </a>
                         <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="@Url.Action("Index", "ORegistration")">Static Navigation</a>
-                                <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
+                                <a class="nav-link" href="@Url.Action("Index", "ORegistration")">Manage Registration</a>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index", "Events", new { area = "Organizer" })">
+                                        <i class="fas fa-fw fa-calendar"></i>
+                                        <span>Quản lý Event</span>
+                                    </a>
+                                </li>
                             </nav>
                         </div>
                     </div>

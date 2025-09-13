@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace EventSphere.Areas.Admin.Controllers
+namespace EventSphere.Areas.Organizer.Controllers
 {
-    [Area("Admin")]
+    [Area("Organizer")]
     public class EventsController : Controller
     {
         private readonly EventSphereContext _context;
