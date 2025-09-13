@@ -11,15 +11,17 @@ namespace EventSphere.Repositories
         public async Task<(IEnumerable<TblFeedback> data, int totalCount)> GetPagedFeedbacksAsync(
             int pageIndex, int pageSize,
             int? eventId = null, int? studentId = null, int? rating = null,
-            string? keyword = null, int? organizerId = null)
+            string? keyword = null, int? organizerId = null, int? status = null)
         {
             var query = _dbSet
                 .Include(f => f.Event)
                 .Include(f => f.Student)
                     .ThenInclude(s => s.TblUserDetails)
                 .AsQueryable();
+
             if (organizerId.HasValue)
                 query = query.Where(f => f.Event.OrganizerId == organizerId.Value);
+
             if (eventId.HasValue)
                 query = query.Where(f => f.EventId == eventId.Value);
 
@@ -28,6 +30,9 @@ namespace EventSphere.Repositories
 
             if (rating.HasValue)
                 query = query.Where(f => f.Rating == rating.Value);
+
+            if (status.HasValue)
+                query = query.Where(f => f.Status == status.Value);
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {

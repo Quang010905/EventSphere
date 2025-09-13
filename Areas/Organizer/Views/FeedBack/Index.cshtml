@@ -2,7 +2,7 @@
 @model IEnumerable<EventSphere.Models.entities.TblFeedback>
 
 @{
-    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml"; 
+    Layout = "~/Areas/Organizer/Views/Shared/_LayoutOrganizer.cshtml";
     ViewData["Title"] = "Feedback Management";
 
     var total = ViewBag.TotalCount as int? ?? 0;
@@ -13,6 +13,7 @@
     int? currentEventId = ViewBag.EventId as int?;
     int? currentStudentId = ViewBag.StudentId as int?;
     int? currentRating = ViewBag.Rating as int?;
+    int? currentStatus = ViewBag.Status as int?;
 }
 
 <h2 class="mb-3">Feedback Management</h2>
@@ -40,6 +41,13 @@
     </div>
 
     <div class="col-auto">
+        <label class="form-label">Status</label>
+        <select class="form-select" name="status" asp-items="ViewBag.Statuses">
+            <option value="">All</option>
+        </select>
+    </div>
+
+    <div class="col-auto">
         <label class="form-label">Search</label>
         <input class="form-control" name="search" value="@currentSearch" placeholder="Event title, student name or comment" />
     </div>
@@ -47,10 +55,10 @@
     <div class="col-auto">
         <label class="form-label">Page size</label>
         <select class="form-select" name="pageSize" onchange="this.form.submit()">
-            <option value="5" @(pageSize==5? "selected":"")>5</option>
-            <option value="10" @(pageSize==10? "selected":"")>10</option>
-            <option value="25" @(pageSize==25? "selected":"")>25</option>
-            <option value="50" @(pageSize==50? "selected":"")>50</option>
+            <option value="5" @(pageSize == 5 ? "selected" : "")>5</option>
+            <option value="10" @(pageSize == 10 ? "selected" : "")>10</option>
+            <option value="25" @(pageSize == 25 ? "selected" : "")>25</option>
+            <option value="50" @(pageSize == 50 ? "selected" : "")>50</option>
         </select>
     </div>
 
@@ -67,14 +75,16 @@
             <th>Student</th>
             <th style="width:90px;">Rating</th>
             <th>Comments</th>
+            <th>Status</th>
             <th style="min-width:140px;">Submitted On</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @if (!Model.Any())
         {
             <tr>
-                <td colspan="5" class="text-center">No records found.</td>
+                <td colspan="7" class="text-center">No records found.</td>
             </tr>
         }
         else
@@ -87,7 +97,17 @@
                     <td>@studentName</td>
                     <td>@(f.Rating?.ToString() ?? "-")</td>
                     <td>@Html.Raw((f.Comments?.Length > 200) ? (f.Comments.Substring(0, 200) + "...") : (f.Comments ?? "-"))</td>
+                    <td>
+                        @(f.Status == 0 ? "Pending" : f.Status == 1 ? "Approved" : "Rejected")
+                    </td>
                     <td>@(f.SubmittedOn?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                    <td>
+                        @if (f.Status == 0)
+                        {
+                            <button class="btn btn-sm btn-success" onclick="changeStatus(@f.Id,1)">Approve</button>
+                            <button class="btn btn-sm btn-danger" onclick="changeStatus(@f.Id,2)">Reject</button>
+                        }
+                    </td>
                 </tr>
             }
         }
@@ -99,8 +119,8 @@
     <nav aria-label="Page navigation">
         <ul class="pagination">
             <li class="page-item @(page == 1 ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@(page-1)" asp-route-pageSize="@pageSize"
-                   asp-route-search="@currentSearch" asp-route-eventId="@(currentEventId)" asp-route-studentId="@(currentStudentId)" asp-route-rating="@(currentRating)">
+                <a class="page-link" asp-action="Index" asp-route-page="@(page - 1)" asp-route-pageSize="@pageSize"
+                   asp-route-search="@currentSearch" asp-route-eventId="@(currentEventId)" asp-route-studentId="@(currentStudentId)" asp-route-rating="@(currentRating)" asp-route-status="@(currentStatus)">
                     Previous
                 </a>
             </li>
@@ -109,15 +129,15 @@
             {
                 <li class="page-item @(i == page ? "active" : "")">
                     <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@pageSize"
-                       asp-route-search="@currentSearch" asp-route-eventId="@(currentEventId)" asp-route-studentId="@(currentStudentId)" asp-route-rating="@(currentRating)">
+                       asp-route-search="@currentSearch" asp-route-eventId="@(currentEventId)" asp-route-studentId="@(currentStudentId)" asp-route-rating="@(currentRating)" asp-route-status="@(currentStatus)">
                         @i
                     </a>
                 </li>
             }
 
             <li class="page-item @(page == totalPages ? "disabled" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@(page+1)" asp-route-pageSize="@pageSize"
-                   asp-route-search="@currentSearch" asp-route-eventId="@(currentEventId)" asp-route-studentId="@(currentStudentId)" asp-route-rating="@(currentRating)">
+                <a class="page-link" asp-action="Index" asp-route-page="@(page + 1)" asp-route-pageSize="@pageSize"
+                   asp-route-search="@currentSearch" asp-route-eventId="@(currentEventId)" asp-route-studentId="@(currentStudentId)" asp-route-rating="@(currentRating)" asp-route-status="@(currentStatus)">
                     Next
                 </a>
             </li>
@@ -127,4 +147,43 @@
     <div class="small text-muted mt-2">
         Showing page @@page of @totalPages — total @total items.
     </div>
+}
+
+@section Scripts {
+    <script>
+        function changeStatus(id, status) {
+            if (!confirm("Are you sure?")) return;
+
+            // lấy token từ hidden input do @Html.AntiForgeryToken() tạo
+            var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            var token = tokenInput ? tokenInput.value : null;
+
+            var form = new FormData();
+            form.append('id', id);
+            form.append('status', status);
+
+            var headers = { 'X-Requested-With': 'XMLHttpRequest' };
+            if (token) headers['RequestVerificationToken'] = token; // server nhận header này
+
+            fetch('@Url.Action("ChangeStatus")', {
+                method: 'POST',
+                body: form,
+                headers: headers,
+                credentials: 'same-origin'
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Status ' + res.status);
+                return res.json();
+            })
+            .then(json => {
+                if (json.success) location.reload();
+                else alert('Error updating status');
+            })
+            .catch(err => {
+                console.error('changeStatus failed', err);
+                alert('Error: ' + (err.message || 'Unknown'));
+            });
+        }
+    </script>
+
 }

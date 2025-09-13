@@ -19,16 +19,15 @@ namespace EventSphere.Areas.Organizer.Controllers
         }
 
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10,
-            int? eventId = null, int? studentId = null, int? rating = null, string? search = null)
+            int? eventId = null, int? studentId = null, int? rating = null, int? status = null, string? search = null)
         {
-            var orgernizerId = HttpContext.Session.GetInt32("UId");
-            if (orgernizerId == null)
-            {
-                // chưa login hoặc session hết hạn
-                return RedirectToAction("Login", "CLient", new { area = "Client" });
-            }
+            var organizerId = HttpContext.Session.GetInt32("UId");
+            if (organizerId == null)
+                return RedirectToAction("Login", "Client", new { area = "Client" });
+
             // Prepare select lists
-            var events = await _context.TblEvents.Where(e=> e.OrganizerId == orgernizerId)
+            var events = await _context.TblEvents
+                .Where(e => e.OrganizerId == organizerId)
                 .OrderBy(e => e.Title)
                 .Select(e => new { e.Id, e.Title })
                 .ToListAsync();
@@ -47,11 +46,19 @@ namespace EventSphere.Areas.Organizer.Controllers
                 .ToList();
             ViewBag.Students = new SelectList(studentsList, "Id", "Fullname", studentId);
 
-            // Ratings select (you can adjust if rating range differs)
             ViewBag.Ratings = new SelectList(new[] { 5, 4, 3, 2, 1 }, selectedValue: rating);
 
+            ViewBag.Statuses = new SelectList(new[]
+            {
+                new { Value = "", Text = "All" },
+                new { Value = "0", Text = "Pending" },
+                new { Value = "1", Text = "Approved" },
+                new { Value = "2", Text = "Rejected" }
+            }, "Value", "Text", status);
+
             // Get paged data
-            var (data, totalCount) = await _feedbackRepo.GetPagedFeedbacksAsync(page, pageSize, eventId, studentId, rating, search, orgernizerId.Value);
+            var (data, totalCount) = await _feedbackRepo.GetPagedFeedbacksAsync(
+                page, pageSize, eventId, studentId, rating, search, organizerId.Value, status);
 
             ViewBag.TotalCount = totalCount;
             ViewBag.Page = page;
@@ -60,8 +67,21 @@ namespace EventSphere.Areas.Organizer.Controllers
             ViewBag.EventId = eventId;
             ViewBag.StudentId = studentId;
             ViewBag.Rating = rating;
+            ViewBag.Status = status;
 
             return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeStatus(int id, int status)
+        {
+            var feedback = await _context.TblFeedbacks.FindAsync(id);
+            if (feedback == null) return NotFound();
+
+            feedback.Status = status;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true });
         }
     }
 }
