@@ -75,5 +75,22 @@ namespace EventSphere.Areas.Client.Controllers
 
             return RedirectToAction("Index", "EventDetail", new { id = eventId });
         }
+
+        public ActionResult CancelRegistration()
+        {
+            var eventId = int.Parse(Request.Form["EventId"]);
+            var userId = int.Parse(Request.Form["StuId"]);
+            var res = RegistrationRepository.Instance.Delete(eventId, userId);
+            if (res)
+            {
+                TempData["SuccessMessage"] = "Cancel registration success!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Cancel registration fail!";
+            }
+
+            return RedirectToAction("Index", "EventDetail", new { id = eventId });
+        }
     }
 }

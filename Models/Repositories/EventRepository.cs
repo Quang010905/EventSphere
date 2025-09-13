@@ -44,6 +44,7 @@ namespace EventSphere.Models.Repositories
                 {
                     var user = db.TblUsers.FirstOrDefault(us => us.Id == q.OrganizerId);
                     if (user != null)
+
                     {
                         q.OrganizerEmail = user.Email;
                     }
@@ -65,5 +66,6 @@ namespace EventSphere.Models.Repositories
             }
             return eve;
         }
+
     }
 }

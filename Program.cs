@@ -69,7 +69,6 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
 
-
 app.MapControllerRoute(
     name: "client_default",
     pattern: "{controller=Home}/{action=Index}/{id?}",

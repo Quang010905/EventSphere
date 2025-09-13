@@ -21,7 +21,5 @@ namespace EventSphere.Areas.Client.Controllers
 
             return View();
         }
-
-
     }
 }

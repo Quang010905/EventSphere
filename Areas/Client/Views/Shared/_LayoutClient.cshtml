@@ -178,23 +178,7 @@
             </div>
         </header>
         <!-- ==== End Header ==== -->
-        
-        <!-- Hero giữ nguyên -->
-        <header id="gtco-header" class="gtco-cover" role="banner" style="background-image: url('@(Url.Content("~/Client/images/img_bg_1.jpg"))');">
-            <div class="overlay"></div>
-            <div class="gtco-container">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <div class="display-t">
-                            <div class="display-tc animate-box" data-animate-effect="fadeIn">
-                                <h1>@(ViewData["HeroTitle"] as string ?? "Sự kiện nổi bật của trường")</h1>
-                                <h2 class="lead text-light">@(ViewData["HeroSubtitle"] as string ?? "Khám phá — Đăng ký — Tham dự")</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+
 
         @RenderBody()
 

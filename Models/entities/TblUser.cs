@@ -35,5 +35,5 @@ public partial class TblUser
 
     public virtual ICollection<TblRegistration> TblRegistrations { get; set; } = new List<TblRegistration>();
 
-    public virtual ICollection<TblUserDetail> TblUserDetails { get; set; } = new List<TblUserDetail>();
+    public virtual ICollection<TblUserDetail>? TblUserDetails { get; set; } = new List<TblUserDetail>();
 }

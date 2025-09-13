@@ -1,4 +1,4 @@
-﻿using EventSphere.Models.entities;
+using EventSphere.Models.entities;
 using EventSphere.Models.ModelViews;
 using Microsoft.EntityFrameworkCore;
 using System;

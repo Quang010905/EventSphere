@@ -106,7 +106,6 @@
                                     }
                                     else
                                     {
-
                                         <form action="@Url.Action("RegisterEvent", "EventDetail", new { area = "Client" })" method="post">
                                             <input type="hidden" name="eventId" value="@eve.Id" />
                                             <button class="unfill__btn d-block w-100" type="submit"
@@ -117,8 +116,6 @@
 
                                         </form>
                                     }
-
-
                                     <div class="ms-submit-btn mb-40">
                                         <a href="@Url.Action("Index", "Home")"
                                            class="unfill__btn d-block w-100 d-flex align-items-center justify-content-center">
@@ -130,32 +127,10 @@
 
                             </div>
                         </div>
+
                     </div>
                 </div>
             </section>
-            <!-- Event Details Area End Here  -->
-            <!-- Map Area Start Here  -->
-            <div class="ms-map-area">
-                <iframe src="https://www.google.com/maps/embed?pb=..."
-                        style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-            <!-- Map Area End Here  -->
-            <!-- Partner Area Start Here  -->
-            <div class="ms-partner-area fix pt-125 pb-130">
-                <div class="container">
-                    <div class="swiper-container ms-partner-active">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="assets/img/partner/partner-01.png" alt="partner image">
-                            </div>
-                            <!-- ... các partner khác ... -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Partner Area End Here  -->
-
         </main>
     </div>
 }
