@@ -5,9 +5,9 @@ using EventSphere.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventSphere.Areas.Admin.Controllers
+namespace EventSphere.Areas.Organizer.Controllers
 {
-    [Area("Admin")]
+    [Area("Organizer")]
     public class CertificateController : Controller
     {
         private readonly CertificateRepository _certRepo;
@@ -189,7 +189,7 @@ namespace EventSphere.Areas.Admin.Controllers
 
             if (st == null) return Json(new { id, text = $"User {id}" });
 
-            return Json(new { id = st.id, text = string.IsNullOrWhiteSpace(st.text) ? $"User {st.id}" : st.text });
+            return Json(new { st.id, text = string.IsNullOrWhiteSpace(st.text) ? $"User {st.id}" : st.text });
         }
     }
 }
