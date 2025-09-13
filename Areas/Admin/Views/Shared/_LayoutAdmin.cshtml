@@ -36,31 +36,28 @@
                 <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
             </li>
 
-            <!-- Nav Item - Feedback -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "Feedback", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-comments"></i>
-                    <span>Feedback</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - Event Share Logs -->
-            <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "EventShareLog", new { area = "Admin" })">
-                    <i class="fas fa-share-alt fa-fw"></i>
-                    <span>Event Share Logs</span>
-                </a>
-            </li>
             <li class="nav-item">
                 <a class="nav-link" href="@Url.Action("Index", "User", new { area = "Admin" })">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Quản lý User</span>
                 </a>
             </li>
-
             <li>
-                <hr class="sidebar-divider d-none d-md-block" />
+                <a class="nav-link" href="@Url.Action("Index", "EventsAdmin", new { area = "Admin" })">
+                    <i class="fas fa-fw fa-calendar"></i>
+                    <span>Quản lý Event</span>
+                </a>
             </li>
+            <li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "EventShareLog", new { area = "Admin" })">
+                    <i class="fas fa-share-alt fa-fw"></i>
+                    <span>Event Share Logs</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider d-none d-md-block" />
 
             <!-- Sidebar Toggler (Sidebar) -->
             <li class="text-center d-none d-md-inline">
@@ -68,9 +65,6 @@
             </li>
 
         </ul>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
