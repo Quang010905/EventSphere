@@ -37,19 +37,26 @@ namespace EventSphere.Areas.Organizer.Controllers
             try
             {
                 var result = RegistrationRepository.Instance.ApproveAndCreateAttendance(id);
+
+                if (result == null)
+                    return Json(new { success = false, message = "Không có kết quả từ repository." });
+
+                if (result.IsWaitlisted)
+                {
+                    // Nếu đã đưa vào danh sách chờ thì không gửi mail
+                    return Json(new { success = true, message = "Sự kiện hiện đã hết chỗ. Sinh viên đã được đưa vào danh sách chờ (waitlist). Chưa gửi email." });
+                }
+
                 if (string.IsNullOrWhiteSpace(result.StudentEmail))
                     return Json(new { success = true, message = "Đã duyệt nhưng không gửi mail vì sinh viên chưa có email." });
 
-                // ✅ Luôn lấy BaseUrl từ appsettings.json – KHÔNG fallback về localhost
                 var baseUrl = _configuration["AppSettings:BaseUrl"];
                 if (string.IsNullOrWhiteSpace(baseUrl))
                     throw new InvalidOperationException("BaseUrl chưa được cấu hình trong appsettings.json");
 
-                // URL công khai để điểm danh
                 var qrUrl = $"{baseUrl}/Organizer/Scan/MarkAttendance" +
                             $"?attendanceId={result.AttendanceId}&eventId={result.EventId}&studentId={result.StudentId}";
 
-                // Tạo QR code
                 byte[] qrBytes;
                 using (var qrGen = new QRCodeGenerator())
                 using (var qrData = qrGen.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
@@ -84,6 +91,7 @@ namespace EventSphere.Areas.Organizer.Controllers
                 return Json(new { success = false, message = "Lỗi: " + ex.Message });
             }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
