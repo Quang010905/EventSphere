@@ -18,8 +18,8 @@ builder.Services.Configure<OtpSettings>(builder.Configuration.GetSection("OtpSet
 builder.Services.AddScoped<IOtpService, OtpService>();
 
 // Email
-builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // DbContext (Scoped mặc định)
 builder.Services.AddDbContext<EventSphereContext>(options =>
@@ -34,11 +34,15 @@ builder.Services.AddScoped<EventSeatingRepository>();
 builder.Services.AddScoped<EventShareLogRepository>();
 builder.Services.AddScoped<UserRepositoryEf>();
 builder.Services.AddScoped<HomeRepository>();
+builder.Services.AddScoped<ProfileRepository>(); 
 builder.Services.AddScoped<AttendanceRepository>();
 
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+
+
 
 var app = builder.Build();
 
@@ -47,6 +51,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
 app.UseStaticFiles();
 // giữ redirect chỉ khi không phải môi trường Development
 if (!app.Environment.IsDevelopment())
@@ -63,6 +68,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
+
 
 //app.MapControllerRoute(
 //    name: "client_default",

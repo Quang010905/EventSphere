@@ -63,6 +63,7 @@ namespace EventSphere.Areas.Admin.Controllers
             return View(ev);
         }
 
+        // GET: Edit
         public async Task<IActionResult> Edit(int id)
         {
             var ev = await _context.TblEvents
@@ -70,6 +71,13 @@ namespace EventSphere.Areas.Admin.Controllers
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (ev == null) return NotFound();
+
+            // Chỉ cho sửa nếu status = 0
+            if (ev.Status == 1 || ev.Status == 2)
+            {
+                TempData["ErrorMessage"] = "Sự kiện đã duyệt hoặc bị vô hiệu, không thể chỉnh sửa!";
+                return RedirectToAction("Index");
+            }
 
             // Chuẩn bị danh sách Organizer cho dropdown
             ViewBag.Organizers = await _context.TblUsers
@@ -79,12 +87,16 @@ namespace EventSphere.Areas.Admin.Controllers
             return View(ev);
         }
 
-
+        // POST: EditAjax
         [HttpPost]
         public async Task<IActionResult> EditAjax([FromForm] EditEventDto dto, IFormFile? imageFile)
         {
             var ev = await _context.TblEvents.FindAsync(dto.Id);
             if (ev == null) return Json(new { success = false, message = "Không tìm thấy sự kiện" });
+
+            // Không cho sửa nếu đã duyệt hoặc vô hiệu
+            if (ev.Status == 1 || ev.Status == 2)
+                return Json(new { success = false, message = "Sự kiện đã duyệt hoặc bị vô hiệu, không thể chỉnh sửa!" });
 
             // Cập nhật các trường
             ev.Title = dto.Title;
@@ -92,11 +104,19 @@ namespace EventSphere.Areas.Admin.Controllers
             ev.Venue = dto.Venue;
             ev.Category = dto.Category;
             ev.Status = dto.Status;
-
-            // Xử lý OrganizerId
             ev.OrganizerId = dto.OrganizerId;
 
-            // Cập nhật ảnh nếu có
+            // Parse Date & Time từ form
+            var dateStr = Request.Form["Date"];
+            var timeStr = Request.Form["Time"];
+
+            if (!string.IsNullOrEmpty(dateStr) && DateOnly.TryParse(dateStr, out var parsedDate))
+                ev.Date = parsedDate;
+
+            if (!string.IsNullOrEmpty(timeStr) && TimeOnly.TryParse(timeStr, out var parsedTime))
+                ev.Time = parsedTime;
+
+            // Xử lý ảnh
             if (imageFile != null && imageFile.Length > 0)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -127,8 +147,8 @@ namespace EventSphere.Areas.Admin.Controllers
         public string Venue { get; set; } = "";
         public string Category { get; set; } = "";
         public int Status { get; set; }
-        public int? OrganizerId { get; set; }  // <--- sửa từ string sang int?
+        public int? OrganizerId { get; set; }
+        public DateOnly? Date { get; set; }
+        public TimeOnly? Time { get; set; }
     }
-
-
 }

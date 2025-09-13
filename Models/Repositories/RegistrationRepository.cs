@@ -108,22 +108,17 @@ namespace EventSphere.Models.Repositories
         {
             using var db = new EventSphereContext();
 
-            // Bắt transaction để tất cả thay đổi được commit/rollback chung
             using var tran = db.Database.BeginTransaction();
             try
             {
-                // 1) Cố gắng atomically set status = 1 nếu và chỉ nếu status hiện tại = 0 (hoặc NULL)
-                //    ExecuteSqlInterpolated trả về số rows affected
                 int updated = db.Database.ExecuteSqlInterpolated(
                     $"UPDATE dbo.tbl_registration SET _status = 1 WHERE _id = {registrationId} AND (_status IS NULL OR _status = 0)");
 
                 if (updated == 0)
                 {
-                    // Không thể đổi trạng thái -> có thể đã được xử lý trước đó
                     throw new InvalidOperationException("Registration đã được xử lý trước đó hoặc không thể duyệt.");
                 }
 
-                // 2) Load registration kèm Event và Student (bây giờ trạng thái trên DB đã là 1)
                 var reg = db.TblRegistrations
                             .Include(r => r.Event)
                             .Include(r => r.Student)
@@ -131,11 +126,9 @@ namespace EventSphere.Models.Repositories
 
                 if (reg == null) throw new InvalidOperationException("Registration not found after update.");
 
-                // 3) Kiểm tra chỗ ngồi và cập nhật seating
                 var seating = db.TblEventSeatings.FirstOrDefault(s => s.EventId == reg.EventId);
                 if (seating != null && (seating.SeatsAvailable ?? 0) <= 0)
                 {
-                    // Nếu event full, rollback: ta trả lỗi để UI biết
                     throw new InvalidOperationException("Event is fully booked.");
                 }
 
@@ -146,7 +139,6 @@ namespace EventSphere.Models.Repositories
                     db.TblEventSeatings.Update(seating);
                 }
 
-                // 4) Tạo attendance nếu chưa có
                 var attendance = db.TblAttendances
                     .FirstOrDefault(a => a.EventId == reg.EventId && a.StudentId == reg.StudentId);
 
@@ -162,7 +154,6 @@ namespace EventSphere.Models.Repositories
                     db.TblAttendances.Add(attendance);
                 }
 
-                // 5) Lưu thay đổi và commit
                 db.SaveChanges();
                 tran.Commit();
 
@@ -181,7 +172,6 @@ namespace EventSphere.Models.Repositories
             }
             catch
             {
-                // đảm bảo rollback nếu có lỗi
                 tran.Rollback();
                 throw;
             }
@@ -214,6 +204,18 @@ namespace EventSphere.Models.Repositories
 
             db.SaveChanges();
             tran.Commit();
+        }
+
+        public void CancelRegistration(int id)
+        {
+            using var db = new EventSphereContext();
+            var reg = db.TblRegistrations.FirstOrDefault(x => x.Id == id);
+
+            if (reg != null)
+            {
+                reg.Status = 3; // 3 = Đã hủy
+                db.SaveChanges();
+            }
         }
     }
 }
