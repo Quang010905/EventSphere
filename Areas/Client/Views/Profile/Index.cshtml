@@ -1,0 +1,142 @@
+﻿@model EventSphere.Models.ModelViews.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Thông tin hồ sơ";
+    Layout = "~/Areas/Client/Views/Shared/_LayoutClient.cshtml";
+}
+
+@section styles {
+    <style>
+        .profile-card-wrap {
+            margin-top: 40px;
+            margin-bottom: 60px;
+        }
+
+        .profile-card {
+            max-width: 820px;
+            margin: 0 auto;
+            background: #1c1c1c; /* nền card tối */
+            color: #f1f1f1;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        .profile-card .card-header {
+            padding: 18px 20px;
+            text-align: center;
+            border-bottom: none;
+            background: transparent;
+            color: #ffcc33;
+        }
+
+        .profile-card .card-body {
+            padding: 36px 30px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #ffb300;
+        }
+
+        .profile-card h4 {
+            color: #fff;
+            margin-top: 12px;
+            font-weight: 700;
+        }
+
+        .profile-info {
+            font-size: 16px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .profile-stats .col-12 {
+            background: rgba(255, 193, 7, 0.1); /* vàng nhạt nền */
+            border-radius: 8px;
+            padding: 12px;
+            margin: 6px 0;
+        }
+
+        .profile-stats small {
+            display: block;
+            font-size: 13px;
+            color: #ffcc33; /* accent vàng */
+            margin-bottom: 4px;
+        }
+
+        .btn-profile-edit {
+            background: linear-gradient(180deg,#ffc107,#ff9800);
+            color: #1c1c1c;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-profile-edit:hover {
+            background: linear-gradient(180deg,#ffb300,#ff9100);
+            transform: translateY(-2px);
+        }
+    </style>
+}
+
+}
+
+}
+
+<div class="container profile-card-wrap">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card profile-card">
+                <div class="card-header">
+                    <h3>@ViewData["Title"]</h3>
+                </div>
+
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        @if (!string.IsNullOrEmpty(Model?.Detail?.Image))
+                        {
+                            <img src="@(Url.Content(Model.Detail.Image))" class="profile-avatar" alt="Profile Image" />
+                        }
+                        else
+                        {
+                            <img src="@(Url.Content("~/images/default-profile.png"))" class="profile-avatar" alt="Default Image" />
+                        }
+                    </div>
+
+                   
+                    <h4 class="fw-bold">@((Model?.Detail?.Fullname) ?? (Model?.User?.Email ?? "Người dùng"))</h4>
+                    <p class="text-muted mb-4">@Model?.User?.Email</p>
+
+                    <div class="row profile-stats mb-4">
+                        <div class="col-12 col-md-4 text-center mb-3">
+                            <small>Phòng ban</small>
+                            <strong>@Model?.Detail?.Department</strong>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-3">
+                            <small>Số điện thoại</small>
+                            <strong>@Model?.Detail?.Phone</strong>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-3">
+                            <small>Mã số</small>
+                            <strong>@Model?.Detail?.EnrollmentNo</strong>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <!-- Truyền id đúng kiểu int; dùng ?? 0 để tránh null -->
+                        <a href="@Url.Action("Edit", "Profile", new { area = "Client", id = Model?.User?.Id ?? 0 })"
+                           class="btn btn-profile-edit">
+                            <i class="fa-solid fa-pen me-2"></i> Sửa hồ sơ
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

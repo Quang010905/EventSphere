@@ -34,7 +34,7 @@ builder.Services.AddScoped<EventSeatingRepository>();
 builder.Services.AddScoped<EventShareLogRepository>();
 builder.Services.AddScoped<UserRepositoryEf>();
 builder.Services.AddScoped<HomeRepository>();
-
+builder.Services.AddScoped<ProfileRepository>();
 
 
 var app = builder.Build();
@@ -56,15 +56,15 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Client}/{action=Index}/{id?}");
 
-//app.MapControllerRoute(
-//    name: "client_default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}",
-//    defaults: new { area = "Client" });
-
-
 app.MapControllerRoute(
-    name: "admin_default",
-    pattern: "{controller=Attendance}/{action=Index}/{id?}",
-    defaults: new { area = "Admin" });
+    name: "client_default",
+    pattern: "{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Client" });
+
+
+//app.MapControllerRoute(
+//    name: "admin_default",
+//    pattern: "{controller=Attendance}/{action=Index}/{id?}",
+//    defaults: new { area = "Admin" });
 
 app.Run();

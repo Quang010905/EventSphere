@@ -118,7 +118,7 @@
                                                             <a href="@Url.Action("Index", "Home")">Home</a>
                                                         </li>
                                                         <li>
-                                                            <a href="@Url.Action("Index", "EventDetail", new{id = 1})">About</a>
+                                                            <a href="@Url.Action("About", "Home", new{id = 1})">About</a>
                                                         </li>
                                                         <li>
                                                             <a href="@Url.Action("WorkSystem", "Home")">How It Works</a>
@@ -142,7 +142,7 @@
                                                             <li class="has-dropdown">
                                                                 <a href="#">@email</a>
                                                                 <ul class="submenu">
-                                                                    <li><a href="@Url.Action("Index", "ProfileMember", new { memId = memId })">Your profile</a></li>
+                                                                    <li><a href="@Url.Action("Index", "Profile", new { Id = memId })">Your profile</a></li>
                                                                     <li><a href="@Url.Action("Index", "Order", new { memId = memId })">Your orders</a></li>
                                                                     <li><a href="@Url.Action("Index", "Registration", new { id = memId })">Your registration</a></li>
                                                                     <li><a href="@Url.Action("Logout", "Client")">Logout</a></li>
